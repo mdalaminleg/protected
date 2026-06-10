@@ -36,6 +36,14 @@
         .player-box:fullscreen { max-width: none; aspect-ratio: unset; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
+        /* Anti-piracy overlay — blocks YT native controls when network drops or YT UI leaks */
+        .anti-leak-overlay {
+            position: absolute; inset: 0; z-index: 5;
+            background: transparent;
+            pointer-events: all;
+            display: block;
+        }
+
         .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 56px; background: #000; z-index: 50; display: flex; align-items: center; padding: 0 18px; transition: opacity 0.3s ease; pointer-events: none; }
         .top-bar.hidden { opacity: 0; }
         .top-bar-text { font-family: 'Fraunces', serif; font-size: .72rem; color: rgba(255,255,255,.2); letter-spacing: .05em; }
@@ -167,6 +175,8 @@
 <div class="player-wrap">
     <div class="player-box" id="playerBox" tabindex="0">
         <div id="ytPlayer"></div>
+        <!-- Anti-piracy overlay — blocks all interaction with YouTube iframe -->
+        <div class="anti-leak-overlay" id="antiLeakOverlay"></div>
 
         <div class="top-bar" id="topBar">
             <span class="top-bar-text">SciVerse Academy</span>
@@ -299,6 +309,7 @@ var prevBtn     = document.getElementById('prevBtn'), nextBtn = document.getElem
 var dragPreview = document.getElementById('dragPreview'), dragThumb = document.getElementById('dragThumb'), dragTime = document.getElementById('dragTime');
 var spinner     = document.getElementById('spinner');
 var pdfLink     = document.getElementById('pdfLink');
+var antiLeak    = document.getElementById('antiLeakOverlay');
 
 function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(function(){ t.classList.remove('on'); }, 2200); }
 function formatTime(sec) { if (!sec || sec < 0) return '00:00'; var m = Math.floor(sec/60), s = Math.floor(sec%60); return (m<10?'0'+m:m)+':'+(s<10?'0'+s:s); }
@@ -481,14 +492,32 @@ function createPlayer(vid) {
     document.getElementById('ytPlayer').innerHTML='';
     player = new YT.Player('ytPlayer', {
         height:'100%', width:'100%', videoId:vid,
-        playerVars:{ autoplay:0, controls:0, rel:0, modestbranding:1, iv_load_policy:3, fs:0, disablekb:1, playsinline:1, origin:location.origin, showinfo:0, cc_load_policy:0, autohide:1, wmode:'opaque' },
+        playerVars:{ 
+            autoplay:0, 
+            controls:0, 
+            rel:0, 
+            modestbranding:1, 
+            iv_load_policy:3, 
+            fs:0, 
+            disablekb:1, 
+            playsinline:1, 
+            origin:location.origin, 
+            showinfo:0, 
+            cc_load_policy:0, 
+            autohide:1, 
+            wmode:'opaque',
+            enablejsapi:1,
+            widget_referrer: location.origin,
+            hl: 'en',
+            color: 'white',
+            theme: 'dark'
+        },
         events:{
             onReady: function(){ requestAnimationFrame(updateProgress); player.setVolume(volSlider.value); player.setPlaybackRate(speeds[speedIdx]); },
             onStateChange: function(e){
                 var s = e.data;
                 if(s===1){
                     pauseCover.classList.remove('show'); setIcons(true);
-                    // Keep spinner for 4 seconds after playback starts
                     setTimeout(function(){ spinner.style.display='none'; }, 4000);
                     showControlsAndTopBar(false);
                     setTimeout(function(){
@@ -517,7 +546,7 @@ function createPlayer(vid) {
 
 // ─── Mouse move: 7 sec ───
 playerBox.addEventListener('mousemove', function(){ showControlsAndTopBar(false); });
-// mouseleave REMOVED — controls respect timer, don't disappear instantly
+// mouseleave REMOVED — controls respect timer
 
 // ─── Click: 8 sec ───
 gestureZone.addEventListener('click', function(e){
