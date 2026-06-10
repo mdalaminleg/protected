@@ -256,15 +256,17 @@ async function handleAuth(method, path, body, db, request) {
     if (user.is_blocked) return err('Your account has been blocked. Contact admin.', 403);
     if (!user.is_approved) return err('Your account is pending approval. Contact admin.', 403);
 
-    // Device fingerprint check
-    const fp = getFingerprint(request);
-    const fpHash = await hashFingerprint(fp);
-    if (user.device_fingerprint && user.device_fingerprint !== fpHash) {
-      await db.prepare('UPDATE users SET is_blocked = 1 WHERE id = ?').bind(user.id).run();
-      await db.prepare(
-        'INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)'
-      ).bind(user.id, 'device_mismatch_blocked', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
-      return err('Device mismatch detected. Your account has been locked for security. Contact admin.', 403);
+    // Device fingerprint check — skip for admin
+    if (user.role !== 'admin') {
+      const fp = getFingerprint(request);
+      const fpHash = await hashFingerprint(fp);
+      if (user.device_fingerprint && user.device_fingerprint !== fpHash) {
+        await db.prepare('UPDATE users SET is_blocked = 1 WHERE id = ?').bind(user.id).run();
+        await db.prepare(
+          'INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)'
+        ).bind(user.id, 'device_mismatch_blocked', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
+        return err('Device mismatch detected. Your account has been locked for security. Contact admin.', 403);
+      }
     }
 
     const token = await signToken({
@@ -314,9 +316,11 @@ async function handleUser(method, path, body, db, user, request) {
     const courseId = url.searchParams.get('id');
     if (!courseId) return err('Course ID required', 400);
 
-    // Verify enrollment
-    const enrollment = await db.prepare('SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?').bind(user.id, courseId).first();
-    if (!enrollment) return err('Not enrolled in this course', 403);
+    // Admin bypass — admins can view any course without enrollment
+    if (user.role !== 'admin') {
+      const enrollment = await db.prepare('SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?').bind(user.id, courseId).first();
+      if (!enrollment) return err('Not enrolled in this course', 403);
+    }
 
     const course = await db.prepare('SELECT * FROM courses WHERE id = ?').bind(courseId).first();
     if (!course) return err('Course not found', 404);
@@ -594,20 +598,29 @@ export async function onRequest(context) {
     return handleUser(method, path, body, db, authUser, request);
   }
 
-  // Legacy: GET /api/courses/:id (for lecture page loading full course data)
+  // GET /api/courses/:id — for lecture page & admin panel loading full course data
+  // ADMIN BYPASS: admins don't need enrollment to view course data
   if (method === 'GET' && path.match(/^\/courses\/\d+$/)) {
     const courseId = parseInt(path.split('/')[2]);
-    const enrollment = await db.prepare('SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?').bind(authUser.id, courseId).first();
-    if (!enrollment) return err('Not enrolled in this course', 403);
+
+    // Skip enrollment check for admin users
+    if (authUser.role !== 'admin') {
+      const enrollment = await db.prepare('SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?').bind(authUser.id, courseId).first();
+      if (!enrollment) return err('Not enrolled in this course', 403);
+    }
+
     const course = await db.prepare('SELECT * FROM courses WHERE id = ?').bind(courseId).first();
     if (!course) return err('Course not found', 404);
+
     const subjects = await db.prepare('SELECT * FROM subjects WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
     const resources = await db.prepare('SELECT * FROM resources WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
+
     const subjectsWithLectures = [];
     for (const sub of subjects.results) {
       const lectures = await db.prepare('SELECT * FROM lectures WHERE subject_id = ? ORDER BY sort_order ASC, id ASC').bind(sub.id).all();
       subjectsWithLectures.push({ ...sub, lectures: lectures.results });
     }
+
     return json({ course, subjects: subjectsWithLectures, resources: resources.results });
   }
 
