@@ -1,0 +1,8 @@
+name = "sciverse-academy"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "PROTECTED_DB"
+database_name = "protected-db"
+database_id = "be8eea79-f554-4e68-b215-af82662f042f"
