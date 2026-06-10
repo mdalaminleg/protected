@@ -35,7 +35,6 @@
         .anti-leak-overlay { position:absolute; inset:0; z-index:6; background:transparent; pointer-events:all; display:block; }
         .anti-leak-overlay.passive { pointer-events:none; z-index:0; }
 
-        /* ALL SHIELDS USE display:none/flex — NOT opacity */
         .initial-cover { position:absolute; inset:0; z-index:70; background:#000; display:flex; align-items:center; justify-content:center; cursor:pointer; }
         .initial-cover.hidden { display:none; }
         .initial-cover-content { display:flex; flex-direction:column; align-items:center; gap:16px; }
@@ -240,7 +239,6 @@ var dragCurrentPct=0;
 var launchTimer=null,launchProgressInterval=null;
 var currentPdfUrl='';
 var videoIsSafe=false;
-var launchWaitingForPlay=false;
 var playerReady=false;
 var pendingPlay=false;
 
@@ -307,14 +305,11 @@ function showLaunchShield(msg){
     launchShield.classList.add('active');
     markUnsafe();
     blockIframe();
-    launchWaitingForPlay=true;
     clearTimeout(launchTimer);
     clearInterval(launchProgressInterval);
 }
 
 function startLaunchCountdown(){
-    if(!launchWaitingForPlay)return;
-    launchWaitingForPlay=false;
     var startTime=Date.now();
     var totalDuration=4000;
     launchProgressInterval=setInterval(function(){
@@ -495,38 +490,42 @@ function createPlayer(vid){
             onStateChange:function(e){
                 var s=e.data;
                 if(s===1){
+                    // YT confirmed playing
                     spinner.style.display='none';
                     setIcons(true);
-                    if(launchWaitingForPlay){startLaunchCountdown();}
+                    // If launch shield is visible, start the countdown
+                    if(launchShield.classList.contains('active')){
+                        startLaunchCountdown();
+                    }
                 }
                 else if(s===2){
                     setIcons(false);
-                    launchWaitingForPlay=false;clearTimeout(launchTimer);clearInterval(launchProgressInterval);
+                    clearTimeout(launchTimer);clearInterval(launchProgressInterval);
                     instantProtection('Click to Resume');
                 }
                 else if(s===3){
                     spinner.style.display='block';
                     setIcons(true);
-                    launchWaitingForPlay=false;clearTimeout(launchTimer);clearInterval(launchProgressInterval);
+                    clearTimeout(launchTimer);clearInterval(launchProgressInterval);
                     instantProtection('Buffering...');
                 }
                 else if(s===0){
                     setIcons(false);
-                    launchWaitingForPlay=false;clearTimeout(launchTimer);clearInterval(launchProgressInterval);
+                    clearTimeout(launchTimer);clearInterval(launchProgressInterval);
                     instantProtection('Click to Replay');
                     if(currentIndex<allLectures.length-1)setTimeout(function(){nextLecture();},2500);
                 }
                 else if(s===-1){
-                    launchWaitingForPlay=false;
+                    clearTimeout(launchTimer);clearInterval(launchProgressInterval);
                     if(initialCover.classList.contains('hidden')){instantProtection('Click to Start');}
                 }
                 else if(s===5){
-                    launchWaitingForPlay=false;
+                    clearTimeout(launchTimer);clearInterval(launchProgressInterval);
                     instantProtection('Loading...');
                 }
             },
             onError:function(e){
-                launchWaitingForPlay=false;
+                clearTimeout(launchTimer);clearInterval(launchProgressInterval);
                 instantProtection('Click to Retry');
                 showToast('Playback error. Try again.');
             }
@@ -559,7 +558,7 @@ volSlider.addEventListener('input',function(e){if(!player)return;var v=parseInt(
 document.getElementById('muteToggle').addEventListener('click',function(e){e.stopPropagation();if(!player)return;if(player.isMuted()){player.unMute();volSlider.value=player.getVolume();volHigh.style.display='block';volMute.style.display='none';}else{player.mute();volSlider.value=0;volHigh.style.display='none';volMute.style.display='block';}});
 document.getElementById('fullscreenBtn').addEventListener('click',function(e){e.stopPropagation();if(!document.fullscreenElement)playerBox.requestFullscreen().catch(function(){});else document.exitFullscreen();});
 
-window.addEventListener('offline',function(){launchWaitingForPlay=false;clearTimeout(launchTimer);clearInterval(launchProgressInterval);instantProtection('No Internet');spinner.style.display='block';showToast('Network lost. Waiting...');});
+window.addEventListener('offline',function(){clearTimeout(launchTimer);clearInterval(launchProgressInterval);instantProtection('No Internet');spinner.style.display='block';showToast('Network lost. Waiting...');});
 window.addEventListener('online',function(){showToast('Network restored.');});
 
 document.addEventListener('keydown',function(e){
