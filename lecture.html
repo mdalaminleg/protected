@@ -303,19 +303,38 @@ var pdfLink     = document.getElementById('pdfLink');
 function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(function(){ t.classList.remove('on'); }, 2200); }
 function formatTime(sec) { if (!sec || sec < 0) return '00:00'; var m = Math.floor(sec/60), s = Math.floor(sec%60); return (m<10?'0'+m:m)+':'+(s<10?'0'+s:s); }
 
+// ─── UPDATED: 8 sec on click, 7 sec auto-hide ───
 function showControlsAndTopBar(persist) {
     playerBox.classList.add('show-ui'); ctrlBar.classList.add('on'); topBar.classList.remove('hidden');
     pauseCover.classList.remove('show');
     clearTimeout(hideTimer); clearTimeout(topBarTimer); clearTimeout(pauseCoverTimer); clearTimeout(ctrTimer);
     if (persist) return;
     if (!isDragging) {
+        // 7 seconds for both controls and top bar to auto-hide
         hideTimer = setTimeout(function() {
             playerBox.classList.remove('show-ui'); ctrlBar.classList.remove('on');
             if (player && player.getPlayerState && player.getPlayerState() === 2) {
                 pauseCoverTimer = setTimeout(function(){ pauseCover.querySelector('.cover-text').textContent = 'Click to Resume'; pauseCover.classList.add('show'); }, 300);
             }
-        }, 4000);
-        topBarTimer = setTimeout(function(){ topBar.classList.add('hidden'); }, 5000);
+        }, 7000);
+        topBarTimer = setTimeout(function(){ topBar.classList.add('hidden'); }, 7000);
+    }
+}
+
+// ─── UPDATED: Click gives 8 seconds ───
+function showControlsOnClick() {
+    playerBox.classList.add('show-ui'); ctrlBar.classList.add('on'); topBar.classList.remove('hidden');
+    pauseCover.classList.remove('show');
+    clearTimeout(hideTimer); clearTimeout(topBarTimer); clearTimeout(pauseCoverTimer); clearTimeout(ctrTimer);
+    if (!isDragging) {
+        // 8 seconds when user clicks
+        hideTimer = setTimeout(function() {
+            playerBox.classList.remove('show-ui'); ctrlBar.classList.remove('on');
+            if (player && player.getPlayerState && player.getPlayerState() === 2) {
+                pauseCoverTimer = setTimeout(function(){ pauseCover.querySelector('.cover-text').textContent = 'Click to Resume'; pauseCover.classList.add('show'); }, 300);
+            }
+        }, 8000);
+        topBarTimer = setTimeout(function(){ topBar.classList.add('hidden'); }, 8000);
     }
 }
 
@@ -458,6 +477,7 @@ async function init() {
     } catch(e){ currentTitle.textContent='Error loading course'; }
 }
 
+// ─── UPDATED: Spinner stays 4 seconds after video starts playing ───
 function createPlayer(vid) {
     if(player){ try{ player.destroy(); }catch(e){} player=null; }
     document.getElementById('ytPlayer').innerHTML='';
@@ -469,7 +489,10 @@ function createPlayer(vid) {
             onStateChange: function(e){
                 var s = e.data;
                 if(s===1){
-                    pauseCover.classList.remove('show'); setIcons(true); spinner.style.display='none';
+                    // Playing — keep spinner for 4 seconds, then hide
+                    pauseCover.classList.remove('show'); setIcons(true);
+                    // Don't hide spinner immediately — wait 4 seconds
+                    setTimeout(function(){ spinner.style.display='none'; }, 4000);
                     showControlsAndTopBar(false);
                     setTimeout(function(){
                         if(player && player.getAvailableQualityLevels){
@@ -482,18 +505,26 @@ function createPlayer(vid) {
                     }, 1500);
                 }
                 else if(s===2){ setIcons(false); showControlsAndTopBar(true); }
-                else if(s===3){ spinner.style.display='block'; topBar.classList.remove('hidden'); playerBox.classList.add('show-ui'); ctrlBar.classList.add('on'); clearTimeout(hideTimer); clearTimeout(topBarTimer); clearTimeout(pauseCoverTimer); }
+                else if(s===3){ 
+                    // Buffering — show spinner
+                    spinner.style.display='block'; 
+                    topBar.classList.remove('hidden'); 
+                    playerBox.classList.add('show-ui'); 
+                    ctrlBar.classList.add('on'); 
+                    clearTimeout(hideTimer); clearTimeout(topBarTimer); clearTimeout(pauseCoverTimer); 
+                }
                 else if(s===0){ setIcons(false); pauseCover.querySelector('.cover-text').textContent='Click to Start'; pauseCover.classList.add('show'); if(currentIndex<allLectures.length-1) setTimeout(function(){ nextLecture(); }, 2000); }
             }
         }
     });
 }
 
+// ─── UPDATED: Click = 8 seconds ───
 playerBox.addEventListener('mousemove', function(){ showControlsAndTopBar(false); });
 playerBox.addEventListener('mouseleave', function(){ if(!isDragging) playerBox.classList.remove('show-ui'); });
 gestureZone.addEventListener('click', function(e){
     if(e.target.closest('.ctrl-bar')) return;
-    showControlsAndTopBar(false);
+    showControlsOnClick();  // 8 seconds on click
     var rect = playerBox.getBoundingClientRect();
     var cx = e.clientX - rect.left, cy = e.clientY - rect.top;
     var inCenter = cx > rect.width*.33 && cx < rect.width*.66 && cy > rect.height*.25 && cy < rect.height*.75;
@@ -529,7 +560,7 @@ gestureZone.addEventListener('touchend', function(e){
     if(tapGap<300 && tapGap>0){
         if(x < w*.33) skip(-10);
         else if(x > w*.66) skip(10);
-    } else { showControlsAndTopBar(false); }
+    } else { showControlsOnClick(); }  // 8 seconds on tap
     lastTapTime=now;
 });
 
