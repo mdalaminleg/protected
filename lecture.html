@@ -36,17 +36,7 @@
         .player-box:fullscreen { max-width: none; aspect-ratio: unset; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
-        /* Anti-leak — blocks all iframe interaction */
         .anti-leak-overlay { position: absolute; inset: 0; z-index: 5; background: transparent; pointer-events: all; display: block; }
-
-        /* ══════════════════════════════════════
-           PROTECTIVE SHIELD SYSTEM
-           z-index layers:
-           70 = initial cover ("Click to Start")
-           68 = dead shield (video stopped/blocked — NEVER reveals)
-           66 = pause shield ("Click to Resume")
-           65 = launch shield ("Starting..." / "Resuming..." — 3 sec timer)
-           ══════════════════════════════════════ */
 
         /* Initial Cover */
         .initial-cover {
@@ -71,7 +61,7 @@
         .initial-cover-text { font-family: 'Fraunces', serif; font-size: 1.3rem; color: rgba(255,255,255,0.55); letter-spacing: .04em; }
         .initial-cover-subtext { font-size: .7rem; color: rgba(255,255,255,0.18); letter-spacing: .08em; text-transform: uppercase; }
 
-        /* Dead Shield — PERMANENT cover when video is stopped/ended/error */
+        /* Dead Shield — PERMANENT */
         .dead-shield {
             position: absolute; inset: 0; z-index: 68;
             background: #000; display: none;
@@ -111,7 +101,7 @@
         .pause-shield-text { font-family: 'Fraunces', serif; font-size: 1rem; color: rgba(255,255,255,0.4); letter-spacing: .04em; }
         .pause-shield-subtext { font-size: .68rem; color: rgba(255,255,255,0.18); letter-spacing: .06em; }
 
-        /* Launch Shield — 3 sec branded overlay */
+        /* Launch Shield — 3 sec */
         .launch-shield {
             position: absolute; inset: 0; z-index: 65;
             background: #000; display: flex; flex-direction: column;
@@ -139,8 +129,7 @@
         .launch-shield-progress { width: 100px; height: 2px; background: rgba(255,255,255,0.06); border-radius: 1px; overflow: hidden; margin-top: 4px; }
         .launch-shield-progress-fill { height: 100%; background: var(--gold); border-radius: 1px; width: 0%; transition: width 0.1s linear; }
 
-        /* Top bar — NEVER hides when video is stopped */
-        .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 56px; background: #000; z-index: 50; display: flex; align-items: center; padding: 0 18px; transition: opacity 0.3s ease; pointer-events: none; }
+        .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 56px; background: #000; z-index: 50; display: flex; align-items: center; padding: 0 18px; transition: opacity 0.35s ease; pointer-events: none; }
         .top-bar.hidden { opacity: 0; }
         .top-bar-text { font-family: 'Fraunces', serif; font-size: .72rem; color: rgba(255,255,255,.2); letter-spacing: .05em; }
         .top-bar-watermark { font-family: 'Fraunces', serif; font-size: .62rem; color: rgba(255,255,255,.15); letter-spacing: .06em; margin-left: auto; }
@@ -149,7 +138,7 @@
         @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 
         .ui-layer { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; pointer-events: none; opacity: 0; transition: opacity .18s; }
-        .player-box:hover .ui-layer, .player-box.show-ui .ui-layer { opacity: 1; }
+        .player-box.show-ui .ui-layer { opacity: 1; }
         .gesture-zone { position: absolute; inset: 0; z-index: 20; pointer-events: auto; cursor: pointer; }
 
         .ctr-pause-btn {
@@ -191,8 +180,7 @@
         .drag-preview img { width: 100%; height: 100%; object-fit: cover; opacity: .7; }
         .drag-preview .drag-time { position: absolute; bottom: 0; left: 0; right: 0; padding: 6px 8px; background: rgba(0,0,0,.85); font-size: .65rem; font-weight: 600; color: #fff; text-align: center; }
 
-        /* Control bar — NEVER auto-hides when video is stopped/paused */
-        .ctrl-bar { padding: 18px 18px 14px; opacity: 1; pointer-events: auto; transition: opacity .18s; position: relative; z-index: 30; margin-top: auto; background: #000; }
+        .ctrl-bar { padding: 18px 18px 14px; opacity: 1; pointer-events: auto; transition: opacity 0.35s ease; position: relative; z-index: 30; margin-top: auto; background: #000; }
         .ctrl-bar.fade { opacity: 0; pointer-events: none; }
         .prog-wrap { position: relative; width: 100%; height: 28px; display: flex; align-items: center; margin-bottom: 4px; }
         .prog-track { width: 100%; height: 5px; background: rgba(255,255,255,.12); border-radius: 3px; cursor: pointer; position: relative; transition: height .15s; }
@@ -267,7 +255,6 @@
         <div id="ytPlayer"></div>
         <div class="anti-leak-overlay" id="antiLeakOverlay"></div>
 
-        <!-- Initial Cover (z:70) -->
         <div class="initial-cover" id="initialCover">
             <div class="initial-cover-content">
                 <div class="initial-cover-icon">
@@ -278,7 +265,6 @@
             </div>
         </div>
 
-        <!-- Dead Shield (z:68) — video stopped/ended/error — PERMANENT until user clicks -->
         <div class="dead-shield" id="deadShield">
             <div class="dead-shield-content">
                 <div class="dead-shield-icon">
@@ -289,7 +275,6 @@
             </div>
         </div>
 
-        <!-- Pause Shield (z:66) -->
         <div class="pause-shield" id="pauseShield">
             <div class="pause-shield-content">
                 <div class="pause-shield-icon">
@@ -300,7 +285,6 @@
             </div>
         </div>
 
-        <!-- Launch Shield (z:65) — 3 sec overlay -->
         <div class="launch-shield" id="launchShield">
             <div class="launch-shield-content">
                 <div class="launch-shield-icon">
@@ -415,8 +399,9 @@ var hideTimer = null, topBarTimer = null;
 var dragCurrentPct = 0;
 var launchTimer = null, launchProgressInterval = null;
 var currentPdfUrl = '';
-var videoIsSafe = false; // true only when video has been playing for 3+ seconds
+var videoIsSafe = false; // TRUE only when playing for 3+ seconds
 var safeTimer = null;
+var isFullscreen = false;
 
 var speeds = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5];
 var speedIdx = 2;
@@ -455,9 +440,7 @@ var pdfLink     = document.getElementById('pdfLink');
 function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(function(){ t.classList.remove('on'); }, 2200); }
 function formatTime(sec) { if (!sec || sec < 0) return '00:00'; var m = Math.floor(sec/60), s = Math.floor(sec%60); return (m<10?'0'+m:m)+':'+(s<10?'0'+s:s); }
 
-// ─── SHIELD MANAGEMENT ───
-
-// Hide ALL shields
+// ─── SHIELDS ───
 function hideAllShields() {
     initialCover.classList.add('hidden');
     deadShield.classList.remove('active');
@@ -468,81 +451,76 @@ function hideAllShields() {
     clearTimeout(safeTimer);
 }
 
-// Show ONLY dead shield (video stopped/ended)
 function showDeadShield(msg) {
     hideAllShields();
     deadShieldText.textContent = msg || 'Click to Resume';
     deadShield.classList.add('active');
-    videoIsSafe = false;
-    // Bars MUST stay visible
-    topBar.classList.remove('hidden');
-    ctrlBar.classList.remove('fade');
-    playerBox.classList.add('show-ui');
-    clearTimeout(hideTimer);
-    clearTimeout(topBarTimer);
+    markUnsafe();
 }
 
-// Show pause shield
 function showPauseShield() {
     hideAllShields();
     pauseShield.classList.add('active');
-    videoIsSafe = false;
-    // Bars MUST stay visible
-    topBar.classList.remove('hidden');
-    ctrlBar.classList.remove('fade');
-    playerBox.classList.add('show-ui');
-    clearTimeout(hideTimer);
-    clearTimeout(topBarTimer);
+    markUnsafe();
 }
 
-// Show launch shield with timer
 function showLaunchShield(msg) {
     hideAllShields();
     launchShieldText.textContent = msg || 'Starting';
     launchShieldProgress.style.width = '0%';
     launchShield.classList.add('active');
-    videoIsSafe = false;
-    // Bars stay visible
-    topBar.classList.remove('hidden');
-    ctrlBar.classList.remove('fade');
-    playerBox.classList.add('show-ui');
-    clearTimeout(hideTimer);
-    clearTimeout(topBarTimer);
+    markUnsafe();
     
     var startTime = Date.now();
-    var totalDuration = 3000;
     launchProgressInterval = setInterval(function() {
         var elapsed = Date.now() - startTime;
-        var pct = Math.min(100, (elapsed / totalDuration) * 100);
+        var pct = Math.min(100, (elapsed / 3000) * 100);
         launchShieldProgress.style.width = pct + '%';
         if (pct >= 100) clearInterval(launchProgressInterval);
     }, 50);
     
     launchTimer = setTimeout(function() {
         launchShield.classList.remove('active');
-        videoIsSafe = true;
-        // Now safe — allow auto-hide after 7 seconds
-        scheduleAutoHide();
-    }, totalDuration);
+        markSafe();
+    }, 3000);
 }
 
-// Schedule bars to auto-hide after 7 seconds (only when video is safe)
+// ─── SAFE/UNSAFE ───
+function markSafe() {
+    videoIsSafe = true;
+    clearTimeout(safeTimer);
+    scheduleAutoHide();
+}
+
+function markUnsafe() {
+    videoIsSafe = false;
+    clearTimeout(safeTimer);
+    clearTimeout(hideTimer);
+    clearTimeout(topBarTimer);
+    // Force bars visible
+    topBar.classList.remove('hidden');
+    ctrlBar.classList.remove('fade');
+    playerBox.classList.add('show-ui');
+}
+
+// ─── AUTO-HIDE (only when safe + playing) ───
 function scheduleAutoHide() {
     clearTimeout(hideTimer);
     clearTimeout(topBarTimer);
-    if (!videoIsSafe) return; // Don't schedule if video isn't safe
+    if (!videoIsSafe) return;
+    if (isDragging) return;
     hideTimer = setTimeout(function() {
-        if (!videoIsSafe) return;
+        if (!videoIsSafe || isDragging) return;
         ctrlBar.classList.add('fade');
         playerBox.classList.remove('show-ui');
     }, 7000);
     topBarTimer = setTimeout(function() {
-        if (!videoIsSafe) return;
+        if (!videoIsSafe || isDragging) return;
         topBar.classList.add('hidden');
     }, 7000);
 }
 
-// ─── SHOW CONTROLS (7 sec on any touch/move) ───
+// ─── SHOW CONTROLS ON INTERACTION ───
 function showControls() {
     topBar.classList.remove('hidden');
     ctrlBar.classList.remove('fade');
@@ -574,18 +552,12 @@ function loadLecture(idx) {
     currentMeta.textContent = (lec.subject_name||'');
     headerTitle.textContent = lec.title;
     updateNavButtons();
-    if (lec.pdf_url) {
-        currentPdfUrl = lec.pdf_url;
-        pdfLink.href = lec.pdf_url;
-        pdfLink.style.display = 'inline-flex';
-    } else {
-        pdfLink.style.display = 'none';
-        currentPdfUrl = '';
-    }
+    if (lec.pdf_url) { currentPdfUrl = lec.pdf_url; pdfLink.href = lec.pdf_url; pdfLink.style.display = 'inline-flex'; }
+    else { pdfLink.style.display = 'none'; currentPdfUrl = ''; }
     if (player && player.loadVideoById) player.loadVideoById(lec.youtube_id);
 }
-function prevLecture() { hideAllShields(); showDeadShield('Click to Start'); loadLecture(currentIndex-1); }
-function nextLecture() { hideAllShields(); showDeadShield('Click to Start'); loadLecture(currentIndex+1); }
+function prevLecture() { hideAllShields(); markUnsafe(); showDeadShield('Click to Start'); loadLecture(currentIndex-1); }
+function nextLecture() { hideAllShields(); markUnsafe(); showDeadShield('Click to Start'); loadLecture(currentIndex+1); }
 
 function updateProgress() {
     if (!player || typeof player.getCurrentTime !== 'function') { requestAnimationFrame(updateProgress); return; }
@@ -598,32 +570,18 @@ function updateProgress() {
     requestAnimationFrame(updateProgress);
 }
 
-// ─── PLAY/PAUSE TOGGLE ───
 function togglePlay() {
     if (!player) return;
     var state = player.getPlayerState();
-    if (state === 1) {
-        // Playing → pause
-        player.pauseVideo();
-    } else {
-        // Paused/stopped → show launch shield, play
-        showLaunchShield('Resuming');
-        player.playVideo();
-    }
+    if (state === 1) { player.pauseVideo(); }
+    else { showLaunchShield('Resuming'); player.playVideo(); }
 }
 
 function skip(s) {
     if (!player) return;
     player.seekTo((player.getCurrentTime()||0)+s, true);
-    if (s < 0) {
-        skipLeftLabel.textContent = s+'s';
-        skipLeft.classList.remove('on'); void skipLeft.offsetWidth; skipLeft.classList.add('on');
-        clearTimeout(skipLTimer); skipLTimer = setTimeout(function(){ skipLeft.classList.remove('on'); }, 750);
-    } else {
-        skipRightLabel.textContent = '+'+s+'s';
-        skipRight.classList.remove('on'); void skipRight.offsetWidth; skipRight.classList.add('on');
-        clearTimeout(skipRTimer); skipRTimer = setTimeout(function(){ skipRight.classList.remove('on'); }, 750);
-    }
+    if (s < 0) { skipLeftLabel.textContent = s+'s'; skipLeft.classList.remove('on'); void skipLeft.offsetWidth; skipLeft.classList.add('on'); clearTimeout(skipLTimer); skipLTimer = setTimeout(function(){ skipLeft.classList.remove('on'); }, 750); }
+    else { skipRightLabel.textContent = '+'+s+'s'; skipRight.classList.remove('on'); void skipRight.offsetWidth; skipRight.classList.add('on'); clearTimeout(skipRTimer); skipRTimer = setTimeout(function(){ skipRight.classList.remove('on'); }, 750); }
 }
 var skipLTimer = null, skipRTimer = null;
 
@@ -694,10 +652,8 @@ async function init() {
         if(!allLectures.length){ currentTitle.textContent='No lectures'; return; }
         loadLecture(currentIndex);
         updateNavButtons();
-        // Show initial cover
         initialCover.classList.remove('hidden');
-        topBar.classList.remove('hidden');
-        ctrlBar.classList.remove('fade');
+        markUnsafe();
         createPlayer(allLectures[currentIndex].youtube_id);
     } catch(e){ currentTitle.textContent='Error loading course'; }
 }
@@ -712,73 +668,26 @@ function createPlayer(vid) {
             onReady: function(){ requestAnimationFrame(updateProgress); player.setVolume(volSlider.value); player.setPlaybackRate(speeds[speedIdx]); },
             onStateChange: function(e){
                 var s = e.data;
-                if(s === 1){
-                    // PLAYING — launch shield handles the 3-sec reveal
-                    spinner.style.display = 'none';
-                    setIcons(true);
-                }
-                else if(s === 2){
-                    // PAUSED — show pause shield, bars STAY forever
-                    setIcons(false);
-                    showPauseShield();
-                }
-                else if(s === 3){
-                    // BUFFERING
-                    spinner.style.display = 'block';
-                    topBar.classList.remove('hidden');
-                    ctrlBar.classList.remove('fade');
-                    playerBox.classList.add('show-ui');
-                    clearTimeout(hideTimer); clearTimeout(topBarTimer);
-                }
-                else if(s === 0){
-                    // ENDED — show dead shield
-                    setIcons(false);
-                    showDeadShield('Click to Replay');
-                    if(currentIndex < allLectures.length - 1) setTimeout(function(){ nextLecture(); }, 2500);
-                }
-                else if(s === -1){
-                    // UNSTARTED — show initial or dead shield
-                    if(initialCover.classList.contains('hidden')){
-                        showDeadShield('Click to Start');
-                    }
-                }
-                else if(s === 5){
-                    // VIDEO CUED
-                }
+                if(s === 1){ spinner.style.display='none'; setIcons(true); }
+                else if(s === 2){ setIcons(false); showPauseShield(); }
+                else if(s === 3){ spinner.style.display='block'; markUnsafe(); }
+                else if(s === 0){ setIcons(false); showDeadShield('Click to Replay'); if(currentIndex<allLectures.length-1) setTimeout(function(){ nextLecture(); }, 2500); }
+                else if(s === -1){ if(initialCover.classList.contains('hidden')){ showDeadShield('Click to Start'); } }
+                else if(s === 5){}
             },
-            onError: function(e){
-                // ERROR — permanent dead shield
-                showDeadShield('Click to Retry');
-                showToast('Playback error. Try again.');
-            }
+            onError: function(e){ showDeadShield('Click to Retry'); markUnsafe(); showToast('Playback error. Try again.'); }
         }
     });
 }
 
 // ─── EVENT HANDLERS ───
+initialCover.addEventListener('click', function(){ showLaunchShield('Starting'); if(player && player.playVideo) player.playVideo(); });
+deadShield.addEventListener('click', function(){ showLaunchShield('Starting'); if(player && player.playVideo) player.playVideo(); });
+pauseShield.addEventListener('click', function(){ showLaunchShield('Resuming'); if(player) player.playVideo(); });
 
-// Initial cover click
-initialCover.addEventListener('click', function(){
-    showLaunchShield('Starting');
-    if(player && player.playVideo) player.playVideo();
-});
-
-// Dead shield click (video stopped/ended/error)
-deadShield.addEventListener('click', function(){
-    showLaunchShield('Starting');
-    if(player && player.playVideo) player.playVideo();
-});
-
-// Pause shield click
-pauseShield.addEventListener('click', function(){
-    showLaunchShield('Resuming');
-    if(player) player.playVideo();
-});
-
-// Mouse move on player
+// Mouse move — only show controls, don't prevent auto-hide
 playerBox.addEventListener('mousemove', function(){ showControls(); });
 
-// Click on gesture zone
 gestureZone.addEventListener('click', function(e){
     if(e.target.closest('.ctrl-bar') || e.target.closest('.launch-shield') || e.target.closest('.pause-shield') || e.target.closest('.dead-shield') || e.target.closest('.initial-cover')) return;
     showControls();
@@ -797,7 +706,11 @@ document.getElementById('rewindBtn').addEventListener('click', function(e){ e.st
 document.getElementById('forwardBtn').addEventListener('click', function(e){ e.stopPropagation(); skip(10); showControls(); });
 volSlider.addEventListener('input', function(e){ if(!player) return; var v=parseInt(e.target.value); player.setVolume(v); volHigh.style.display=v===0?'none':'block'; volMute.style.display=v===0?'block':'none'; });
 document.getElementById('muteToggle').addEventListener('click', function(e){ e.stopPropagation(); if(!player) return; if(player.isMuted()){ player.unMute(); volSlider.value=player.getVolume(); volHigh.style.display='block'; volMute.style.display='none'; } else{ player.mute(); volSlider.value=0; volHigh.style.display='none'; volMute.style.display='block'; } });
-document.getElementById('fullscreenBtn').addEventListener('click', function(e){ e.stopPropagation(); if(!document.fullscreenElement) playerBox.requestFullscreen().catch(function(){}); else document.exitFullscreen(); });
+
+// Fullscreen — track state
+document.getElementById('fullscreenBtn').addEventListener('click', function(e){ e.stopPropagation(); if(!document.fullscreenElement) { playerBox.requestFullscreen().catch(function(){}); } else { document.exitFullscreen(); } });
+document.addEventListener('fullscreenchange', function(){ isFullscreen = !!document.fullscreenElement; });
+document.addEventListener('webkitfullscreenchange', function(){ isFullscreen = !!document.webkitFullscreenElement; });
 
 document.addEventListener('keydown', function(e){
     if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
@@ -817,10 +730,7 @@ gestureZone.addEventListener('touchend', function(e){
     showControls();
     var now=Date.now(), tapGap=now-lastTapTime;
     var x=e.changedTouches[0].clientX, w=window.innerWidth;
-    if(tapGap<300 && tapGap>0){
-        if(x < w*.33) skip(-10);
-        else if(x > w*.66) skip(10);
-    }
+    if(tapGap<300 && tapGap>0){ if(x < w*.33) skip(-10); else if(x > w*.66) skip(10); }
     lastTapTime=now;
 });
 
