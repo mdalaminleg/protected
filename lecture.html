@@ -36,9 +36,19 @@
         .player-box:fullscreen { max-width: none; aspect-ratio: unset; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
-        .anti-leak-overlay { position: absolute; inset: 0; z-index: 5; background: transparent; pointer-events: all; display: block; }
+        /* Anti-leak overlay — BLOCKS all iframe interaction */
+        .anti-leak-overlay {
+            position: absolute; inset: 0; z-index: 6;
+            background: transparent;
+            pointer-events: all;
+            display: block;
+        }
+        .anti-leak-overlay.passive {
+            pointer-events: none;
+            z-index: 0;
+        }
 
-        /* ═══════════ ALL SHIELDS — z-index above everything ═══════════ */
+        /* ═══════════ ALL SHIELDS ═══════════ */
 
         /* Initial Cover (z:70) */
         .initial-cover {
@@ -60,7 +70,7 @@
         .initial-cover-text { font-family: 'Fraunces', serif; font-size: 1.3rem; color: rgba(255,255,255,0.55); letter-spacing: .04em; }
         .initial-cover-subtext { font-size: .7rem; color: rgba(255,255,255,0.18); letter-spacing: .08em; text-transform: uppercase; }
 
-        /* Universal Protection Shield (z:68) — covers ALL non-playing states */
+        /* Universal Protection Shield (z:68) */
         .protection-shield {
             position: absolute; inset: 0; z-index: 68;
             background: #000; display: none;
@@ -80,7 +90,7 @@
         .protection-shield-text { font-family: 'Fraunces', serif; font-size: 1rem; color: rgba(255,255,255,0.4); letter-spacing: .04em; }
         .protection-shield-subtext { font-size: .68rem; color: rgba(255,255,255,0.18); letter-spacing: .06em; }
 
-        /* Launch Shield (z:65) — 3 sec branded overlay on resume */
+        /* Launch Shield (z:65) — 4 sec branded overlay on resume */
         .launch-shield {
             position: absolute; inset: 0; z-index: 65;
             background: #000; display: flex; flex-direction: column;
@@ -233,7 +243,6 @@
         <div id="ytPlayer"></div>
         <div class="anti-leak-overlay" id="antiLeakOverlay"></div>
 
-        <!-- Initial Cover (z:70) -->
         <div class="initial-cover" id="initialCover">
             <div class="initial-cover-content">
                 <div class="initial-cover-icon"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
@@ -242,14 +251,12 @@
             </div>
         </div>
 
-        <!-- Universal Protection Shield (z:68) — ANY non-playing state -->
         <div class="protection-shield" id="protectionShield">
             <div class="protection-shield-icon"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
             <div class="protection-shield-text" id="protectionShieldText">Click to Resume</div>
             <div class="protection-shield-subtext">SciVerse Academy</div>
         </div>
 
-        <!-- Launch Shield (z:65) — 3 sec overlay on resume -->
         <div class="launch-shield" id="launchShield">
             <div class="launch-shield-content">
                 <div class="launch-shield-icon"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
@@ -333,7 +340,8 @@ var dragCurrentPct = 0;
 var launchTimer = null, launchProgressInterval = null;
 var currentPdfUrl = '';
 var videoIsSafe = false;
-var safeTimer = null;
+var launchWaitingForPlay = false;
+var launchStartTime = 0;
 
 var speeds = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5];
 var speedIdx = 2;
@@ -367,60 +375,70 @@ var prevBtn     = document.getElementById('prevBtn'), nextBtn = document.getElem
 var dragPreview = document.getElementById('dragPreview'), dragThumb = document.getElementById('dragThumb'), dragTime = document.getElementById('dragTime');
 var spinner     = document.getElementById('spinner');
 var pdfLink     = document.getElementById('pdfLink');
+var antiLeak    = document.getElementById('antiLeakOverlay');
 
 function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(function(){ t.classList.remove('on'); }, 2200); }
 function formatTime(sec) { if (!sec || sec < 0) return '00:00'; var m = Math.floor(sec/60), s = Math.floor(sec%60); return (m<10?'0'+m:m)+':'+(s<10?'0'+s:s); }
 
-// ─── SHIELD SYSTEM ───
+// ─── ANTI-LEAK: Block all iframe clicks when shields active ───
+function blockIframe() { antiLeak.classList.remove('passive'); }
+function unblockIframe() { antiLeak.classList.add('passive'); }
+
+// ─── SHIELDS ───
 function hideAllShields() {
     initialCover.classList.add('hidden');
     protectionShield.classList.remove('active');
     launchShield.classList.remove('active');
     clearTimeout(launchTimer);
     clearInterval(launchProgressInterval);
-    clearTimeout(safeTimer);
 }
 
-// INSTANT protection — called immediately on ANY pause/buffer/end
 function instantProtection(msg) {
     hideAllShields();
     protectionShieldText.textContent = msg || 'Click to Resume';
     protectionShield.classList.add('active');
     markUnsafe();
+    blockIframe();
 }
 
-// Launch shield — 3 sec overlay then reveal
 function showLaunchShield(msg) {
     hideAllShields();
     launchShieldText.textContent = msg || 'Resuming';
     launchShieldProgress.style.width = '0%';
     launchShield.classList.add('active');
     markUnsafe();
-    
-    var startTime = Date.now();
+    blockIframe();
+    launchWaitingForPlay = true;
+    clearTimeout(launchTimer);
+    clearInterval(launchProgressInterval);
+}
+
+function startLaunchCountdown() {
+    if (!launchWaitingForPlay) return;
+    launchWaitingForPlay = false;
+    launchStartTime = Date.now();
+    var totalDuration = 4000;
     launchProgressInterval = setInterval(function() {
-        var elapsed = Date.now() - startTime;
-        var pct = Math.min(100, (elapsed / 3000) * 100);
+        var elapsed = Date.now() - launchStartTime;
+        var pct = Math.min(100, (elapsed / totalDuration) * 100);
         launchShieldProgress.style.width = pct + '%';
         if (pct >= 100) clearInterval(launchProgressInterval);
     }, 50);
-    
     launchTimer = setTimeout(function() {
         launchShield.classList.remove('active');
         markSafe();
-    }, 3000);
+        unblockIframe();
+    }, totalDuration);
 }
 
 // ─── SAFE/UNSAFE ───
 function markSafe() {
     videoIsSafe = true;
-    clearTimeout(safeTimer);
     scheduleAutoHide();
 }
 
 function markUnsafe() {
     videoIsSafe = false;
-    clearTimeout(safeTimer);
     clearTimeout(hideTimer);
     clearTimeout(topBarTimer);
     topBar.classList.remove('hidden');
@@ -568,6 +586,7 @@ async function init() {
         updateNavButtons();
         initialCover.classList.remove('hidden');
         markUnsafe();
+        blockIframe();
         createPlayer(allLectures[currentIndex].youtube_id);
     } catch(e){ currentTitle.textContent='Error loading course'; }
 }
@@ -583,39 +602,48 @@ function createPlayer(vid) {
             onStateChange: function(e){
                 var s = e.data;
                 if(s === 1){
-                    // PLAYING — launch shield handles the 3-sec reveal
+                    // PLAYING — YT confirmed! Start 4-sec countdown
                     spinner.style.display = 'none';
                     setIcons(true);
+                    if (launchWaitingForPlay) { startLaunchCountdown(); }
                 }
                 else if(s === 2){
-                    // PAUSED — INSTANT black overlay
+                    // PAUSED — INSTANT overlay
                     setIcons(false);
+                    launchWaitingForPlay = false;
+                    clearTimeout(launchTimer);
+                    clearInterval(launchProgressInterval);
                     instantProtection('Click to Resume');
                 }
                 else if(s === 3){
-                    // BUFFERING — INSTANT black overlay + spinner
+                    // BUFFERING — INSTANT overlay + spinner
                     spinner.style.display = 'block';
                     setIcons(true);
+                    launchWaitingForPlay = false;
+                    clearTimeout(launchTimer);
+                    clearInterval(launchProgressInterval);
                     instantProtection('Buffering...');
                 }
                 else if(s === 0){
-                    // ENDED — INSTANT black overlay
+                    // ENDED
                     setIcons(false);
+                    launchWaitingForPlay = false;
+                    clearTimeout(launchTimer);
+                    clearInterval(launchProgressInterval);
                     instantProtection('Click to Replay');
                     if(currentIndex < allLectures.length - 1) setTimeout(function(){ nextLecture(); }, 2500);
                 }
                 else if(s === -1){
-                    // UNSTARTED
-                    if(initialCover.classList.contains('hidden')){
-                        instantProtection('Click to Start');
-                    }
+                    launchWaitingForPlay = false;
+                    if(initialCover.classList.contains('hidden')){ instantProtection('Click to Start'); }
                 }
                 else if(s === 5){
-                    // CUED
+                    launchWaitingForPlay = false;
                     instantProtection('Loading...');
                 }
             },
             onError: function(e){
+                launchWaitingForPlay = false;
                 instantProtection('Click to Retry');
                 showToast('Playback error. Try again.');
             }
@@ -651,13 +679,15 @@ document.getElementById('fullscreenBtn').addEventListener('click', function(e){ 
 
 // Network events — INSTANT protection
 window.addEventListener('offline', function(){
+    launchWaitingForPlay = false;
+    clearTimeout(launchTimer);
+    clearInterval(launchProgressInterval);
     instantProtection('No Internet');
     spinner.style.display = 'block';
     showToast('Network lost. Waiting...');
 });
 window.addEventListener('online', function(){
     showToast('Network restored.');
-    // Don't remove shield — wait for YT to resume playing
 });
 
 document.addEventListener('keydown', function(e){
