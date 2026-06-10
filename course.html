@@ -66,9 +66,13 @@
         .course-header { margin: 32px 0 24px; }
         .course-title {
             font-family: 'Fraunces', serif; font-size: 1.8rem;
-            font-weight: 600; color: var(--white); margin-bottom: 6px;
+            font-weight: 600; color: var(--white); margin-bottom: 12px;
         }
-        .course-desc { font-size: .9rem; color: var(--gray); line-height: 1.6; }
+        .course-desc { 
+            font-size: .9rem; color: var(--gray); line-height: 1.7; 
+        }
+        .course-desc strong { color: var(--gold); }
+        .course-desc br { display: block; content: ''; margin-bottom: 6px; }
         .tabs {
             display: flex; gap: 0; border-bottom: 1px solid var(--border);
             margin-bottom: 24px;
@@ -101,8 +105,9 @@
             font-weight: 600; color: var(--white);
         }
         .subject-desc {
-            font-size: .75rem; color: var(--gray2); margin-top: 2px;
+            font-size: .75rem; color: var(--gray2); margin-top: 4px; line-height: 1.5;
         }
+        .subject-desc strong { color: var(--white); }
         .subject-arrow {
             width: 18px; height: 18px; color: var(--gray);
             transition: transform .2s; flex-shrink: 0;
@@ -130,7 +135,10 @@
             font-family: 'Fraunces', serif; font-size: .95rem;
             font-weight: 600; color: var(--white); margin-bottom: 4px;
         }
-        .resource-desc { font-size: .78rem; color: var(--gray2); margin-bottom: 10px; }
+        .resource-desc { 
+            font-size: .78rem; color: var(--gray2); margin-bottom: 10px; line-height: 1.5; 
+        }
+        .resource-desc strong { color: var(--white); }
         .resource-link {
             display: inline-flex; align-items: center; gap: 6px;
             color: var(--gold); font-size: .78rem; font-weight: 600;
@@ -193,7 +201,7 @@
 <div class="main-wrap">
     <div class="course-header">
         <h1 class="course-title" id="courseTitle">Loading...</h1>
-        <p class="course-desc" id="courseDesc"></p>
+        <div class="course-desc" id="courseDesc"></div>
     </div>
 
     <div class="tabs">
@@ -265,7 +273,8 @@ document.querySelectorAll('.tab-btn').forEach(function(btn) {
 });
 
 // Profile
-document.getElementById('courseDesc').innerHTML = data.course.description || '';
+document.getElementById('profileAvatar').textContent = (user.name || 'S')[0].toUpperCase();
+
 // Load course
 async function loadCourse() {
     const { ok, data } = await api('GET', '/user/course?id=' + courseId);
@@ -278,7 +287,8 @@ async function loadCourse() {
 
     document.getElementById('courseTitle').textContent = data.course.title;
     document.getElementById('headerCourseTitle').textContent = data.course.title;
-    document.getElementById('courseDesc').textContent = data.course.description || '';
+    // Use innerHTML to render HTML tags in description
+    document.getElementById('courseDesc').innerHTML = data.course.description || '';
     document.title = data.course.title + ' | SciVerse Academy';
 
     // Subjects
@@ -290,21 +300,26 @@ async function loadCourse() {
         data.subjects.forEach(function(sub) {
             const card = document.createElement('div');
             card.className = 'subject-card';
+            var descHtml = sub.description ? '<div class="subject-desc">' + sub.description + '</div>' : '';
+            var lecturesHtml = '';
+            if (sub.lectures && sub.lectures.length) {
+                lecturesHtml = sub.lectures.map(function(lec) {
+                    return '<a href="/lecture.html?lecture_id=' + lec.id + '&course_id=' + courseId + '" class="lecture-item">' +
+                        '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19 8 5"/></svg>' +
+                        esc(lec.title) +
+                    '</a>';
+                }).join('');
+            } else {
+                lecturesHtml = '<div class="lecture-item" style="color:var(--gray2);">No lectures yet</div>';
+            }
             card.innerHTML = 
                 '<div class="subject-header" onclick="this.parentElement.classList.toggle(\'expanded\')">' +
                     '<div><div class="subject-title">' + esc(sub.title) + '</div>' +
-                    (sub.description ? '<div class="subject-desc">' + esc(sub.description) + '</div>' : '') +
+                    descHtml +
                     '</div>' +
                     '<svg class="subject-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>' +
                 '</div>' +
-                '<div class="lecture-list">' +
-                    (sub.lectures && sub.lectures.length ? sub.lectures.map(function(lec) {
-                        return '<a href="/lecture.html?lecture_id=' + lec.id + '&course_id=' + courseId + '" class="lecture-item">' +
-                            '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19 8 5"/></svg>' +
-                            esc(lec.title) +
-                        '</a>';
-                    }).join('') : '<div class="lecture-item" style="color:var(--gray2);">No lectures yet</div>') +
-                '</div>';
+                '<div class="lecture-list">' + lecturesHtml + '</div>';
             subjectList.appendChild(card);
         });
     }
@@ -318,9 +333,10 @@ async function loadCourse() {
         data.resources.forEach(function(res) {
             const card = document.createElement('div');
             card.className = 'resource-card';
+            var descHtml = res.description ? '<div class="resource-desc">' + res.description + '</div>' : '';
             card.innerHTML =
                 '<div class="resource-title">' + esc(res.title) + '</div>' +
-                (res.description ? '<div class="resource-desc">' + esc(res.description) + '</div>' : '') +
+                descHtml +
                 '<a href="' + esc(res.link_url) + '" target="_blank" rel="noopener" class="resource-link">' +
                     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
                     'Open Resource' +
