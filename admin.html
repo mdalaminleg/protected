@@ -100,7 +100,7 @@
         .form-select { cursor: pointer; appearance: none; }
         .form-select option { background: var(--surface3); color: var(--white); }
         .form-textarea { min-height: 60px; resize: vertical; }
-        .empty-state { text-align: center; padding: 40px; color: var(--gray); }
+        .empty-state { text-align: center; padding: 40px; color: var(--gray); font-size: .8rem; }
         .modal-overlay { position: fixed; inset:0; background:rgba(0,0,0,.7); z-index: 300; display:none; align-items:center; justify-content:center; padding:20px; }
         .modal-overlay.open { display:flex; }
         .modal-box { background: var(--surface3); border: 1px solid var(--border2); border-radius: var(--radius-lg); padding: 28px; width: 100%; max-width: 500px; max-height: 80vh; overflow-y: auto; }
@@ -161,71 +161,79 @@
         <button class="nav-tab" data-view="audit">Audit Log</button>
     </div>
 
+    <!-- USERS VIEW -->
     <div class="view active" id="view-users">
         <div style="margin-bottom:16px;"><button class="btn btn-primary btn-sm" onclick="loadUsers()">Refresh</button></div>
         <div class="table-wrap"><table id="usersTable"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
         <div class="spinner-ring" id="usersSpinner"></div>
     </div>
 
+    <!-- COURSES VIEW -->
     <div class="view" id="view-courses">
         <div class="form-row">
             <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="courseTitle" placeholder="Course title"></div>
             <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="courseDesc" placeholder="Description"></div>
-            <div class="form-group" style="flex:0;min-width:auto;"><label class="form-label">&nbsp;</label><button class="btn btn-primary btn-sm" onclick="createCourse()">Create Course</button></div>
+            <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;"><button class="btn btn-primary btn-sm" onclick="createCourse()">Create Course</button></div>
         </div>
         <div class="table-wrap"><table id="coursesTable"><thead><tr><th>ID</th><th>Title</th><th>Description</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
         <div class="spinner-ring" id="coursesSpinner"></div>
     </div>
 
+    <!-- SUBJECTS VIEW -->
     <div class="view" id="view-subjects">
         <div class="form-row">
-            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="subjectCourse"></select></div>
+            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="subjectCourse"><option value="">Select course...</option></select></div>
             <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="subjectTitle" placeholder="Subject title"></div>
             <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="subjectDesc" placeholder="Description"></div>
-            <div class="form-group"><label class="form-label">Order</label><input class="form-input" id="subjectOrder" type="number" value="0" style="width:70px;"></div>
-            <div class="form-group" style="flex:0;min-width:auto;"><label class="form-label">&nbsp;</label><button class="btn btn-primary btn-sm" onclick="createSubject()">Create Subject</button></div>
+            <div class="form-group" style="flex:0;min-width:60px;"><label class="form-label">Order</label><input class="form-input" id="subjectOrder" type="number" value="0" style="width:60px;"></div>
+            <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;"><button class="btn btn-primary btn-sm" onclick="createSubject()">Create</button></div>
         </div>
         <div class="table-wrap"><table id="subjectsTable"><thead><tr><th>ID</th><th>Course</th><th>Title</th><th>Order</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
         <div class="spinner-ring" id="subjectsSpinner"></div>
     </div>
 
+    <!-- LECTURES VIEW -->
     <div class="view" id="view-lectures">
         <div class="form-row">
-            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="lectureCourse" onchange="loadSubjectsForLecture()"></select></div>
-            <div class="form-group"><label class="form-label">Subject</label><select class="form-select" id="lectureSubject"></select></div>
+            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="lectureCourse" onchange="loadSubjectsForLecture()"><option value="">Select course...</option></select></div>
+            <div class="form-group"><label class="form-label">Subject</label><select class="form-select" id="lectureSubject"><option value="">Select subject...</option></select></div>
             <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="lectureTitle" placeholder="Lecture title"></div>
             <div class="form-group"><label class="form-label">YouTube ID</label><input class="form-input" id="lectureYoutubeId" placeholder="dQw4w9WgXcQ"></div>
             <div class="form-group"><label class="form-label">PDF Link</label><input class="form-input" id="lecturePdf" placeholder="Drive link"></div>
-            <div class="form-group"><label class="form-label">Order</label><input class="form-input" id="lectureOrder" type="number" value="0" style="width:70px;"></div>
-            <div class="form-group" style="flex:0;min-width:auto;"><label class="form-label">&nbsp;</label><button class="btn btn-primary btn-sm" onclick="createLecture()">Create Lecture</button></div>
+            <div class="form-group" style="flex:0;min-width:60px;"><label class="form-label">Order</label><input class="form-input" id="lectureOrder" type="number" value="0" style="width:60px;"></div>
+            <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;"><button class="btn btn-primary btn-sm" onclick="createLecture()">Create</button></div>
         </div>
         <div class="table-wrap"><table id="lecturesTable"><thead><tr><th>ID</th><th>Subject</th><th>Title</th><th>YT ID</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
         <div class="spinner-ring" id="lecturesSpinner"></div>
     </div>
 
+    <!-- RESOURCES VIEW -->
     <div class="view" id="view-resources">
         <div class="form-row">
-            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="resourceCourse"></select></div>
+            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="resourceCourse"><option value="">Select course...</option></select></div>
             <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="resourceTitle" placeholder="Resource title"></div>
             <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="resourceDesc" placeholder="Description"></div>
-            <div class="form-group"><label class="form-label">Link URL</label><input class="form-input" id="resourceLink" placeholder="https://..."></div>
-            <div class="form-group" style="flex:0;min-width:auto;"><label class="form-label">&nbsp;</label><button class="btn btn-primary btn-sm" onclick="createResource()">Create Resource</button></div>
+            <div class="form-group"><label class="form-label">Link URL</label><input class="form-input" id="resourceLink" placeholder="https://drive.google.com/..."></div>
+            <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;"><button class="btn btn-primary btn-sm" onclick="createResource()">Create</button></div>
         </div>
         <div class="table-wrap"><table id="resourcesTable"><thead><tr><th>ID</th><th>Course</th><th>Title</th><th>Link</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
         <div class="spinner-ring" id="resourcesSpinner"></div>
     </div>
 
+    <!-- ENROLLMENTS VIEW -->
     <div class="view" id="view-enrollments">
         <div class="form-row">
-            <div class="form-group"><label class="form-label">User</label><select class="form-select" id="enrollUser"></select></div>
-            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="enrollCourse"></select></div>
-            <div class="form-group" style="flex:0;min-width:auto;"><label class="form-label">&nbsp;</label><button class="btn btn-primary btn-sm" onclick="enrollUser()">Enroll</button></div>
+            <div class="form-group"><label class="form-label">User</label><select class="form-select" id="enrollUser"><option value="">Select user...</option></select></div>
+            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="enrollCourse"><option value="">Select course...</option></select></div>
+            <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;"><button class="btn btn-primary btn-sm" onclick="enrollUser()">Enroll</button></div>
         </div>
         <div class="table-wrap"><table id="enrollmentsTable"><thead><tr><th>User</th><th>Course</th><th>Enrolled</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
         <div class="spinner-ring" id="enrollmentsSpinner"></div>
     </div>
 
+    <!-- AUDIT LOG VIEW -->
     <div class="view" id="view-audit">
+        <div style="margin-bottom:16px;"><button class="btn btn-primary btn-sm" onclick="loadAuditLogs()">Refresh</button></div>
         <div class="table-wrap"><table id="auditTable"><thead><tr><th>Time</th><th>User</th><th>Action</th><th>IP</th></tr></thead><tbody></tbody></table></div>
         <div class="spinner-ring" id="auditSpinner"></div>
     </div>
@@ -279,16 +287,17 @@ async function api(method, path, body) {
 }
 function signOut() { localStorage.clear(); window.location.href = '/index.html'; }
 
-// View switching
+// ── VIEW SWITCHING ──
 document.querySelectorAll('.nav-tab').forEach(function(tab) {
     tab.addEventListener('click', function() {
         document.querySelectorAll('.nav-tab').forEach(function(t) { t.classList.remove('active'); });
         document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
         tab.classList.add('active');
-        document.getElementById('view-' + tab.dataset.view).classList.add('active');
-        switch(tab.dataset.view) {
+        var viewName = tab.dataset.view;
+        document.getElementById('view-' + viewName).classList.add('active');
+        switch(viewName) {
             case 'users': loadUsers(); break;
-            case 'courses': loadCourses(); loadCourseDropdowns(); break;
+            case 'courses': loadCourses(); break;
             case 'subjects': loadSubjects(); loadCourseDropdowns(); break;
             case 'lectures': loadLectures(); loadCourseDropdowns(); break;
             case 'resources': loadResources(); loadCourseDropdowns(); break;
@@ -298,7 +307,7 @@ document.querySelectorAll('.nav-tab').forEach(function(tab) {
     });
 });
 
-// Stats
+// ── STATS ──
 async function loadStats() {
     const { ok, data } = await api('GET', '/admin/stats');
     if (ok && data.stats) {
@@ -309,115 +318,181 @@ async function loadStats() {
     }
 }
 
-// Users
+// ══════════════════════════════════════
+// USERS
+// ══════════════════════════════════════
 async function loadUsers() {
     document.getElementById('usersSpinner').style.display = 'block';
     const { ok, data } = await api('GET', '/admin/users');
     document.getElementById('usersSpinner').style.display = 'none';
-    if (!ok) { showToast('Failed to load users.', 'error'); return; }
-    const tbody = document.querySelector('#usersTable tbody');
+    var tbody = document.querySelector('#usersTable tbody');
     tbody.innerHTML = '';
-    (data.users||[]).forEach(function(u) {
+    if (!ok) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Failed to load users</td></tr>'; return; }
+    if (!data.users || !data.users.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No users found</td></tr>'; return; }
+    data.users.forEach(function(u) {
         var statusBadge = u.is_blocked ? '<span class="badge badge-blocked">Blocked</span>' :
             u.is_approved ? '<span class="badge badge-approved">Approved</span>' :
             '<span class="badge badge-pending">Pending</span>';
         var roleBadge = u.role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : '';
         var actions = '';
-        if (!u.is_approved) actions += '<button class="btn btn-green btn-sm" onclick="approveUser('+u.id+')">Approve</button> ';
+        if (!u.is_approved && !u.is_blocked) actions += '<button class="btn btn-green btn-sm" onclick="approveUser('+u.id+')">Approve</button> ';
         if (u.is_blocked) actions += '<button class="btn btn-ghost btn-sm" onclick="unblockUser('+u.id+')">Unblock</button> ';
-        else actions += '<button class="btn btn-ghost btn-sm" onclick="blockUser('+u.id+')">Block</button> ';
+        else if (u.is_approved) actions += '<button class="btn btn-ghost btn-sm" onclick="blockUser('+u.id+')">Block</button> ';
         actions += '<button class="btn btn-ghost btn-sm" onclick="resetDevice('+u.id+')">Reset Device</button> ';
-        actions += '<button class="btn btn-danger btn-sm" onclick="deleteUser('+u.id+')">Delete</button>';
+        if (u.role !== 'admin') actions += '<button class="btn btn-danger btn-sm" onclick="deleteUser('+u.id+')">Delete</button>';
         tbody.innerHTML += '<tr><td>'+u.id+'</td><td>'+esc(u.name)+'</td><td>'+esc(u.email)+'</td><td>'+roleBadge+'</td><td>'+statusBadge+'</td><td>'+actions+'</td></tr>';
     });
 }
-window.approveUser = async function(id) { const { ok } = await api('PUT', '/admin/users/'+id+'/approve'); if (ok) { showToast('User approved.'); loadUsers(); } else showToast('Failed.', 'error'); };
-window.blockUser = async function(id) { const { ok } = await api('PUT', '/admin/users/'+id+'/block'); if (ok) { showToast('User blocked.'); loadUsers(); } else showToast('Failed.', 'error'); };
-window.unblockUser = async function(id) { const { ok } = await api('PUT', '/admin/users/'+id+'/unblock'); if (ok) { showToast('User unblocked.'); loadUsers(); } else showToast('Failed.', 'error'); };
+window.approveUser = async function(id) { const { ok } = await api('PUT', '/admin/users/'+id+'/approve'); if (ok) { showToast('User approved.'); loadUsers(); loadStats(); } else showToast('Failed.', 'error'); };
+window.blockUser = async function(id) { const { ok } = await api('PUT', '/admin/users/'+id+'/block'); if (ok) { showToast('User blocked.'); loadUsers(); loadStats(); } else showToast('Failed.', 'error'); };
+window.unblockUser = async function(id) { const { ok } = await api('PUT', '/admin/users/'+id+'/unblock'); if (ok) { showToast('User unblocked.'); loadUsers(); loadStats(); } else showToast('Failed.', 'error'); };
 window.resetDevice = async function(id) { const { ok } = await api('PUT', '/admin/users/'+id+'/reset-device'); if (ok) { showToast('Device reset.'); loadUsers(); } else showToast('Failed.', 'error'); };
 window.deleteUser = async function(id) {
-    openModal('Confirm Delete', '<p>Are you sure you want to permanently delete this user?</p>',
+    openModal('Confirm Delete', '<p>Are you sure you want to permanently delete this user and all their data?</p>',
         '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-danger btn-sm" onclick="confirmDeleteUser('+id+')">Delete</button>');
 };
-window.confirmDeleteUser = async function(id) { closeModal(); const { ok } = await api('DELETE', '/admin/users/'+id); if (ok) { showToast('User deleted.'); loadUsers(); } else showToast('Failed.', 'error'); };
+window.confirmDeleteUser = async function(id) { closeModal(); const { ok } = await api('DELETE', '/admin/users/'+id); if (ok) { showToast('User deleted.'); loadUsers(); loadStats(); } else showToast('Failed.', 'error'); };
 
-// Courses
+// ══════════════════════════════════════
+// COURSES
+// ══════════════════════════════════════
 async function loadCourses() {
     document.getElementById('coursesSpinner').style.display = 'block';
     const { ok, data } = await api('GET', '/admin/courses');
     document.getElementById('coursesSpinner').style.display = 'none';
-    if (!ok) return;
-    const tbody = document.querySelector('#coursesTable tbody');
+    var tbody = document.querySelector('#coursesTable tbody');
     tbody.innerHTML = '';
-    (data.courses||[]).forEach(function(c) {
+    if (!ok) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Failed to load courses</td></tr>'; return; }
+    if (!data.courses || !data.courses.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No courses yet. Create one above.</td></tr>'; return; }
+    data.courses.forEach(function(c) {
+        var safeTitle = esc(c.title).replace(/'/g, "\\'");
+        var safeDesc = esc(c.description||'').replace(/'/g, "\\'");
         tbody.innerHTML += '<tr><td>'+c.id+'</td><td>'+esc(c.title)+'</td><td>'+esc(c.description||'')+'</td><td>' +
-            '<button class="btn btn-ghost btn-sm" onclick="editCourse('+c.id+',\''+esc(c.title)+'\',\''+esc(c.description||'')+'\')">Edit</button> ' +
+            '<button class="btn btn-ghost btn-sm" onclick="editCourse('+c.id+',\''+safeTitle+'\',\''+safeDesc+'\')">Edit</button> ' +
             '<button class="btn btn-danger btn-sm" onclick="deleteCourse('+c.id+')">Delete</button></td></tr>';
     });
 }
 window.createCourse = async function() {
-    const title = document.getElementById('courseTitle').value.trim();
-    if (!title) { showToast('Title required.', 'error'); return; }
-    const { ok } = await api('POST', '/admin/courses', { title, description: document.getElementById('courseDesc').value.trim() });
-    if (ok) { showToast('Course created.'); document.getElementById('courseTitle').value = ''; document.getElementById('courseDesc').value = ''; loadCourses(); loadCourseDropdowns(); loadStats(); }
+    var title = document.getElementById('courseTitle').value.trim();
+    var desc = document.getElementById('courseDesc').value.trim();
+    if (!title) { showToast('Title is required.', 'error'); return; }
+    const { ok } = await api('POST', '/admin/courses', { title: title, description: desc });
+    if (ok) { showToast('Course created.'); document.getElementById('courseTitle').value=''; document.getElementById('courseDesc').value=''; loadCourses(); loadCourseDropdowns(); loadStats(); }
     else showToast('Failed.', 'error');
 };
 window.editCourse = function(id, title, desc) {
     openModal('Edit Course',
-        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editCourseTitle" value="'+esc(title)+'"></div>' +
-        '<div class="form-group"><label class="form-label">Description</label><input class="form-input" id="editCourseDesc" value="'+esc(desc)+'"></div>',
+        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editCourseTitle" value="'+title+'"></div>' +
+        '<div class="form-group"><label class="form-label">Description</label><input class="form-input" id="editCourseDesc" value="'+desc+'"></div>',
         '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-primary btn-sm" onclick="saveCourse('+id+')">Save</button>');
 };
 window.saveCourse = async function(id) {
-    const title = document.getElementById('editCourseTitle').value.trim();
-    if (!title) { showAlert('Title required.', 'error'); return; }
-    const { ok } = await api('PUT', '/admin/courses/'+id, { title, description: document.getElementById('editCourseDesc').value.trim() });
-    if (ok) { closeModal(); showToast('Course updated.'); loadCourses(); } else showToast('Failed.', 'error');
+    var title = document.getElementById('editCourseTitle').value.trim();
+    if (!title) { showAlert('Title is required.', 'error'); return; }
+    const { ok } = await api('PUT', '/admin/courses/'+id, { title: title, description: document.getElementById('editCourseDesc').value.trim() });
+    if (ok) { closeModal(); showToast('Course updated.'); loadCourses(); loadCourseDropdowns(); } else showToast('Failed.', 'error');
 };
 window.deleteCourse = async function(id) {
-    openModal('Confirm Delete', '<p>Delete this course and ALL its subjects, lectures, and resources?</p>',
+    openModal('Confirm Delete', '<p>Delete this course and ALL its subjects, lectures, resources, and enrollments?</p>',
         '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-danger btn-sm" onclick="confirmDeleteCourse('+id+')">Delete All</button>');
 };
-window.confirmDeleteCourse = async function(id) { closeModal(); const { ok } = await api('DELETE', '/admin/courses/'+id); if (ok) { showToast('Course deleted.'); loadCourses(); loadCourseDropdowns(); loadStats(); } else showToast('Failed.', 'error'); };
+window.confirmDeleteCourse = async function(id) { closeModal(); const { ok } = await api('DELETE', '/admin/courses/'+id); if (ok) { showToast('Course deleted.'); loadCourses(); loadCourseDropdowns(); loadSubjects(); loadLectures(); loadResources(); loadEnrollments(); loadStats(); } else showToast('Failed.', 'error'); };
 
-// Subjects
+// ══════════════════════════════════════
+// SUBJECTS
+// ══════════════════════════════════════
 async function loadSubjects() {
     document.getElementById('subjectsSpinner').style.display = 'block';
+    var tbody = document.querySelector('#subjectsTable tbody');
+    tbody.innerHTML = '';
+
     const { ok: cOk, data: cData } = await api('GET', '/admin/courses');
-    document.getElementById('subjectsSpinner').style.display = 'none';
-    if (!cOk) return;
-    var html = '';
-    for (var ci = 0; ci < (cData.courses||[]).length; ci++) {
-        var course = cData.courses[ci];
-        var { ok, data } = await api('GET', '/user/course?id='+course.id);
+    if (!cOk || !cData.courses) {
+        document.getElementById('subjectsSpinner').style.display = 'none';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Failed to load courses</td></tr>';
+        return;
+    }
+    if (!cData.courses.length) {
+        document.getElementById('subjectsSpinner').style.display = 'none';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No courses yet. Create a course first.</td></tr>';
+        return;
+    }
+
+    var allRows = [];
+    for (var i = 0; i < cData.courses.length; i++) {
+        var course = cData.courses[i];
+        var { ok, data } = await api('GET', '/user/course?id=' + course.id);
         if (ok && data.subjects) {
-            data.subjects.forEach(function(s) {
-                html += '<tr><td>'+s.id+'</td><td>'+esc(course.title)+'</td><td>'+esc(s.title)+'</td><td>'+s.sort_order+'</td><td>' +
-                    '<button class="btn btn-ghost btn-sm" onclick="editSubject('+s.id+',\''+esc(s.title)+'\',\''+esc(s.description||'')+'\','+s.sort_order+')">Edit</button> ' +
-                    '<button class="btn btn-danger btn-sm" onclick="deleteSubject('+s.id+')">Delete</button></td></tr>';
-            });
+            for (var j = 0; j < data.subjects.length; j++) {
+                var s = data.subjects[j];
+                allRows.push({ subject: s, courseTitle: course.title });
+            }
         }
     }
-    document.querySelector('#subjectsTable tbody').innerHTML = html || '<tr><td colspan="5" class="empty-state">No subjects</td></tr>';
+
+    document.getElementById('subjectsSpinner').style.display = 'none';
+
+    if (!allRows.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No subjects yet. Create one above.</td></tr>';
+        return;
+    }
+
+    allRows.sort(function(a, b) {
+        if (a.courseTitle < b.courseTitle) return -1;
+        if (a.courseTitle > b.courseTitle) return 1;
+        return (a.subject.sort_order || 0) - (b.subject.sort_order || 0);
+    });
+
+    var html = '';
+    for (var k = 0; k < allRows.length; k++) {
+        var row = allRows[k];
+        var s = row.subject;
+        var safeTitle = esc(s.title).replace(/'/g, "\\'");
+        var safeDesc = esc(s.description||'').replace(/'/g, "\\'");
+        html += '<tr>' +
+            '<td>' + s.id + '</td>' +
+            '<td>' + esc(row.courseTitle) + '</td>' +
+            '<td>' + esc(s.title) + '</td>' +
+            '<td>' + (s.sort_order || 0) + '</td>' +
+            '<td>' +
+                '<button class="btn btn-ghost btn-sm" onclick="editSubject('+s.id+',\''+safeTitle+'\',\''+safeDesc+'\','+(s.sort_order||0)+')">Edit</button> ' +
+                '<button class="btn btn-danger btn-sm" onclick="deleteSubject('+s.id+')">Delete</button>' +
+            '</td>' +
+        '</tr>';
+    }
+    tbody.innerHTML = html;
 }
+
 window.createSubject = async function() {
     var courseId = document.getElementById('subjectCourse').value;
     var title = document.getElementById('subjectTitle').value.trim();
-    if (!courseId || !title) { showToast('Course and title required.', 'error'); return; }
-    const { ok } = await api('POST', '/admin/subjects', { course_id: parseInt(courseId), title, description: document.getElementById('subjectDesc').value.trim(), sort_order: parseInt(document.getElementById('subjectOrder').value)||0 });
-    if (ok) { showToast('Subject created.'); document.getElementById('subjectTitle').value=''; document.getElementById('subjectDesc').value=''; loadSubjects(); } else showToast('Failed.', 'error');
+    var desc = document.getElementById('subjectDesc').value.trim();
+    var order = parseInt(document.getElementById('subjectOrder').value) || 0;
+    if (!courseId) { showToast('Please select a course.', 'error'); return; }
+    if (!title) { showToast('Title is required.', 'error'); return; }
+    const { ok, data } = await api('POST', '/admin/subjects', { course_id: parseInt(courseId), title: title, description: desc, sort_order: order });
+    if (ok) {
+        showToast('Subject created successfully.');
+        document.getElementById('subjectTitle').value = '';
+        document.getElementById('subjectDesc').value = '';
+        document.getElementById('subjectOrder').value = '0';
+        loadSubjects();
+        loadCourseDropdowns();
+    } else {
+        showToast(data.error || 'Failed to create subject.', 'error');
+    }
 };
 window.editSubject = function(id, title, desc, order) {
     openModal('Edit Subject',
-        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editSubjTitle" value="'+esc(title)+'"></div>' +
-        '<div class="form-group"><label class="form-label">Description</label><input class="form-input" id="editSubjDesc" value="'+esc(desc)+'"></div>' +
+        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editSubjTitle" value="'+title+'"></div>' +
+        '<div class="form-group"><label class="form-label">Description</label><input class="form-input" id="editSubjDesc" value="'+desc+'"></div>' +
         '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editSubjOrder" type="number" value="'+order+'"></div>',
         '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-primary btn-sm" onclick="saveSubject('+id+')">Save</button>');
 };
 window.saveSubject = async function(id) {
     var title = document.getElementById('editSubjTitle').value.trim();
-    if (!title) { showAlert('Title required.', 'error'); return; }
-    const { ok } = await api('PUT', '/admin/subjects/'+id, { title, description: document.getElementById('editSubjDesc').value.trim(), sort_order: parseInt(document.getElementById('editSubjOrder').value)||0 });
+    if (!title) { showAlert('Title is required.', 'error'); return; }
+    const { ok } = await api('PUT', '/admin/subjects/'+id, { title: title, description: document.getElementById('editSubjDesc').value.trim(), sort_order: parseInt(document.getElementById('editSubjOrder').value)||0 });
     if (ok) { closeModal(); showToast('Subject updated.'); loadSubjects(); } else showToast('Failed.', 'error');
 };
 window.deleteSubject = async function(id) {
@@ -426,56 +501,106 @@ window.deleteSubject = async function(id) {
 };
 window.confirmDeleteSubject = async function(id) { closeModal(); const { ok } = await api('DELETE', '/admin/subjects/'+id); if (ok) { showToast('Subject deleted.'); loadSubjects(); loadLectures(); } else showToast('Failed.', 'error'); };
 
-// Lectures
+// ══════════════════════════════════════
+// LECTURES
+// ══════════════════════════════════════
 async function loadLectures() {
     document.getElementById('lecturesSpinner').style.display = 'block';
+    var tbody = document.querySelector('#lecturesTable tbody');
+    tbody.innerHTML = '';
+
     const { ok: cOk, data: cData } = await api('GET', '/admin/courses');
-    document.getElementById('lecturesSpinner').style.display = 'none';
-    if (!cOk) return;
-    var html = '';
-    for (var ci = 0; ci < (cData.courses||[]).length; ci++) {
-        var course = cData.courses[ci];
-        var { ok, data } = await api('GET', '/user/course?id='+course.id);
+    if (!cOk || !cData.courses) {
+        document.getElementById('lecturesSpinner').style.display = 'none';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Failed to load</td></tr>';
+        return;
+    }
+    if (!cData.courses.length) {
+        document.getElementById('lecturesSpinner').style.display = 'none';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No courses yet</td></tr>';
+        return;
+    }
+
+    var allRows = [];
+    for (var i = 0; i < cData.courses.length; i++) {
+        var course = cData.courses[i];
+        var { ok, data } = await api('GET', '/user/course?id=' + course.id);
         if (ok && data.subjects) {
-            for (var si = 0; si < data.subjects.length; si++) {
-                var sub = data.subjects[si];
-                (sub.lectures||[]).forEach(function(l) {
-                    html += '<tr><td>'+l.id+'</td><td>'+esc(sub.title)+'</td><td>'+esc(l.title)+'</td><td>'+esc(l.youtube_id)+'</td><td>' +
-                        '<button class="btn btn-ghost btn-sm" onclick="editLecture('+l.id+',\''+esc(l.title)+'\',\''+esc(l.youtube_id||'')+'\',\''+esc(l.pdf_url||'')+'\','+l.sort_order+')">Edit</button> ' +
-                        '<button class="btn btn-danger btn-sm" onclick="deleteLecture('+l.id+')">Delete</button></td></tr>';
-                });
+            for (var j = 0; j < data.subjects.length; j++) {
+                var sub = data.subjects[j];
+                if (sub.lectures) {
+                    for (var k = 0; k < sub.lectures.length; k++) {
+                        var l = sub.lectures[k];
+                        allRows.push({ lecture: l, subjectTitle: sub.title });
+                    }
+                }
             }
         }
     }
-    document.querySelector('#lecturesTable tbody').innerHTML = html || '<tr><td colspan="5" class="empty-state">No lectures</td></tr>';
+
+    document.getElementById('lecturesSpinner').style.display = 'none';
+
+    if (!allRows.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No lectures yet. Create one above.</td></tr>';
+        return;
+    }
+
+    var html = '';
+    for (var m = 0; m < allRows.length; m++) {
+        var row = allRows[m];
+        var l = row.lecture;
+        var safeTitle = esc(l.title).replace(/'/g, "\\'");
+        var safeYt = esc(l.youtube_id||'').replace(/'/g, "\\'");
+        var safePdf = esc(l.pdf_url||'').replace(/'/g, "\\'");
+        html += '<tr>' +
+            '<td>' + l.id + '</td>' +
+            '<td>' + esc(row.subjectTitle) + '</td>' +
+            '<td>' + esc(l.title) + '</td>' +
+            '<td style="font-family:DM Mono,monospace;font-size:.7rem;">' + esc(l.youtube_id||'-') + '</td>' +
+            '<td>' +
+                '<button class="btn btn-ghost btn-sm" onclick="editLecture('+l.id+',\''+safeTitle+'\',\''+safeYt+'\',\''+safePdf+'\','+(l.sort_order||0)+')">Edit</button> ' +
+                '<button class="btn btn-danger btn-sm" onclick="deleteLecture('+l.id+')">Delete</button>' +
+            '</td>' +
+        '</tr>';
+    }
+    tbody.innerHTML = html;
 }
+
 window.loadSubjectsForLecture = async function() {
     var courseId = document.getElementById('lectureCourse').value;
     var sel = document.getElementById('lectureSubject');
     sel.innerHTML = '<option value="">Select subject...</option>';
     if (!courseId) return;
-    const { ok, data } = await api('GET', '/user/course?id='+courseId);
-    if (ok && data.subjects) { data.subjects.forEach(function(s) { sel.innerHTML += '<option value="'+s.id+'">'+esc(s.title)+'</option>'; }); }
+    const { ok, data } = await api('GET', '/user/course?id=' + courseId);
+    if (ok && data.subjects) {
+        for (var i = 0; i < data.subjects.length; i++) {
+            sel.innerHTML += '<option value="' + data.subjects[i].id + '">' + esc(data.subjects[i].title) + '</option>';
+        }
+    }
 };
 window.createLecture = async function() {
     var subjectId = document.getElementById('lectureSubject').value;
     var title = document.getElementById('lectureTitle').value.trim();
-    if (!subjectId || !title) { showToast('Subject and title required.', 'error'); return; }
-    const { ok } = await api('POST', '/admin/lectures', { subject_id: parseInt(subjectId), title, youtube_id: document.getElementById('lectureYoutubeId').value.trim(), pdf_url: document.getElementById('lecturePdf').value.trim(), sort_order: parseInt(document.getElementById('lectureOrder').value)||0 });
+    var ytId = document.getElementById('lectureYoutubeId').value.trim();
+    var pdf = document.getElementById('lecturePdf').value.trim();
+    var order = parseInt(document.getElementById('lectureOrder').value) || 0;
+    if (!subjectId) { showToast('Please select a subject.', 'error'); return; }
+    if (!title) { showToast('Title is required.', 'error'); return; }
+    const { ok } = await api('POST', '/admin/lectures', { subject_id: parseInt(subjectId), title: title, youtube_id: ytId, pdf_url: pdf, sort_order: order });
     if (ok) { showToast('Lecture created.'); document.getElementById('lectureTitle').value=''; document.getElementById('lectureYoutubeId').value=''; document.getElementById('lecturePdf').value=''; loadLectures(); } else showToast('Failed.', 'error');
 };
 window.editLecture = function(id, title, ytId, pdf, order) {
     openModal('Edit Lecture',
-        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editLecTitle" value="'+esc(title)+'"></div>' +
-        '<div class="form-group"><label class="form-label">YouTube ID</label><input class="form-input" id="editLecYt" value="'+esc(ytId)+'"></div>' +
-        '<div class="form-group"><label class="form-label">PDF Link</label><input class="form-input" id="editLecPdf" value="'+esc(pdf)+'"></div>' +
+        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editLecTitle" value="'+title+'"></div>' +
+        '<div class="form-group"><label class="form-label">YouTube ID</label><input class="form-input" id="editLecYt" value="'+ytId+'"></div>' +
+        '<div class="form-group"><label class="form-label">PDF Link</label><input class="form-input" id="editLecPdf" value="'+pdf+'"></div>' +
         '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editLecOrder" type="number" value="'+order+'"></div>',
         '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-primary btn-sm" onclick="saveLecture('+id+')">Save</button>');
 };
 window.saveLecture = async function(id) {
     var title = document.getElementById('editLecTitle').value.trim();
-    if (!title) { showAlert('Title required.', 'error'); return; }
-    const { ok } = await api('PUT', '/admin/lectures/'+id, { title, youtube_id: document.getElementById('editLecYt').value.trim(), pdf_url: document.getElementById('editLecPdf').value.trim(), sort_order: parseInt(document.getElementById('editLecOrder').value)||0 });
+    if (!title) { showAlert('Title is required.', 'error'); return; }
+    const { ok } = await api('PUT', '/admin/lectures/'+id, { title: title, youtube_id: document.getElementById('editLecYt').value.trim(), pdf_url: document.getElementById('editLecPdf').value.trim(), sort_order: parseInt(document.getElementById('editLecOrder').value)||0 });
     if (ok) { closeModal(); showToast('Lecture updated.'); loadLectures(); } else showToast('Failed.', 'error');
 };
 window.deleteLecture = async function(id) {
@@ -484,44 +609,86 @@ window.deleteLecture = async function(id) {
 };
 window.confirmDeleteLecture = async function(id) { closeModal(); const { ok } = await api('DELETE', '/admin/lectures/'+id); if (ok) { showToast('Lecture deleted.'); loadLectures(); } else showToast('Failed.', 'error'); };
 
-// Resources
+// ══════════════════════════════════════
+// RESOURCES
+// ══════════════════════════════════════
 async function loadResources() {
     document.getElementById('resourcesSpinner').style.display = 'block';
+    var tbody = document.querySelector('#resourcesTable tbody');
+    tbody.innerHTML = '';
+
     const { ok: cOk, data: cData } = await api('GET', '/admin/courses');
-    document.getElementById('resourcesSpinner').style.display = 'none';
-    if (!cOk) return;
-    var html = '';
-    for (var ci = 0; ci < (cData.courses||[]).length; ci++) {
-        var course = cData.courses[ci];
-        var { ok, data } = await api('GET', '/user/course?id='+course.id);
+    if (!cOk || !cData.courses) {
+        document.getElementById('resourcesSpinner').style.display = 'none';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Failed to load</td></tr>';
+        return;
+    }
+    if (!cData.courses.length) {
+        document.getElementById('resourcesSpinner').style.display = 'none';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No courses yet</td></tr>';
+        return;
+    }
+
+    var allRows = [];
+    for (var i = 0; i < cData.courses.length; i++) {
+        var course = cData.courses[i];
+        var { ok, data } = await api('GET', '/user/course?id=' + course.id);
         if (ok && data.resources) {
-            data.resources.forEach(function(r) {
-                html += '<tr><td>'+r.id+'</td><td>'+esc(course.title)+'</td><td>'+esc(r.title)+'</td><td>'+esc(r.link_url||'')+'</td><td>' +
-                    '<button class="btn btn-ghost btn-sm" onclick="editResource('+r.id+',\''+esc(r.title)+'\',\''+esc(r.description||'')+'\',\''+esc(r.link_url||'')+'\','+r.sort_order+')">Edit</button> ' +
-                    '<button class="btn btn-danger btn-sm" onclick="deleteResource('+r.id+')">Delete</button></td></tr>';
-            });
+            for (var j = 0; j < data.resources.length; j++) {
+                var r = data.resources[j];
+                allRows.push({ resource: r, courseTitle: course.title });
+            }
         }
     }
-    document.querySelector('#resourcesTable tbody').innerHTML = html || '<tr><td colspan="5" class="empty-state">No resources</td></tr>';
+
+    document.getElementById('resourcesSpinner').style.display = 'none';
+
+    if (!allRows.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No resources yet. Create one above.</td></tr>';
+        return;
+    }
+
+    var html = '';
+    for (var k = 0; k < allRows.length; k++) {
+        var row = allRows[k];
+        var r = row.resource;
+        var safeTitle = esc(r.title).replace(/'/g, "\\'");
+        var safeDesc = esc(r.description||'').replace(/'/g, "\\'");
+        var safeLink = esc(r.link_url||'').replace(/'/g, "\\'");
+        html += '<tr>' +
+            '<td>' + r.id + '</td>' +
+            '<td>' + esc(row.courseTitle) + '</td>' +
+            '<td>' + esc(r.title) + '</td>' +
+            '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(r.link_url||'-') + '</td>' +
+            '<td>' +
+                '<button class="btn btn-ghost btn-sm" onclick="editResource('+r.id+',\''+safeTitle+'\',\''+safeDesc+'\',\''+safeLink+'\','+(r.sort_order||0)+')">Edit</button> ' +
+                '<button class="btn btn-danger btn-sm" onclick="deleteResource('+r.id+')">Delete</button>' +
+            '</td>' +
+        '</tr>';
+    }
+    tbody.innerHTML = html;
 }
 window.createResource = async function() {
     var courseId = document.getElementById('resourceCourse').value;
     var title = document.getElementById('resourceTitle').value.trim();
-    if (!courseId || !title) { showToast('Course and title required.', 'error'); return; }
-    const { ok } = await api('POST', '/admin/resources', { course_id: parseInt(courseId), title, description: document.getElementById('resourceDesc').value.trim(), link_url: document.getElementById('resourceLink').value.trim(), sort_order: 0 });
+    var desc = document.getElementById('resourceDesc').value.trim();
+    var link = document.getElementById('resourceLink').value.trim();
+    if (!courseId) { showToast('Please select a course.', 'error'); return; }
+    if (!title) { showToast('Title is required.', 'error'); return; }
+    const { ok } = await api('POST', '/admin/resources', { course_id: parseInt(courseId), title: title, description: desc, link_url: link, sort_order: 0 });
     if (ok) { showToast('Resource created.'); document.getElementById('resourceTitle').value=''; document.getElementById('resourceDesc').value=''; document.getElementById('resourceLink').value=''; loadResources(); } else showToast('Failed.', 'error');
 };
 window.editResource = function(id, title, desc, link, order) {
     openModal('Edit Resource',
-        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editResTitle" value="'+esc(title)+'"></div>' +
-        '<div class="form-group"><label class="form-label">Description</label><input class="form-input" id="editResDesc" value="'+esc(desc)+'"></div>' +
-        '<div class="form-group"><label class="form-label">Link URL</label><input class="form-input" id="editResLink" value="'+esc(link)+'"></div>',
+        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editResTitle" value="'+title+'"></div>' +
+        '<div class="form-group"><label class="form-label">Description</label><input class="form-input" id="editResDesc" value="'+desc+'"></div>' +
+        '<div class="form-group"><label class="form-label">Link URL</label><input class="form-input" id="editResLink" value="'+link+'"></div>',
         '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-primary btn-sm" onclick="saveResource('+id+')">Save</button>');
 };
 window.saveResource = async function(id) {
     var title = document.getElementById('editResTitle').value.trim();
-    if (!title) { showAlert('Title required.', 'error'); return; }
-    const { ok } = await api('PUT', '/admin/resources/'+id, { title, description: document.getElementById('editResDesc').value.trim(), link_url: document.getElementById('editResLink').value.trim(), sort_order: 0 });
+    if (!title) { showAlert('Title is required.', 'error'); return; }
+    const { ok } = await api('PUT', '/admin/resources/'+id, { title: title, description: document.getElementById('editResDesc').value.trim(), link_url: document.getElementById('editResLink').value.trim(), sort_order: 0 });
     if (ok) { closeModal(); showToast('Resource updated.'); loadResources(); } else showToast('Failed.', 'error');
 };
 window.deleteResource = async function(id) {
@@ -530,62 +697,82 @@ window.deleteResource = async function(id) {
 };
 window.confirmDeleteResource = async function(id) { closeModal(); const { ok } = await api('DELETE', '/admin/resources/'+id); if (ok) { showToast('Resource deleted.'); loadResources(); } else showToast('Failed.', 'error'); };
 
-// Enrollments
+// ══════════════════════════════════════
+// ENROLLMENTS
+// ══════════════════════════════════════
 async function loadEnrollmentDropdowns() {
     const { ok: uOk, data: uData } = await api('GET', '/admin/users');
     const { ok: cOk, data: cData } = await api('GET', '/admin/courses');
-    if (uOk) { var sel = document.getElementById('enrollUser'); sel.innerHTML = '<option value="">Select user...</option>'; (uData.users||[]).forEach(function(u) { sel.innerHTML += '<option value="'+u.id+'">'+esc(u.name)+' ('+esc(u.email)+')</option>'; }); }
-    if (cOk) { var sel2 = document.getElementById('enrollCourse'); sel2.innerHTML = '<option value="">Select course...</option>'; (cData.courses||[]).forEach(function(c) { sel2.innerHTML += '<option value="'+c.id+'">'+esc(c.title)+'</option>'; }); }
+    if (uOk && uData.users) {
+        var sel = document.getElementById('enrollUser');
+        sel.innerHTML = '<option value="">Select user...</option>';
+        uData.users.forEach(function(u) { if(u.role==='student') sel.innerHTML += '<option value="'+u.id+'">'+esc(u.name)+' ('+esc(u.email)+')</option>'; });
+    }
+    if (cOk && cData.courses) {
+        var sel2 = document.getElementById('enrollCourse');
+        sel2.innerHTML = '<option value="">Select course...</option>';
+        cData.courses.forEach(function(c) { sel2.innerHTML += '<option value="'+c.id+'">'+esc(c.title)+'</option>'; });
+    }
 }
 async function loadEnrollments() {
     document.getElementById('enrollmentsSpinner').style.display = 'block';
     const { ok, data } = await api('GET', '/admin/enrollments');
     document.getElementById('enrollmentsSpinner').style.display = 'none';
-    if (!ok) return;
-    var html = '';
-    (data.enrollments||[]).forEach(function(e) {
-        html += '<tr><td>'+esc(e.user_name||'')+' ('+esc(e.user_email||'')+')</td><td>'+esc(e.course_title||'')+'</td><td>'+esc((e.enrolled_at||'').split('T')[0])+'</td><td>' +
+    var tbody = document.querySelector('#enrollmentsTable tbody');
+    tbody.innerHTML = '';
+    if (!ok || !data.enrollments || !data.enrollments.length) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No enrollments yet</td></tr>';
+        return;
+    }
+    data.enrollments.forEach(function(e) {
+        tbody.innerHTML += '<tr><td>'+esc(e.user_name||'')+' ('+esc(e.user_email||'')+')</td><td>'+esc(e.course_title||'')+'</td><td>'+esc((e.enrolled_at||'').split('T')[0])+'</td><td>' +
             '<button class="btn btn-danger btn-sm" onclick="unenrollUser('+e.user_id+','+e.course_id+')">Unenroll</button></td></tr>';
     });
-    document.querySelector('#enrollmentsTable tbody').innerHTML = html || '<tr><td colspan="4" class="empty-state">No enrollments</td></tr>';
 }
 window.enrollUser = async function() {
     var uid = document.getElementById('enrollUser').value;
     var cid = document.getElementById('enrollCourse').value;
-    if (!uid || !cid) { showToast('Select user and course.', 'error'); return; }
+    if (!uid || !cid) { showToast('Please select user and course.', 'error'); return; }
     const { ok } = await api('POST', '/admin/enrollments', { user_id: parseInt(uid), course_id: parseInt(cid) });
-    if (ok) { showToast('User enrolled.'); loadEnrollments(); } else showToast('Failed.', 'error');
+    if (ok) { showToast('User enrolled.'); loadEnrollments(); loadStats(); } else showToast('Failed or already enrolled.', 'error');
 };
 window.unenrollUser = async function(uid, cid) {
     const { ok } = await api('DELETE', '/admin/enrollments/'+uid+'/'+cid);
-    if (ok) { showToast('User unenrolled.'); loadEnrollments(); } else showToast('Failed.', 'error');
+    if (ok) { showToast('User unenrolled.'); loadEnrollments(); loadStats(); } else showToast('Failed.', 'error');
 };
 
-// Audit Logs
+// ══════════════════════════════════════
+// AUDIT LOGS
+// ══════════════════════════════════════
 async function loadAuditLogs() {
     document.getElementById('auditSpinner').style.display = 'block';
     const { ok, data } = await api('GET', '/admin/audit-logs');
     document.getElementById('auditSpinner').style.display = 'none';
-    if (!ok) return;
-    var html = '';
-    (data.logs||[]).forEach(function(l) {
-        html += '<tr><td>'+esc((l.created_at||'').replace('T',' ').substring(0,19))+'</td><td>'+esc(l.user_name||l.user_email||'System')+'</td><td>'+esc(l.action)+'</td><td>'+esc(l.ip_address||'')+'</td></tr>';
+    var tbody = document.querySelector('#auditTable tbody');
+    tbody.innerHTML = '';
+    if (!ok || !data.logs || !data.logs.length) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No audit logs yet</td></tr>';
+        return;
+    }
+    data.logs.forEach(function(l) {
+        tbody.innerHTML += '<tr><td>'+esc((l.created_at||'').replace('T',' ').substring(0,19))+'</td><td>'+esc(l.user_name||l.user_email||'System')+'</td><td>'+esc(l.action)+'</td><td>'+esc(l.ip_address||'')+'</td></tr>';
     });
-    document.querySelector('#auditTable tbody').innerHTML = html || '<tr><td colspan="4" class="empty-state">No logs</td></tr>';
 }
 
-// Course dropdowns (shared)
+// ══════════════════════════════════════
+// COURSE DROPDOWNS (SHARED)
+// ══════════════════════════════════════
 async function loadCourseDropdowns() {
     const { ok, data } = await api('GET', '/admin/courses');
-    if (!ok) return;
+    if (!ok || !data.courses) return;
     var opts = '<option value="">Select course...</option>';
-    (data.courses||[]).forEach(function(c) { opts += '<option value="'+c.id+'">'+esc(c.title)+'</option>'; });
+    data.courses.forEach(function(c) { opts += '<option value="'+c.id+'">'+esc(c.title)+'</option>'; });
     document.getElementById('subjectCourse').innerHTML = opts;
     document.getElementById('lectureCourse').innerHTML = opts;
     document.getElementById('resourceCourse').innerHTML = opts;
 }
 
-// Init
+// ── INIT ──
 loadStats();
 loadUsers();
 loadCourseDropdowns();
