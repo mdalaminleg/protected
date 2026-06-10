@@ -36,76 +36,36 @@
         .player-box:fullscreen { max-width: none; aspect-ratio: unset; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
-        .anti-leak-overlay {
-            position: absolute; inset: 0; z-index: 6;
-            background: transparent; pointer-events: all; display: block;
-        }
+        .anti-leak-overlay { position: absolute; inset: 0; z-index: 6; background: transparent; pointer-events: all; display: block; }
         .anti-leak-overlay.passive { pointer-events: none; z-index: 0; }
 
-        .initial-cover {
-            position: absolute; inset: 0; z-index: 70;
-            background: #000; display: flex;
-            align-items: center; justify-content: center;
-            cursor: pointer; transition: opacity 0.3s ease;
-        }
-        .initial-cover.hidden { opacity: 0; pointer-events: none; }
+        .initial-cover { position: absolute; inset: 0; z-index: 70; background: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .initial-cover.hidden { display: none; }
         .initial-cover-content { display: flex; flex-direction: column; align-items: center; gap: 16px; }
-        .initial-cover-icon {
-            width: 64px; height: 64px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.12);
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
-        }
+        .initial-cover-icon { width: 64px; height: 64px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .initial-cover:hover .initial-cover-icon { border-color: var(--gold); background: rgba(184,117,26,0.12); transform: scale(1.05); }
         .initial-cover-icon svg { width: 26px; height: 26px; color: var(--gold); }
         .initial-cover-text { font-family: 'Fraunces', serif; font-size: 1.3rem; color: rgba(255,255,255,0.55); letter-spacing: .04em; }
         .initial-cover-subtext { font-size: .7rem; color: rgba(255,255,255,0.18); letter-spacing: .08em; text-transform: uppercase; }
 
-        .protection-shield {
-            position: absolute; inset: 0; z-index: 68;
-            background: #000; display: none;
-            align-items: center; justify-content: center;
-            flex-direction: column; gap: 14px;
-            cursor: pointer;
-        }
+        .protection-shield { position: absolute; inset: 0; z-index: 68; background: #000; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; cursor: pointer; }
         .protection-shield.active { display: flex; }
-        .protection-shield-icon {
-            width: 56px; height: 56px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.10);
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.15s;
-        }
+        .protection-shield-icon { width: 56px; height: 56px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.10); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
         .protection-shield:hover .protection-shield-icon { border-color: var(--gold); background: rgba(184,117,26,0.10); }
         .protection-shield-icon svg { width: 22px; height: 22px; color: rgba(255,255,255,0.45); }
         .protection-shield-text { font-family: 'Fraunces', serif; font-size: 1rem; color: rgba(255,255,255,0.4); letter-spacing: .04em; }
         .protection-shield-subtext { font-size: .68rem; color: rgba(255,255,255,0.18); letter-spacing: .06em; }
 
-        .launch-shield {
-            position: absolute; inset: 0; z-index: 65;
-            background: #000; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            pointer-events: all; opacity: 0;
-            transition: opacity 0.2s ease;
-            pointer-events: none;
-        }
-        .launch-shield.active { opacity: 1; pointer-events: all; }
+        .launch-shield { position: absolute; inset: 0; z-index: 65; background: #000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .launch-shield.active { display: flex; }
         .launch-shield-content { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-        .launch-shield-icon {
-            width: 56px; height: 56px; border-radius: 50%;
-            background: rgba(184,117,26,0.10);
-            border: 2px solid var(--gold);
-            display: flex; align-items: center; justify-content: center;
-            animation: pulseShield 1.2s ease-in-out infinite;
-        }
-        @keyframes pulseShield {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(184,117,26,0.2); }
-            50% { transform: scale(1.05); box-shadow: 0 0 0 18px rgba(184,117,26,0); }
-        }
+        .launch-shield-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(184,117,26,0.10); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; animation: pulseShield 1.2s ease-in-out infinite; }
+        @keyframes pulseShield { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(184,117,26,0.2); } 50% { transform: scale(1.05); box-shadow: 0 0 0 18px rgba(184,117,26,0); } }
         .launch-shield-icon svg { width: 22px; height: 22px; color: var(--gold); }
         .launch-shield-text { font-family: 'Fraunces', serif; font-size: 1.1rem; color: rgba(255,255,255,0.6); letter-spacing: .04em; }
         .launch-shield-subtext { font-size: .68rem; color: rgba(255,255,255,0.2); letter-spacing: .08em; }
         .launch-shield-progress { width: 100px; height: 2px; background: rgba(255,255,255,0.06); border-radius: 1px; overflow: hidden; margin-top: 4px; }
-        .launch-shield-progress-fill { height: 100%; background: var(--gold); border-radius: 1px; width: 0%; transition: width 0.1s linear; }
+        .launch-shield-progress-fill { height: 100%; background: var(--gold); border-radius: 1px; width: 0%; }
 
         .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 56px; background: #000; z-index: 50; display: flex; align-items: center; padding: 0 18px; transition: opacity 0.35s ease; pointer-events: none; }
         .top-bar.hidden { opacity: 0; }
@@ -119,23 +79,14 @@
         .player-box.show-ui .ui-layer { opacity: 1; }
         .gesture-zone { position: absolute; inset: 0; z-index: 20; pointer-events: auto; cursor: pointer; }
 
-        .ctr-pause-btn {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.85);
-            width: 62px; height: 62px; background: rgba(11,31,58,.9);
-            border: 1.5px solid rgba(255,255,255,.18); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; z-index: 42;
-            transition: opacity .2s, transform .2s, background .15s;
-            cursor: pointer;
-        }
-        .player-box.show-ui .ctr-pause-btn.playing,
-        .player-box.show-ui .ctr-pause-btn.paused { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+        .ctr-pause-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.85); width: 62px; height: 62px; background: rgba(11,31,58,.9); border: 1.5px solid rgba(255,255,255,.18); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; z-index: 42; transition: opacity .2s, transform .2s, background .15s; cursor: pointer; }
+        .player-box.show-ui .ctr-pause-btn.playing, .player-box.show-ui .ctr-pause-btn.paused { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
         .ctr-pause-btn:hover { background: rgba(184,117,26,.3); border-color: var(--gold); }
         .ctr-pause-btn svg { width: 22px; height: 22px; color: #fff; }
-        .ctr-pause-btn .icon-play  { display: none; }
+        .ctr-pause-btn .icon-play { display: none; }
         .ctr-pause-btn .icon-pause { display: none; }
-        .ctr-pause-btn.playing  .icon-pause { display: block; }
-        .ctr-pause-btn.paused   .icon-play  { display: block; }
+        .ctr-pause-btn.playing .icon-pause { display: block; }
+        .ctr-pause-btn.paused .icon-play { display: block; }
 
         .skip-side { position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 7px; opacity: 0; pointer-events: none; z-index: 45; transition: opacity .15s; }
         .skip-side.left { left: 13%; } .skip-side.right { right: 13%; }
@@ -180,14 +131,7 @@
         .quality-btn:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.25); }
 
         .popup-wrap { position: relative; }
-        .speed-popup, .quality-popup {
-            position: absolute; bottom: 38px; right: 0;
-            background: var(--navy-2); border: 1px solid rgba(255,255,255,.12);
-            border-radius: var(--r2); padding: 5px 0;
-            min-width: 86px; z-index: 300;
-            box-shadow: 0 14px 44px rgba(0,0,0,.75);
-            display: none; flex-direction: column;
-        }
+        .speed-popup, .quality-popup { position: absolute; bottom: 38px; right: 0; background: var(--navy-2); border: 1px solid rgba(255,255,255,.12); border-radius: var(--r2); padding: 5px 0; min-width: 86px; z-index: 300; box-shadow: 0 14px 44px rgba(0,0,0,.75); display: none; flex-direction: column; }
         .speed-popup.open, .quality-popup.open { display: flex; }
         .speed-popup-item, .quality-popup-item { padding: 7px 16px; font-size: .72rem; font-weight: 500; color: rgba(255,255,255,.65); cursor: pointer; transition: all .1s; font-family: 'Plus Jakarta Sans', sans-serif; text-align: center; white-space: nowrap; }
         .speed-popup-item:hover, .quality-popup-item:hover { background: rgba(255,255,255,.07); color: #fff; }
@@ -259,16 +203,13 @@
 
         <div class="ui-layer" id="uiLayer">
             <div class="gesture-zone" id="gestureZone"></div>
-
             <div class="ctr-pause-btn" id="ctrPauseBtn">
                 <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
             </div>
-
             <div class="skip-side left" id="skipLeft"><div class="skip-side-ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/></svg></div><span class="skip-side-label" id="skipLeftLabel">-10s</span></div>
             <div class="skip-side right" id="skipRight"><div class="skip-side-ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg></div><span class="skip-side-label" id="skipRightLabel">+10s</span></div>
             <div class="skip-fb" id="skipFb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="skipIcon"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg><span id="skipText">+5s</span></div>
-
             <div class="ctrl-bar" id="ctrlBar">
                 <div class="prog-wrap" id="progWrap"><div class="prog-track" id="progTrack"><div class="prog-buffered" id="progBuffered"></div><div class="prog-fill" id="progFill"></div></div></div>
                 <div class="ctrl-row">
@@ -319,7 +260,6 @@ var launchTimer = null, launchProgressInterval = null;
 var currentPdfUrl = '';
 var videoIsSafe = false;
 var launchWaitingForPlay = false;
-var launchStartTime = 0;
 var playerReady = false;
 var pendingPlay = false;
 
@@ -394,16 +334,18 @@ function showLaunchShield(msg) {
 function startLaunchCountdown() {
     if (!launchWaitingForPlay) return;
     launchWaitingForPlay = false;
-    launchStartTime = Date.now();
+    var startTime = Date.now();
     var totalDuration = 4000;
     launchProgressInterval = setInterval(function() {
-        var elapsed = Date.now() - launchStartTime;
+        var elapsed = Date.now() - startTime;
         var pct = Math.min(100, (elapsed / totalDuration) * 100);
         launchShieldProgress.style.width = pct + '%';
         if (pct >= 100) clearInterval(launchProgressInterval);
     }, 50);
     launchTimer = setTimeout(function() {
         launchShield.classList.remove('active');
+        launchShieldProgress.style.width = '0%';
+        clearInterval(launchProgressInterval);
         markSafe();
         unblockIframe();
     }, totalDuration);
@@ -464,14 +406,10 @@ function updateProgress() {
     requestAnimationFrame(updateProgress);
 }
 
-// ─── SAFE PLAY: ensures player is ready before calling playVideo ───
 function safePlay() {
     if (!player) return;
-    if (playerReady && typeof player.playVideo === 'function') {
-        player.playVideo();
-    } else {
-        pendingPlay = true;
-    }
+    if (playerReady && typeof player.playVideo === 'function') { player.playVideo(); }
+    else { pendingPlay = true; }
 }
 
 function togglePlay() {
@@ -512,8 +450,7 @@ document.addEventListener('touchend', function(){ if(!isDragging) return; isDrag
 function buildSpeedPopup() {
     speedPopup.innerHTML = '';
     speeds.forEach(function(s, i) {
-        var el = document.createElement('div');
-        el.className = 'speed-popup-item' + (i===speedIdx?' active':'');
+        var el = document.createElement('div'); el.className = 'speed-popup-item' + (i===speedIdx?' active':'');
         el.textContent = s+'&times;';
         el.addEventListener('click', function(e){ e.stopPropagation(); speedIdx=i; if(player) player.setPlaybackRate(s); speedBtn.innerHTML = s+'&times;'; localStorage.setItem('sv_speed',s); buildSpeedPopup(); speedPopup.classList.remove('open'); });
         speedPopup.appendChild(el);
@@ -526,8 +463,7 @@ function buildQualityPopup() {
     var list = availableQualities.length ? availableQualities : ['auto'];
     if (!list.includes('auto')) list = ['auto'].concat(list);
     list.forEach(function(q) {
-        var el = document.createElement('div');
-        el.className = 'quality-popup-item' + (q===currentQuality?' active':'');
+        var el = document.createElement('div'); el.className = 'quality-popup-item' + (q===currentQuality?' active':'');
         el.textContent = qualityLabels[q] || q;
         el.addEventListener('click', function(e){ e.stopPropagation(); currentQuality=q; if(player){ player.setPlaybackQuality(q==='auto'?'default':q); } qualityBtn.textContent = qualityLabels[q]||q; buildQualityPopup(); qualityPopup.classList.remove('open'); });
         qualityPopup.appendChild(el);
@@ -541,12 +477,10 @@ async function init() {
     var lid = params.get('lecture_id'), cid = params.get('course_id');
     if (!lid||!cid) { window.location.href='/dashboard.html'; return; }
     document.getElementById('backLink').href = '/course.html?id='+cid;
-
     var savedSpeed = parseFloat(localStorage.getItem('sv_speed')||'1');
     var si = speeds.indexOf(savedSpeed); if(si>=0) speedIdx=si;
     speedBtn.innerHTML = speeds[speedIdx]+'&times;';
     buildSpeedPopup(); buildQualityPopup();
-
     try {
         var r = await fetch('/api/courses/'+cid, { headers: {'Authorization':'Bearer '+getToken()} });
         var d = await r.json();
@@ -565,8 +499,7 @@ async function init() {
 
 function createPlayer(vid) {
     if(player){ try{ player.destroy(); }catch(e){} player=null; }
-    playerReady = false;
-    pendingPlay = false;
+    playerReady = false; pendingPlay = false;
     document.getElementById('ytPlayer').innerHTML='';
     player = new YT.Player('ytPlayer', {
         height:'100%', width:'100%', videoId:vid,
@@ -577,11 +510,7 @@ function createPlayer(vid) {
                 requestAnimationFrame(updateProgress);
                 player.setVolume(volSlider.value);
                 player.setPlaybackRate(speeds[speedIdx]);
-                // If a play was requested before player was ready, execute it now
-                if (pendingPlay) {
-                    pendingPlay = false;
-                    player.playVideo();
-                }
+                if (pendingPlay) { pendingPlay = false; player.playVideo(); }
             },
             onStateChange: function(e){
                 var s = e.data;
@@ -592,24 +521,18 @@ function createPlayer(vid) {
                 }
                 else if(s === 2){
                     setIcons(false);
-                    launchWaitingForPlay = false;
-                    clearTimeout(launchTimer);
-                    clearInterval(launchProgressInterval);
+                    launchWaitingForPlay = false; clearTimeout(launchTimer); clearInterval(launchProgressInterval);
                     instantProtection('Click to Resume');
                 }
                 else if(s === 3){
                     spinner.style.display = 'block';
                     setIcons(true);
-                    launchWaitingForPlay = false;
-                    clearTimeout(launchTimer);
-                    clearInterval(launchProgressInterval);
+                    launchWaitingForPlay = false; clearTimeout(launchTimer); clearInterval(launchProgressInterval);
                     instantProtection('Buffering...');
                 }
                 else if(s === 0){
                     setIcons(false);
-                    launchWaitingForPlay = false;
-                    clearTimeout(launchTimer);
-                    clearInterval(launchProgressInterval);
+                    launchWaitingForPlay = false; clearTimeout(launchTimer); clearInterval(launchProgressInterval);
                     instantProtection('Click to Replay');
                     if(currentIndex < allLectures.length - 1) setTimeout(function(){ nextLecture(); }, 2500);
                 }
@@ -632,16 +555,8 @@ function createPlayer(vid) {
 }
 
 // ─── EVENT HANDLERS ───
-initialCover.addEventListener('click', function(){
-    showLaunchShield('Starting');
-    safePlay();
-});
-
-protectionShield.addEventListener('click', function(){
-    showLaunchShield('Resuming');
-    safePlay();
-});
-
+initialCover.addEventListener('click', function(){ showLaunchShield('Starting'); safePlay(); });
+protectionShield.addEventListener('click', function(){ showLaunchShield('Resuming'); safePlay(); });
 playerBox.addEventListener('mousemove', function(){ showControls(); });
 
 gestureZone.addEventListener('click', function(e){
@@ -664,11 +579,7 @@ volSlider.addEventListener('input', function(e){ if(!player) return; var v=parse
 document.getElementById('muteToggle').addEventListener('click', function(e){ e.stopPropagation(); if(!player) return; if(player.isMuted()){ player.unMute(); volSlider.value=player.getVolume(); volHigh.style.display='block'; volMute.style.display='none'; } else{ player.mute(); volSlider.value=0; volHigh.style.display='none'; volMute.style.display='block'; } });
 document.getElementById('fullscreenBtn').addEventListener('click', function(e){ e.stopPropagation(); if(!document.fullscreenElement) playerBox.requestFullscreen().catch(function(){}); else document.exitFullscreen(); });
 
-window.addEventListener('offline', function(){
-    launchWaitingForPlay = false; clearTimeout(launchTimer); clearInterval(launchProgressInterval);
-    instantProtection('No Internet'); spinner.style.display = 'block';
-    showToast('Network lost. Waiting...');
-});
+window.addEventListener('offline', function(){ launchWaitingForPlay = false; clearTimeout(launchTimer); clearInterval(launchProgressInterval); instantProtection('No Internet'); spinner.style.display = 'block'; showToast('Network lost. Waiting...'); });
 window.addEventListener('online', function(){ showToast('Network restored.'); });
 
 document.addEventListener('keydown', function(e){
