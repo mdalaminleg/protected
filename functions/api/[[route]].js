@@ -440,7 +440,6 @@ async function handleAdmin(method, path, body, db, user, request) {
 
   if (method === 'DELETE' && path.match(/^\/admin\/courses\/\d+$/)) {
     const courseId = parseInt(path.split('/')[3]);
-    // Cascade delete
     const subjects = await db.prepare('SELECT id FROM subjects WHERE course_id = ?').bind(courseId).all();
     for (const sub of subjects.results) {
       await db.prepare('DELETE FROM lectures WHERE subject_id = ?').bind(sub.id).run();
@@ -530,6 +529,20 @@ async function handleAdmin(method, path, body, db, user, request) {
       LIMIT 500
     `).all();
     return json({ logs: logs.results });
+  }
+
+  // DELETE single audit log
+  if (method === 'DELETE' && path.match(/^\/admin\/audit-logs\/\d+$/)) {
+    const logId = parseInt(path.split('/')[3]);
+    await db.prepare('DELETE FROM audit_logs WHERE id = ?').bind(logId).run();
+    return json({ message: 'Log deleted.' });
+  }
+
+  // DELETE all audit logs
+  if (method === 'DELETE' && path === '/admin/audit-logs/all') {
+    await db.prepare('DELETE FROM audit_logs').run();
+    await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, 'deleted_all_audit_logs', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
+    return json({ message: 'All audit logs deleted.' });
   }
 
   // ── DASHBOARD STATS ──
