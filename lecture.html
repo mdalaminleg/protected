@@ -36,106 +36,114 @@
         .player-box:fullscreen { max-width: none; aspect-ratio: unset; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
-        .anti-leak-overlay {
-            position: absolute; inset: 0; z-index: 5;
-            background: transparent; pointer-events: all; display: block;
-        }
+        /* Anti-leak — blocks all iframe interaction */
+        .anti-leak-overlay { position: absolute; inset: 0; z-index: 5; background: transparent; pointer-events: all; display: block; }
 
-        /* Initial Cover — "Click to Start" */
+        /* ══════════════════════════════════════
+           PROTECTIVE SHIELD SYSTEM
+           z-index layers:
+           70 = initial cover ("Click to Start")
+           68 = dead shield (video stopped/blocked — NEVER reveals)
+           66 = pause shield ("Click to Resume")
+           65 = launch shield ("Starting..." / "Resuming..." — 3 sec timer)
+           ══════════════════════════════════════ */
+
+        /* Initial Cover */
         .initial-cover {
             position: absolute; inset: 0; z-index: 70;
             background: #000; display: flex;
             align-items: center; justify-content: center;
-            cursor: pointer; transition: opacity 0.5s ease;
+            cursor: pointer; transition: opacity 0.4s ease;
         }
         .initial-cover.hidden { opacity: 0; pointer-events: none; }
-        .initial-cover-content {
-            display: flex; flex-direction: column; align-items: center; gap: 16px;
-        }
+        .initial-cover-content { display: flex; flex-direction: column; align-items: center; gap: 16px; }
         .initial-cover-icon {
             width: 64px; height: 64px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.12);
             display: flex; align-items: center; justify-content: center;
             transition: all 0.2s;
         }
         .initial-cover:hover .initial-cover-icon {
-            border-color: var(--gold); background: rgba(184,117,26,0.15);
+            border-color: var(--gold); background: rgba(184,117,26,0.12);
             transform: scale(1.05);
         }
         .initial-cover-icon svg { width: 26px; height: 26px; color: var(--gold); }
-        .initial-cover-text {
-            font-family: 'Fraunces', serif; font-size: 1.3rem;
-            color: rgba(255,255,255,0.6); letter-spacing: .04em;
-        }
-        .initial-cover-subtext {
-            font-size: .7rem; color: rgba(255,255,255,0.2);
-            letter-spacing: .08em; text-transform: uppercase;
-        }
+        .initial-cover-text { font-family: 'Fraunces', serif; font-size: 1.3rem; color: rgba(255,255,255,0.55); letter-spacing: .04em; }
+        .initial-cover-subtext { font-size: .7rem; color: rgba(255,255,255,0.18); letter-spacing: .08em; text-transform: uppercase; }
 
-        /* Launch Shield — black overlay "Starting..." / "Resuming..." */
+        /* Dead Shield — PERMANENT cover when video is stopped/ended/error */
+        .dead-shield {
+            position: absolute; inset: 0; z-index: 68;
+            background: #000; display: none;
+            align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+        .dead-shield.active { display: flex; }
+        .dead-shield-content { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        .dead-shield-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.10);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .dead-shield-icon svg { width: 22px; height: 22px; color: rgba(255,255,255,0.4); }
+        .dead-shield-text { font-family: 'Fraunces', serif; font-size: 1rem; color: rgba(255,255,255,0.4); letter-spacing: .04em; }
+        .dead-shield-subtext { font-size: .68rem; color: rgba(255,255,255,0.18); letter-spacing: .06em; }
+
+        /* Pause Shield */
+        .pause-shield {
+            position: absolute; inset: 0; z-index: 66;
+            background: #000; display: none;
+            align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+        .pause-shield.active { display: flex; }
+        .pause-shield-content { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        .pause-shield-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.10);
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s;
+        }
+        .pause-shield:hover .pause-shield-icon {
+            border-color: var(--gold); background: rgba(184,117,26,0.10);
+        }
+        .pause-shield-icon svg { width: 22px; height: 22px; color: rgba(255,255,255,0.45); }
+        .pause-shield-text { font-family: 'Fraunces', serif; font-size: 1rem; color: rgba(255,255,255,0.4); letter-spacing: .04em; }
+        .pause-shield-subtext { font-size: .68rem; color: rgba(255,255,255,0.18); letter-spacing: .06em; }
+
+        /* Launch Shield — 3 sec branded overlay */
         .launch-shield {
             position: absolute; inset: 0; z-index: 65;
-            background: #000;
-            display: flex; flex-direction: column;
+            background: #000; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             pointer-events: all; opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.25s ease;
             pointer-events: none;
         }
-        .launch-shield.active {
-            opacity: 1; pointer-events: all;
-        }
-        .launch-shield-content {
-            display: flex; flex-direction: column; align-items: center; gap: 14px;
-        }
+        .launch-shield.active { opacity: 1; pointer-events: all; }
+        .launch-shield-content { display: flex; flex-direction: column; align-items: center; gap: 14px; }
         .launch-shield-icon {
             width: 56px; height: 56px; border-radius: 50%;
-            background: rgba(184,117,26,0.12);
+            background: rgba(184,117,26,0.10);
             border: 2px solid var(--gold);
             display: flex; align-items: center; justify-content: center;
             animation: pulseShield 1.2s ease-in-out infinite;
         }
         @keyframes pulseShield {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(184,117,26,0.25); }
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(184,117,26,0.2); }
             50% { transform: scale(1.05); box-shadow: 0 0 0 18px rgba(184,117,26,0); }
         }
         .launch-shield-icon svg { width: 22px; height: 22px; color: var(--gold); }
-        .launch-shield-text {
-            font-family: 'Fraunces', serif; font-size: 1.1rem;
-            color: rgba(255,255,255,0.65); letter-spacing: .04em;
-        }
-        .launch-shield-subtext {
-            font-size: .68rem; color: rgba(255,255,255,0.2);
-            letter-spacing: .08em;
-        }
-        .launch-shield-progress {
-            width: 100px; height: 2px; background: rgba(255,255,255,0.06);
-            border-radius: 1px; overflow: hidden; margin-top: 4px;
-        }
-        .launch-shield-progress-fill {
-            height: 100%; background: var(--gold);
-            border-radius: 1px; width: 0%;
-            transition: width 0.1s linear;
-        }
+        .launch-shield-text { font-family: 'Fraunces', serif; font-size: 1.1rem; color: rgba(255,255,255,0.6); letter-spacing: .04em; }
+        .launch-shield-subtext { font-size: .68rem; color: rgba(255,255,255,0.2); letter-spacing: .08em; }
+        .launch-shield-progress { width: 100px; height: 2px; background: rgba(255,255,255,0.06); border-radius: 1px; overflow: hidden; margin-top: 4px; }
+        .launch-shield-progress-fill { height: 100%; background: var(--gold); border-radius: 1px; width: 0%; transition: width 0.1s linear; }
 
+        /* Top bar — NEVER hides when video is stopped */
         .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 56px; background: #000; z-index: 50; display: flex; align-items: center; padding: 0 18px; transition: opacity 0.3s ease; pointer-events: none; }
         .top-bar.hidden { opacity: 0; }
         .top-bar-text { font-family: 'Fraunces', serif; font-size: .72rem; color: rgba(255,255,255,.2); letter-spacing: .05em; }
         .top-bar-watermark { font-family: 'Fraunces', serif; font-size: .62rem; color: rgba(255,255,255,.15); letter-spacing: .06em; margin-left: auto; }
-
-        .pause-cover { position: absolute; inset: 0; z-index: 66; background: #000; display: none; align-items: center; justify-content: center; cursor: pointer; }
-        .pause-cover.show { display: flex; }
-        .pause-cover-content { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-        .pause-cover-icon {
-            width: 56px; height: 56px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.12);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .pause-cover-icon svg { width: 22px; height: 22px; color: rgba(255,255,255,0.5); }
-        .pause-cover-text {
-            font-family: 'Fraunces', serif; font-size: 1rem;
-            color: rgba(255,255,255,0.4); letter-spacing: .04em;
-        }
 
         .spinner-el { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36px; height: 36px; border: 3px solid rgba(255,255,255,.1); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; z-index: 8; display: none; }
         @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
@@ -183,8 +191,9 @@
         .drag-preview img { width: 100%; height: 100%; object-fit: cover; opacity: .7; }
         .drag-preview .drag-time { position: absolute; bottom: 0; left: 0; right: 0; padding: 6px 8px; background: rgba(0,0,0,.85); font-size: .65rem; font-weight: 600; color: #fff; text-align: center; }
 
-        .ctrl-bar { padding: 18px 18px 14px; opacity: 0; pointer-events: none; transition: opacity .18s; position: relative; z-index: 30; margin-top: auto; background: #000; }
-        .ctrl-bar.on { opacity: 1; pointer-events: auto; }
+        /* Control bar — NEVER auto-hides when video is stopped/paused */
+        .ctrl-bar { padding: 18px 18px 14px; opacity: 1; pointer-events: auto; transition: opacity .18s; position: relative; z-index: 30; margin-top: auto; background: #000; }
+        .ctrl-bar.fade { opacity: 0; pointer-events: none; }
         .prog-wrap { position: relative; width: 100%; height: 28px; display: flex; align-items: center; margin-bottom: 4px; }
         .prog-track { width: 100%; height: 5px; background: rgba(255,255,255,.12); border-radius: 3px; cursor: pointer; position: relative; transition: height .15s; }
         .prog-wrap:hover .prog-track, .prog-wrap.dragging .prog-track { height: 7px; }
@@ -258,7 +267,7 @@
         <div id="ytPlayer"></div>
         <div class="anti-leak-overlay" id="antiLeakOverlay"></div>
 
-        <!-- Initial Cover — "Click to Start" (z-index: 70) -->
+        <!-- Initial Cover (z:70) -->
         <div class="initial-cover" id="initialCover">
             <div class="initial-cover-content">
                 <div class="initial-cover-icon">
@@ -269,7 +278,29 @@
             </div>
         </div>
 
-        <!-- Launch Shield — black overlay "Starting..." / "Resuming..." (z-index: 65) -->
+        <!-- Dead Shield (z:68) — video stopped/ended/error — PERMANENT until user clicks -->
+        <div class="dead-shield" id="deadShield">
+            <div class="dead-shield-content">
+                <div class="dead-shield-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+                <div class="dead-shield-text" id="deadShieldText">Click to Resume</div>
+                <div class="dead-shield-subtext">SciVerse Academy</div>
+            </div>
+        </div>
+
+        <!-- Pause Shield (z:66) -->
+        <div class="pause-shield" id="pauseShield">
+            <div class="pause-shield-content">
+                <div class="pause-shield-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+                <div class="pause-shield-text">Click to Resume</div>
+                <div class="pause-shield-subtext">SciVerse Academy</div>
+            </div>
+        </div>
+
+        <!-- Launch Shield (z:65) — 3 sec overlay -->
         <div class="launch-shield" id="launchShield">
             <div class="launch-shield-content">
                 <div class="launch-shield-icon">
@@ -288,15 +319,6 @@
             <span class="top-bar-watermark">Protected Content</span>
         </div>
 
-        <!-- Pause Cover (z-index: 66) -->
-        <div class="pause-cover" id="pauseCover">
-            <div class="pause-cover-content">
-                <div class="pause-cover-icon">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                </div>
-                <div class="pause-cover-text">Click to Resume</div>
-            </div>
-        </div>
         <div class="spinner-el" id="spinner"></div>
 
         <div class="drag-preview" id="dragPreview">
@@ -389,11 +411,12 @@ function getUser() { try { return JSON.parse(localStorage.getItem('site_user') |
 if (!getUser()) { window.location.href = '/index.html'; }
 
 var allLectures = [], currentIndex = 0, player = null, isDragging = false;
-var hideTimer = null, ctrTimer = null, topBarTimer = null, pauseCoverTimer = null;
+var hideTimer = null, topBarTimer = null;
 var dragCurrentPct = 0;
+var launchTimer = null, launchProgressInterval = null;
 var currentPdfUrl = '';
-var launchTimer = null;
-var launchProgressInterval = null;
+var videoIsSafe = false; // true only when video has been playing for 3+ seconds
+var safeTimer = null;
 
 var speeds = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5];
 var speedIdx = 2;
@@ -415,11 +438,13 @@ var volSlider   = document.getElementById('volSlider'), volHigh = document.getEl
 var speedBtn    = document.getElementById('speedBtn'),  speedPopup = document.getElementById('speedPopup');
 var qualityBtn  = document.getElementById('qualityBtn'),qualityPopup = document.getElementById('qualityPopup');
 var topBar      = document.getElementById('topBar');
-var initialCover= document.getElementById('initialCover');
+var initialCover = document.getElementById('initialCover');
+var deadShield  = document.getElementById('deadShield');
+var deadShieldText = document.getElementById('deadShieldText');
+var pauseShield = document.getElementById('pauseShield');
 var launchShield = document.getElementById('launchShield');
 var launchShieldText = document.getElementById('launchShieldText');
 var launchShieldProgress = document.getElementById('launchShieldProgress');
-var pauseCover  = document.getElementById('pauseCover');
 var currentTitle= document.getElementById('currentTitle'), currentMeta = document.getElementById('currentMeta');
 var headerTitle = document.getElementById('headerTitle');
 var prevBtn     = document.getElementById('prevBtn'), nextBtn = document.getElementById('nextBtn');
@@ -430,17 +455,62 @@ var pdfLink     = document.getElementById('pdfLink');
 function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(function(){ t.classList.remove('on'); }, 2200); }
 function formatTime(sec) { if (!sec || sec < 0) return '00:00'; var m = Math.floor(sec/60), s = Math.floor(sec%60); return (m<10?'0'+m:m)+':'+(s<10?'0'+s:s); }
 
-// ─── Launch Shield (black overlay, 3 seconds) ───
-function showLaunchShield(message) {
+// ─── SHIELD MANAGEMENT ───
+
+// Hide ALL shields
+function hideAllShields() {
+    initialCover.classList.add('hidden');
+    deadShield.classList.remove('active');
+    pauseShield.classList.remove('active');
+    launchShield.classList.remove('active');
     clearTimeout(launchTimer);
     clearInterval(launchProgressInterval);
-    launchShield.classList.add('active');
-    launchShieldText.textContent = message || 'Starting';
+    clearTimeout(safeTimer);
+}
+
+// Show ONLY dead shield (video stopped/ended)
+function showDeadShield(msg) {
+    hideAllShields();
+    deadShieldText.textContent = msg || 'Click to Resume';
+    deadShield.classList.add('active');
+    videoIsSafe = false;
+    // Bars MUST stay visible
+    topBar.classList.remove('hidden');
+    ctrlBar.classList.remove('fade');
+    playerBox.classList.add('show-ui');
+    clearTimeout(hideTimer);
+    clearTimeout(topBarTimer);
+}
+
+// Show pause shield
+function showPauseShield() {
+    hideAllShields();
+    pauseShield.classList.add('active');
+    videoIsSafe = false;
+    // Bars MUST stay visible
+    topBar.classList.remove('hidden');
+    ctrlBar.classList.remove('fade');
+    playerBox.classList.add('show-ui');
+    clearTimeout(hideTimer);
+    clearTimeout(topBarTimer);
+}
+
+// Show launch shield with timer
+function showLaunchShield(msg) {
+    hideAllShields();
+    launchShieldText.textContent = msg || 'Starting';
     launchShieldProgress.style.width = '0%';
+    launchShield.classList.add('active');
+    videoIsSafe = false;
+    // Bars stay visible
+    topBar.classList.remove('hidden');
+    ctrlBar.classList.remove('fade');
+    playerBox.classList.add('show-ui');
+    clearTimeout(hideTimer);
+    clearTimeout(topBarTimer);
     
     var startTime = Date.now();
-    var totalDuration = 3000; // 3 seconds
-    
+    var totalDuration = 3000;
     launchProgressInterval = setInterval(function() {
         var elapsed = Date.now() - startTime;
         var pct = Math.min(100, (elapsed / totalDuration) * 100);
@@ -449,49 +519,40 @@ function showLaunchShield(message) {
     }, 50);
     
     launchTimer = setTimeout(function() {
-        hideLaunchShield();
+        launchShield.classList.remove('active');
+        videoIsSafe = true;
+        // Now safe — allow auto-hide after 7 seconds
+        scheduleAutoHide();
     }, totalDuration);
 }
 
-function hideLaunchShield() {
-    clearTimeout(launchTimer);
-    clearInterval(launchProgressInterval);
-    launchShield.classList.remove('active');
+// Schedule bars to auto-hide after 7 seconds (only when video is safe)
+function scheduleAutoHide() {
+    clearTimeout(hideTimer);
+    clearTimeout(topBarTimer);
+    if (!videoIsSafe) return; // Don't schedule if video isn't safe
+    hideTimer = setTimeout(function() {
+        if (!videoIsSafe) return;
+        ctrlBar.classList.add('fade');
+        playerBox.classList.remove('show-ui');
+    }, 7000);
+    topBarTimer = setTimeout(function() {
+        if (!videoIsSafe) return;
+        topBar.classList.add('hidden');
+    }, 7000);
 }
 
-// ─── 7 sec auto-hide on hover/move ───
-function showControlsAndTopBar(persist) {
-    playerBox.classList.add('show-ui'); ctrlBar.classList.add('on'); topBar.classList.remove('hidden');
-    pauseCover.classList.remove('show');
-    clearTimeout(hideTimer); clearTimeout(topBarTimer); clearTimeout(pauseCoverTimer); clearTimeout(ctrTimer);
-    if (persist) return;
-    if (!isDragging) {
-        hideTimer = setTimeout(function() {
-            playerBox.classList.remove('show-ui'); ctrlBar.classList.remove('on');
-            if (player && player.getPlayerState && player.getPlayerState() === 2) {
-                pauseCoverTimer = setTimeout(function(){ pauseCover.classList.add('show'); }, 300);
-            }
-        }, 7000);
-        topBarTimer = setTimeout(function(){ topBar.classList.add('hidden'); }, 7000);
+// ─── SHOW CONTROLS (7 sec on any touch/move) ───
+function showControls() {
+    topBar.classList.remove('hidden');
+    ctrlBar.classList.remove('fade');
+    playerBox.classList.add('show-ui');
+    if (videoIsSafe) {
+        scheduleAutoHide();
     }
 }
 
-// ─── 8 sec on click/tap ───
-function showControlsOnClick() {
-    playerBox.classList.add('show-ui'); ctrlBar.classList.add('on'); topBar.classList.remove('hidden');
-    pauseCover.classList.remove('show');
-    clearTimeout(hideTimer); clearTimeout(topBarTimer); clearTimeout(pauseCoverTimer); clearTimeout(ctrTimer);
-    if (!isDragging) {
-        hideTimer = setTimeout(function() {
-            playerBox.classList.remove('show-ui'); ctrlBar.classList.remove('on');
-            if (player && player.getPlayerState && player.getPlayerState() === 2) {
-                pauseCoverTimer = setTimeout(function(){ pauseCover.classList.add('show'); }, 300);
-            }
-        }, 8000);
-        topBarTimer = setTimeout(function(){ topBar.classList.add('hidden'); }, 8000);
-    }
-}
-
+// ─── ICONS ───
 function setIcons(playing) {
     playIcon.style.display  = playing ? 'none'  : 'block';
     pauseIcon.style.display = playing ? 'block' : 'none';
@@ -523,8 +584,8 @@ function loadLecture(idx) {
     }
     if (player && player.loadVideoById) player.loadVideoById(lec.youtube_id);
 }
-function prevLecture() { if (currentIndex > 0) { hideLaunchShield(); pauseCover.classList.remove('show'); loadLecture(currentIndex-1); } }
-function nextLecture() { if (currentIndex < allLectures.length-1) { hideLaunchShield(); pauseCover.classList.remove('show'); loadLecture(currentIndex+1); } }
+function prevLecture() { hideAllShields(); showDeadShield('Click to Start'); loadLecture(currentIndex-1); }
+function nextLecture() { hideAllShields(); showDeadShield('Click to Start'); loadLecture(currentIndex+1); }
 
 function updateProgress() {
     if (!player || typeof player.getCurrentTime !== 'function') { requestAnimationFrame(updateProgress); return; }
@@ -537,17 +598,20 @@ function updateProgress() {
     requestAnimationFrame(updateProgress);
 }
 
+// ─── PLAY/PAUSE TOGGLE ───
 function togglePlay() {
     if (!player) return;
-    if (player.getPlayerState() === 1) { player.pauseVideo(); }
-    else { 
-        pauseCover.classList.remove('show');
+    var state = player.getPlayerState();
+    if (state === 1) {
+        // Playing → pause
+        player.pauseVideo();
+    } else {
+        // Paused/stopped → show launch shield, play
         showLaunchShield('Resuming');
-        player.playVideo(); 
+        player.playVideo();
     }
 }
 
-var skipLTimer = null, skipRTimer = null;
 function skip(s) {
     if (!player) return;
     player.seekTo((player.getCurrentTime()||0)+s, true);
@@ -561,6 +625,7 @@ function skip(s) {
         clearTimeout(skipRTimer); skipRTimer = setTimeout(function(){ skipRight.classList.remove('on'); }, 750);
     }
 }
+var skipLTimer = null, skipRTimer = null;
 
 function skipKeyboard(s) {
     if (!player) return;
@@ -574,13 +639,13 @@ function skipKeyboard(s) {
 function getPctFromEvent(e) { var rect = progTrack.getBoundingClientRect(); var x = e.touches ? e.touches[0].clientX : e.clientX; return Math.max(0, Math.min(1, (x-rect.left)/rect.width)); }
 function updateDragPreview(e) { if (!player||!allLectures[currentIndex]) return; var d = player.getDuration()||1; dragTime.textContent = formatTime(dragCurrentPct*d); var x = e.touches ? e.touches[0].clientX : e.clientX; dragPreview.style.left = x+'px'; dragThumb.src = 'https://img.youtube.com/vi/'+allLectures[currentIndex].youtube_id+'/maxresdefault.jpg'; }
 
-progTrack.addEventListener('click', function(e){ if(!player) return; var rect=progTrack.getBoundingClientRect(); player.seekTo(((e.clientX-rect.left)/rect.width)*player.getDuration(), true); showControlsAndTopBar(false); });
+progTrack.addEventListener('click', function(e){ if(!player) return; var rect=progTrack.getBoundingClientRect(); player.seekTo(((e.clientX-rect.left)/rect.width)*player.getDuration(), true); showControls(); });
 progTrack.addEventListener('mousedown', function(e){ isDragging=true; progWrap.classList.add('dragging'); dragCurrentPct=getPctFromEvent(e); progFill.style.width=(dragCurrentPct*100)+'%'; dragPreview.classList.add('on'); updateDragPreview(e); e.preventDefault(); });
 progTrack.addEventListener('touchstart', function(e){ isDragging=true; progWrap.classList.add('dragging'); dragCurrentPct=getPctFromEvent(e); progFill.style.width=(dragCurrentPct*100)+'%'; dragPreview.classList.add('on'); updateDragPreview(e); }, {passive:false});
 document.addEventListener('mousemove', function(e){ if(!isDragging) return; dragCurrentPct=getPctFromEvent(e); progFill.style.width=(dragCurrentPct*100)+'%'; if(player){var d=player.getDuration()||1; timeDisplay.textContent=formatTime(dragCurrentPct*d)+' / '+formatTime(d);} updateDragPreview(e); });
 document.addEventListener('touchmove', function(e){ if(!isDragging) return; dragCurrentPct=getPctFromEvent(e); progFill.style.width=(dragCurrentPct*100)+'%'; if(player){var d=player.getDuration()||1; timeDisplay.textContent=formatTime(dragCurrentPct*d)+' / '+formatTime(d);} updateDragPreview(e); }, {passive:false});
-document.addEventListener('mouseup', function(){ if(!isDragging) return; isDragging=false; progWrap.classList.remove('dragging'); dragPreview.classList.remove('on'); if(player){ player.seekTo(dragCurrentPct*player.getDuration(), true); showControlsAndTopBar(false); } });
-document.addEventListener('touchend', function(){ if(!isDragging) return; isDragging=false; progWrap.classList.remove('dragging'); dragPreview.classList.remove('on'); if(player){ player.seekTo(dragCurrentPct*player.getDuration(), true); showControlsAndTopBar(false); } });
+document.addEventListener('mouseup', function(){ if(!isDragging) return; isDragging=false; progWrap.classList.remove('dragging'); dragPreview.classList.remove('on'); if(player){ player.seekTo(dragCurrentPct*player.getDuration(), true); showControls(); } });
+document.addEventListener('touchend', function(){ if(!isDragging) return; isDragging=false; progWrap.classList.remove('dragging'); dragPreview.classList.remove('on'); if(player){ player.seekTo(dragCurrentPct*player.getDuration(), true); showControls(); } });
 
 function buildSpeedPopup() {
     speedPopup.innerHTML = '';
@@ -629,8 +694,10 @@ async function init() {
         if(!allLectures.length){ currentTitle.textContent='No lectures'; return; }
         loadLecture(currentIndex);
         updateNavButtons();
-        // Initial cover is already visible — show "Click to Start"
+        // Show initial cover
         initialCover.classList.remove('hidden');
+        topBar.classList.remove('hidden');
+        ctrlBar.classList.remove('fade');
         createPlayer(allLectures[currentIndex].youtube_id);
     } catch(e){ currentTitle.textContent='Error loading course'; }
 }
@@ -640,88 +707,94 @@ function createPlayer(vid) {
     document.getElementById('ytPlayer').innerHTML='';
     player = new YT.Player('ytPlayer', {
         height:'100%', width:'100%', videoId:vid,
-        playerVars:{ 
-            autoplay:0, controls:0, rel:0, modestbranding:1, 
-            iv_load_policy:3, fs:0, disablekb:1, playsinline:1, 
-            origin:location.origin, showinfo:0, cc_load_policy:0, 
-            autohide:1, wmode:'opaque', enablejsapi:1,
-            widget_referrer: location.origin, hl: 'en',
-            color: 'white', theme: 'dark'
-        },
+        playerVars:{ autoplay:0, controls:0, rel:0, modestbranding:1, iv_load_policy:3, fs:0, disablekb:1, playsinline:1, origin:location.origin, showinfo:0, cc_load_policy:0, autohide:1, wmode:'opaque', enablejsapi:1, widget_referrer: location.origin, hl: 'en', color: 'white', theme: 'dark' },
         events:{
-            onReady: function(){ 
-                requestAnimationFrame(updateProgress); 
-                player.setVolume(volSlider.value); 
-                player.setPlaybackRate(speeds[speedIdx]); 
-            },
+            onReady: function(){ requestAnimationFrame(updateProgress); player.setVolume(volSlider.value); player.setPlaybackRate(speeds[speedIdx]); },
             onStateChange: function(e){
                 var s = e.data;
-                if(s===1){
-                    // Playing
-                    pauseCover.classList.remove('show'); 
+                if(s === 1){
+                    // PLAYING — launch shield handles the 3-sec reveal
+                    spinner.style.display = 'none';
                     setIcons(true);
-                    spinner.style.display='none';
-                    showControlsAndTopBar(false);
-                    setTimeout(function(){
-                        if(player && player.getAvailableQualityLevels){
-                            var avail = player.getAvailableQualityLevels();
-                            if(avail && avail.length) availableQualities=avail;
-                            var cur = player.getPlaybackQuality();
-                            if(cur){ currentQuality=cur; qualityBtn.textContent=qualityLabels[cur]||cur; }
-                            buildQualityPopup();
-                        }
-                    }, 1500);
                 }
-                else if(s===2){ 
-                    setIcons(false); showControlsAndTopBar(true); 
+                else if(s === 2){
+                    // PAUSED — show pause shield, bars STAY forever
+                    setIcons(false);
+                    showPauseShield();
                 }
-                else if(s===3){ 
-                    spinner.style.display='block'; 
-                    topBar.classList.remove('hidden'); 
-                    playerBox.classList.add('show-ui'); 
-                    ctrlBar.classList.add('on'); 
-                    clearTimeout(hideTimer); clearTimeout(topBarTimer); clearTimeout(pauseCoverTimer); 
+                else if(s === 3){
+                    // BUFFERING
+                    spinner.style.display = 'block';
+                    topBar.classList.remove('hidden');
+                    ctrlBar.classList.remove('fade');
+                    playerBox.classList.add('show-ui');
+                    clearTimeout(hideTimer); clearTimeout(topBarTimer);
                 }
-                else if(s===0){ 
-                    setIcons(false); 
-                    pauseCover.classList.add('show'); 
-                    if(currentIndex<allLectures.length-1) setTimeout(function(){ nextLecture(); }, 2000); 
+                else if(s === 0){
+                    // ENDED — show dead shield
+                    setIcons(false);
+                    showDeadShield('Click to Replay');
+                    if(currentIndex < allLectures.length - 1) setTimeout(function(){ nextLecture(); }, 2500);
                 }
+                else if(s === -1){
+                    // UNSTARTED — show initial or dead shield
+                    if(initialCover.classList.contains('hidden')){
+                        showDeadShield('Click to Start');
+                    }
+                }
+                else if(s === 5){
+                    // VIDEO CUED
+                }
+            },
+            onError: function(e){
+                // ERROR — permanent dead shield
+                showDeadShield('Click to Retry');
+                showToast('Playback error. Try again.');
             }
         }
     });
 }
 
-// ─── Initial cover click → hide cover, show black launch shield, play video ───
-initialCover.addEventListener('click', function(){ 
-    initialCover.classList.add('hidden'); 
+// ─── EVENT HANDLERS ───
+
+// Initial cover click
+initialCover.addEventListener('click', function(){
     showLaunchShield('Starting');
-    if(player && player.playVideo) player.playVideo(); 
+    if(player && player.playVideo) player.playVideo();
 });
 
-// ─── Pause cover click → hide cover, show black launch shield, resume ───
-pauseCover.addEventListener('click', function(){ 
-    pauseCover.classList.remove('show'); 
+// Dead shield click (video stopped/ended/error)
+deadShield.addEventListener('click', function(){
+    showLaunchShield('Starting');
+    if(player && player.playVideo) player.playVideo();
+});
+
+// Pause shield click
+pauseShield.addEventListener('click', function(){
     showLaunchShield('Resuming');
-    if(player) player.playVideo(); 
+    if(player) player.playVideo();
 });
 
-// ─── Mouse move: 7 sec ───
-playerBox.addEventListener('mousemove', function(){ showControlsAndTopBar(false); });
+// Mouse move on player
+playerBox.addEventListener('mousemove', function(){ showControls(); });
 
-// ─── Click: 8 sec ───
+// Click on gesture zone
 gestureZone.addEventListener('click', function(e){
-    if(e.target.closest('.ctrl-bar')) return;
-    showControlsOnClick();
+    if(e.target.closest('.ctrl-bar') || e.target.closest('.launch-shield') || e.target.closest('.pause-shield') || e.target.closest('.dead-shield') || e.target.closest('.initial-cover')) return;
+    showControls();
     var rect = playerBox.getBoundingClientRect();
     var cx = e.clientX - rect.left, cy = e.clientY - rect.top;
     var inCenter = cx > rect.width*.33 && cx < rect.width*.66 && cy > rect.height*.25 && cy < rect.height*.75;
-    if(inCenter && player && player.getPlayerState && player.getPlayerState() === 2) togglePlay();
+    if(inCenter && player && player.getPlayerState){
+        var state = player.getPlayerState();
+        if(state === 2 || state === 0 || state === -1 || state === 5) togglePlay();
+    }
 });
+
 ctrPauseBtn.addEventListener('click', function(e){ e.stopPropagation(); togglePlay(); });
 document.getElementById('playPauseBtn').addEventListener('click', function(e){ e.stopPropagation(); togglePlay(); });
-document.getElementById('rewindBtn').addEventListener('click', function(e){ e.stopPropagation(); skip(-10); showControlsAndTopBar(false); });
-document.getElementById('forwardBtn').addEventListener('click', function(e){ e.stopPropagation(); skip(10); showControlsAndTopBar(false); });
+document.getElementById('rewindBtn').addEventListener('click', function(e){ e.stopPropagation(); skip(-10); showControls(); });
+document.getElementById('forwardBtn').addEventListener('click', function(e){ e.stopPropagation(); skip(10); showControls(); });
 volSlider.addEventListener('input', function(e){ if(!player) return; var v=parseInt(e.target.value); player.setVolume(v); volHigh.style.display=v===0?'none':'block'; volMute.style.display=v===0?'block':'none'; });
 document.getElementById('muteToggle').addEventListener('click', function(e){ e.stopPropagation(); if(!player) return; if(player.isMuted()){ player.unMute(); volSlider.value=player.getVolume(); volHigh.style.display='block'; volMute.style.display='none'; } else{ player.mute(); volSlider.value=0; volHigh.style.display='none'; volMute.style.display='block'; } });
 document.getElementById('fullscreenBtn').addEventListener('click', function(e){ e.stopPropagation(); if(!document.fullscreenElement) playerBox.requestFullscreen().catch(function(){}); else document.exitFullscreen(); });
@@ -741,12 +814,13 @@ document.addEventListener('keydown', function(e){
 
 var lastTapTime = 0;
 gestureZone.addEventListener('touchend', function(e){
+    showControls();
     var now=Date.now(), tapGap=now-lastTapTime;
     var x=e.changedTouches[0].clientX, w=window.innerWidth;
     if(tapGap<300 && tapGap>0){
         if(x < w*.33) skip(-10);
         else if(x > w*.66) skip(10);
-    } else { showControlsOnClick(); }
+    }
     lastTapTime=now;
 });
 
