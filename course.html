@@ -265,8 +265,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn) {
 });
 
 // Profile
-document.getElementById('profileAvatar').textContent = (user.name || 'S')[0].toUpperCase();
-
+document.getElementById('courseDesc').innerHTML = data.course.description || '';
 // Load course
 async function loadCourse() {
     const { ok, data } = await api('GET', '/user/course?id=' + courseId);
