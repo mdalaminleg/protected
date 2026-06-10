@@ -159,10 +159,12 @@
             font-weight: 600; color: var(--white); margin-bottom: 8px;
         }
         .course-card-desc {
-            font-size: .8rem; color: var(--gray); line-height: 1.5;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            font-size: .8rem; color: var(--gray); line-height: 1.6;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
             overflow: hidden;
         }
+        .course-card-desc strong { color: var(--gold); }
+        .course-card-desc br { display: block; content: ''; margin-bottom: 4px; }
         .course-card-meta {
             margin-top: 14px; font-size: .7rem; color: var(--gray2);
             font-weight: 500;
@@ -373,9 +375,16 @@ async function loadCourses() {
         const card = document.createElement('a');
         card.href = '/course.html?id=' + course.id;
         card.className = 'course-card';
-        card.innerHTML = '<div class="course-card-title">' + esc(course.title) + '</div>' +
-            '<div class="course-card-desc">' + esc(course.description || 'No description') + '</div>' +
-            '<div class="course-card-meta">Created ' + esc(course.created_at ? course.created_at.split('T')[0] : '') + '</div>';
+        
+        // Strip HTML tags for plain text preview fallback, but render HTML in the card
+        var descHtml = course.description || 'No description';
+        var createdAt = course.created_at ? course.created_at.split('T')[0] : '';
+        
+        card.innerHTML = 
+            '<div class="course-card-title">' + esc(course.title) + '</div>' +
+            '<div class="course-card-desc">' + descHtml + '</div>' +
+            '<div class="course-card-meta">Enrolled</div>';
+        
         grid.appendChild(card);
     });
 }
