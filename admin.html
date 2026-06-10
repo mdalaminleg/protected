@@ -47,6 +47,7 @@
             transition: var(--transition); letter-spacing: .01em; padding: 7px 14px;
         }
         .btn-sm { padding: 5px 10px; font-size: .68rem; }
+        .btn-xs { padding: 3px 8px; font-size: .6rem; }
         .btn-primary { background: var(--gold); color: #fff; border-color: var(--gold); }
         .btn-primary:hover { background: var(--gold-2); }
         .btn-ghost { background: transparent; color: var(--gray); border-color: var(--border2); }
@@ -99,11 +100,11 @@
         .form-input:focus, .form-select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-dim); }
         .form-select { cursor: pointer; appearance: none; }
         .form-select option { background: var(--surface3); color: var(--white); }
-        .form-textarea { min-height: 60px; resize: vertical; }
+        .form-textarea { min-height: 100px; resize: vertical; }
         .empty-state { text-align: center; padding: 40px; color: var(--gray); font-size: .8rem; }
         .modal-overlay { position: fixed; inset:0; background:rgba(0,0,0,.7); z-index: 300; display:none; align-items:center; justify-content:center; padding:20px; }
         .modal-overlay.open { display:flex; }
-        .modal-box { background: var(--surface3); border: 1px solid var(--border2); border-radius: var(--radius-lg); padding: 28px; width: 100%; max-width: 500px; max-height: 80vh; overflow-y: auto; }
+        .modal-box { background: var(--surface3); border: 1px solid var(--border2); border-radius: var(--radius-lg); padding: 28px; width: 100%; max-width: 550px; max-height: 80vh; overflow-y: auto; }
         .modal-title { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 600; margin-bottom: 18px; }
         .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
         .alert { padding: 10px 14px; border-radius: var(--radius); font-size: .75rem; font-weight: 500; margin-bottom: 12px; display: none; }
@@ -172,7 +173,7 @@
     <div class="view" id="view-courses">
         <div class="form-row">
             <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="courseTitle" placeholder="Course title"></div>
-            <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="courseDesc" placeholder="Description"></div>
+            <div class="form-group"><label class="form-label">Description (HTML allowed)</label><textarea class="form-input form-textarea" id="courseDesc" placeholder="Use <br> <strong> <span style=...>"></textarea></div>
             <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;"><button class="btn btn-primary btn-sm" onclick="createCourse()">Create Course</button></div>
         </div>
         <div class="table-wrap"><table id="coursesTable"><thead><tr><th>ID</th><th>Title</th><th>Description</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
@@ -184,7 +185,7 @@
         <div class="form-row">
             <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="subjectCourse"><option value="">Select course...</option></select></div>
             <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="subjectTitle" placeholder="Subject title"></div>
-            <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="subjectDesc" placeholder="Description"></div>
+            <div class="form-group"><label class="form-label">Description (HTML allowed)</label><textarea class="form-input form-textarea" id="subjectDesc" placeholder="Optional description with HTML"></textarea></div>
             <div class="form-group" style="flex:0;min-width:60px;"><label class="form-label">Order</label><input class="form-input" id="subjectOrder" type="number" value="0" style="width:60px;"></div>
             <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;"><button class="btn btn-primary btn-sm" onclick="createSubject()">Create</button></div>
         </div>
@@ -212,7 +213,7 @@
         <div class="form-row">
             <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="resourceCourse"><option value="">Select course...</option></select></div>
             <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="resourceTitle" placeholder="Resource title"></div>
-            <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="resourceDesc" placeholder="Description"></div>
+            <div class="form-group"><label class="form-label">Description (HTML allowed)</label><textarea class="form-input form-textarea" id="resourceDesc" placeholder="Optional description"></textarea></div>
             <div class="form-group"><label class="form-label">Link URL</label><input class="form-input" id="resourceLink" placeholder="https://drive.google.com/..."></div>
             <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;"><button class="btn btn-primary btn-sm" onclick="createResource()">Create</button></div>
         </div>
@@ -233,8 +234,13 @@
 
     <!-- AUDIT LOG VIEW -->
     <div class="view" id="view-audit">
-        <div style="margin-bottom:16px;"><button class="btn btn-primary btn-sm" onclick="loadAuditLogs()">Refresh</button></div>
-        <div class="table-wrap"><table id="auditTable"><thead><tr><th>Time</th><th>User</th><th>Action</th><th>IP</th></tr></thead><tbody></tbody></table></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" onclick="loadAuditLogs()">Refresh</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteSelectedAuditLogs()">Delete Selected</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteAllAuditLogs()">Delete All Logs</button>
+            <span style="font-size:.7rem;color:var(--gray2);" id="auditCount"></span>
+        </div>
+        <div class="table-wrap"><table id="auditTable"><thead><tr><th style="width:30px;"><input type="checkbox" id="selectAllAudit" onchange="toggleAllAudit()"></th><th>Time</th><th>User</th><th>Action</th><th>IP</th><th style="width:40px;">Del</th></tr></thead><tbody></tbody></table></div>
         <div class="spinner-ring" id="auditSpinner"></div>
     </div>
 </div>
@@ -365,10 +371,9 @@ async function loadCourses() {
     if (!ok) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Failed to load courses</td></tr>'; return; }
     if (!data.courses || !data.courses.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No courses yet. Create one above.</td></tr>'; return; }
     data.courses.forEach(function(c) {
-        var safeTitle = esc(c.title).replace(/'/g, "\\'");
-        var safeDesc = esc(c.description||'').replace(/'/g, "\\'");
-        tbody.innerHTML += '<tr><td>'+c.id+'</td><td>'+esc(c.title)+'</td><td>'+esc(c.description||'')+'</td><td>' +
-            '<button class="btn btn-ghost btn-sm" onclick="editCourse('+c.id+',\''+safeTitle+'\',\''+safeDesc+'\')">Edit</button> ' +
+        var descPreview = esc((c.description||'').replace(/<[^>]*>/g, '').substring(0, 60));
+        tbody.innerHTML += '<tr><td>'+c.id+'</td><td>'+esc(c.title)+'</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+descPreview+'</td><td>' +
+            '<button class="btn btn-ghost btn-sm" onclick="editCourse('+c.id+')">Edit</button> ' +
             '<button class="btn btn-danger btn-sm" onclick="deleteCourse('+c.id+')">Delete</button></td></tr>';
     });
 }
@@ -380,10 +385,18 @@ window.createCourse = async function() {
     if (ok) { showToast('Course created.'); document.getElementById('courseTitle').value=''; document.getElementById('courseDesc').value=''; loadCourses(); loadCourseDropdowns(); loadStats(); }
     else showToast('Failed.', 'error');
 };
-window.editCourse = function(id, title, desc) {
+window.editCourse = async function(id) {
+    // Fetch current data first
+    const { ok, data } = await api('GET', '/admin/courses');
+    if (!ok) return;
+    var course = null;
+    for (var i = 0; i < data.courses.length; i++) {
+        if (data.courses[i].id === id) { course = data.courses[i]; break; }
+    }
+    if (!course) return;
     openModal('Edit Course',
-        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editCourseTitle" value="'+title+'"></div>' +
-        '<div class="form-group"><label class="form-label">Description</label><input class="form-input" id="editCourseDesc" value="'+desc+'"></div>',
+        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editCourseTitle" value="'+esc(course.title)+'"></div>' +
+        '<div class="form-group"><label class="form-label">Description (HTML allowed)</label><textarea class="form-input form-textarea" id="editCourseDesc">'+esc(course.description||'')+'</textarea></div>',
         '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-primary btn-sm" onclick="saveCourse('+id+')">Save</button>');
 };
 window.saveCourse = async function(id) {
@@ -447,15 +460,13 @@ async function loadSubjects() {
     for (var k = 0; k < allRows.length; k++) {
         var row = allRows[k];
         var s = row.subject;
-        var safeTitle = esc(s.title).replace(/'/g, "\\'");
-        var safeDesc = esc(s.description||'').replace(/'/g, "\\'");
         html += '<tr>' +
             '<td>' + s.id + '</td>' +
             '<td>' + esc(row.courseTitle) + '</td>' +
             '<td>' + esc(s.title) + '</td>' +
             '<td>' + (s.sort_order || 0) + '</td>' +
             '<td>' +
-                '<button class="btn btn-ghost btn-sm" onclick="editSubject('+s.id+',\''+safeTitle+'\',\''+safeDesc+'\','+(s.sort_order||0)+')">Edit</button> ' +
+                '<button class="btn btn-ghost btn-sm" onclick="editSubject('+s.id+')">Edit</button> ' +
                 '<button class="btn btn-danger btn-sm" onclick="deleteSubject('+s.id+')">Delete</button>' +
             '</td>' +
         '</tr>';
@@ -482,11 +493,27 @@ window.createSubject = async function() {
         showToast(data.error || 'Failed to create subject.', 'error');
     }
 };
-window.editSubject = function(id, title, desc, order) {
+window.editSubject = async function(id) {
+    // Find subject data from the table or reload
+    const { ok: cOk, data: cData } = await api('GET', '/admin/courses');
+    if (!cOk) return;
+    var foundTitle = '', foundDesc = '', foundOrder = 0;
+    for (var i = 0; i < cData.courses.length; i++) {
+        var { ok, data } = await api('GET', '/user/course?id=' + cData.courses[i].id);
+        if (ok && data.subjects) {
+            for (var j = 0; j < data.subjects.length; j++) {
+                if (data.subjects[j].id === id) {
+                    foundTitle = data.subjects[j].title;
+                    foundDesc = data.subjects[j].description || '';
+                    foundOrder = data.subjects[j].sort_order || 0;
+                }
+            }
+        }
+    }
     openModal('Edit Subject',
-        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editSubjTitle" value="'+title+'"></div>' +
-        '<div class="form-group"><label class="form-label">Description</label><input class="form-input" id="editSubjDesc" value="'+desc+'"></div>' +
-        '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editSubjOrder" type="number" value="'+order+'"></div>',
+        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editSubjTitle" value="'+esc(foundTitle)+'"></div>' +
+        '<div class="form-group"><label class="form-label">Description (HTML allowed)</label><textarea class="form-input form-textarea" id="editSubjDesc">'+esc(foundDesc)+'</textarea></div>' +
+        '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editSubjOrder" type="number" value="'+foundOrder+'"></div>',
         '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-primary btn-sm" onclick="saveSubject('+id+')">Save</button>');
 };
 window.saveSubject = async function(id) {
@@ -549,16 +576,13 @@ async function loadLectures() {
     for (var m = 0; m < allRows.length; m++) {
         var row = allRows[m];
         var l = row.lecture;
-        var safeTitle = esc(l.title).replace(/'/g, "\\'");
-        var safeYt = esc(l.youtube_id||'').replace(/'/g, "\\'");
-        var safePdf = esc(l.pdf_url||'').replace(/'/g, "\\'");
         html += '<tr>' +
             '<td>' + l.id + '</td>' +
             '<td>' + esc(row.subjectTitle) + '</td>' +
             '<td>' + esc(l.title) + '</td>' +
             '<td style="font-family:DM Mono,monospace;font-size:.7rem;">' + esc(l.youtube_id||'-') + '</td>' +
             '<td>' +
-                '<button class="btn btn-ghost btn-sm" onclick="editLecture('+l.id+',\''+safeTitle+'\',\''+safeYt+'\',\''+safePdf+'\','+(l.sort_order||0)+')">Edit</button> ' +
+                '<button class="btn btn-ghost btn-sm" onclick="editLecture('+l.id+')">Edit</button> ' +
                 '<button class="btn btn-danger btn-sm" onclick="deleteLecture('+l.id+')">Delete</button>' +
             '</td>' +
         '</tr>';
@@ -589,12 +613,33 @@ window.createLecture = async function() {
     const { ok } = await api('POST', '/admin/lectures', { subject_id: parseInt(subjectId), title: title, youtube_id: ytId, pdf_url: pdf, sort_order: order });
     if (ok) { showToast('Lecture created.'); document.getElementById('lectureTitle').value=''; document.getElementById('lectureYoutubeId').value=''; document.getElementById('lecturePdf').value=''; loadLectures(); } else showToast('Failed.', 'error');
 };
-window.editLecture = function(id, title, ytId, pdf, order) {
+window.editLecture = async function(id) {
+    // Find lecture data
+    const { ok: cOk, data: cData } = await api('GET', '/admin/courses');
+    if (!cOk) return;
+    var foundTitle = '', foundYt = '', foundPdf = '', foundOrder = 0;
+    for (var i = 0; i < cData.courses.length; i++) {
+        var { ok, data } = await api('GET', '/user/course?id=' + cData.courses[i].id);
+        if (ok && data.subjects) {
+            for (var j = 0; j < data.subjects.length; j++) {
+                if (data.subjects[j].lectures) {
+                    for (var k = 0; k < data.subjects[j].lectures.length; k++) {
+                        if (data.subjects[j].lectures[k].id === id) {
+                            foundTitle = data.subjects[j].lectures[k].title;
+                            foundYt = data.subjects[j].lectures[k].youtube_id || '';
+                            foundPdf = data.subjects[j].lectures[k].pdf_url || '';
+                            foundOrder = data.subjects[j].lectures[k].sort_order || 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
     openModal('Edit Lecture',
-        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editLecTitle" value="'+title+'"></div>' +
-        '<div class="form-group"><label class="form-label">YouTube ID</label><input class="form-input" id="editLecYt" value="'+ytId+'"></div>' +
-        '<div class="form-group"><label class="form-label">PDF Link</label><input class="form-input" id="editLecPdf" value="'+pdf+'"></div>' +
-        '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editLecOrder" type="number" value="'+order+'"></div>',
+        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editLecTitle" value="'+esc(foundTitle)+'"></div>' +
+        '<div class="form-group"><label class="form-label">YouTube ID</label><input class="form-input" id="editLecYt" value="'+esc(foundYt)+'"></div>' +
+        '<div class="form-group"><label class="form-label">PDF Link</label><input class="form-input" id="editLecPdf" value="'+esc(foundPdf)+'"></div>' +
+        '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editLecOrder" type="number" value="'+foundOrder+'"></div>',
         '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-primary btn-sm" onclick="saveLecture('+id+')">Save</button>');
 };
 window.saveLecture = async function(id) {
@@ -652,16 +697,13 @@ async function loadResources() {
     for (var k = 0; k < allRows.length; k++) {
         var row = allRows[k];
         var r = row.resource;
-        var safeTitle = esc(r.title).replace(/'/g, "\\'");
-        var safeDesc = esc(r.description||'').replace(/'/g, "\\'");
-        var safeLink = esc(r.link_url||'').replace(/'/g, "\\'");
         html += '<tr>' +
             '<td>' + r.id + '</td>' +
             '<td>' + esc(row.courseTitle) + '</td>' +
             '<td>' + esc(r.title) + '</td>' +
-            '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(r.link_url||'-') + '</td>' +
+            '<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(r.link_url||'-') + '</td>' +
             '<td>' +
-                '<button class="btn btn-ghost btn-sm" onclick="editResource('+r.id+',\''+safeTitle+'\',\''+safeDesc+'\',\''+safeLink+'\','+(r.sort_order||0)+')">Edit</button> ' +
+                '<button class="btn btn-ghost btn-sm" onclick="editResource('+r.id+')">Edit</button> ' +
                 '<button class="btn btn-danger btn-sm" onclick="deleteResource('+r.id+')">Delete</button>' +
             '</td>' +
         '</tr>';
@@ -678,11 +720,26 @@ window.createResource = async function() {
     const { ok } = await api('POST', '/admin/resources', { course_id: parseInt(courseId), title: title, description: desc, link_url: link, sort_order: 0 });
     if (ok) { showToast('Resource created.'); document.getElementById('resourceTitle').value=''; document.getElementById('resourceDesc').value=''; document.getElementById('resourceLink').value=''; loadResources(); } else showToast('Failed.', 'error');
 };
-window.editResource = function(id, title, desc, link, order) {
+window.editResource = async function(id) {
+    const { ok: cOk, data: cData } = await api('GET', '/admin/courses');
+    if (!cOk) return;
+    var foundTitle = '', foundDesc = '', foundLink = '';
+    for (var i = 0; i < cData.courses.length; i++) {
+        var { ok, data } = await api('GET', '/user/course?id=' + cData.courses[i].id);
+        if (ok && data.resources) {
+            for (var j = 0; j < data.resources.length; j++) {
+                if (data.resources[j].id === id) {
+                    foundTitle = data.resources[j].title;
+                    foundDesc = data.resources[j].description || '';
+                    foundLink = data.resources[j].link_url || '';
+                }
+            }
+        }
+    }
     openModal('Edit Resource',
-        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editResTitle" value="'+title+'"></div>' +
-        '<div class="form-group"><label class="form-label">Description</label><input class="form-input" id="editResDesc" value="'+desc+'"></div>' +
-        '<div class="form-group"><label class="form-label">Link URL</label><input class="form-input" id="editResLink" value="'+link+'"></div>',
+        '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editResTitle" value="'+esc(foundTitle)+'"></div>' +
+        '<div class="form-group"><label class="form-label">Description (HTML allowed)</label><textarea class="form-input form-textarea" id="editResDesc">'+esc(foundDesc)+'</textarea></div>' +
+        '<div class="form-group"><label class="form-label">Link URL</label><input class="form-input" id="editResLink" value="'+esc(foundLink)+'"></div>',
         '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-primary btn-sm" onclick="saveResource('+id+')">Save</button>');
 };
 window.saveResource = async function(id) {
@@ -744,18 +801,101 @@ window.unenrollUser = async function(uid, cid) {
 // ══════════════════════════════════════
 // AUDIT LOGS
 // ══════════════════════════════════════
+window.selectedAuditIds = [];
+
+window.toggleAllAudit = function() {
+    var checked = document.getElementById('selectAllAudit').checked;
+    var checkboxes = document.querySelectorAll('.audit-checkbox');
+    window.selectedAuditIds = [];
+    checkboxes.forEach(function(cb) {
+        cb.checked = checked;
+        if (checked) window.selectedAuditIds.push(parseInt(cb.value));
+    });
+    updateAuditCount();
+};
+
+window.toggleAudit = function(id, checked) {
+    if (checked) {
+        if (window.selectedAuditIds.indexOf(id) === -1) window.selectedAuditIds.push(id);
+    } else {
+        window.selectedAuditIds = window.selectedAuditIds.filter(function(x) { return x !== id; });
+    }
+    document.getElementById('selectAllAudit').checked = false;
+    updateAuditCount();
+};
+
+window.updateAuditCount = function() {
+    var count = window.selectedAuditIds.length;
+    var el = document.getElementById('auditCount');
+    el.textContent = count > 0 ? count + ' selected' : '';
+};
+
+window.deleteSelectedAuditLogs = async function() {
+    if (!window.selectedAuditIds.length) { showToast('No logs selected.', 'error'); return; }
+    openModal('Confirm Delete',
+        '<p>Delete ' + window.selectedAuditIds.length + ' selected audit log(s)?</p>',
+        '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-danger btn-sm" onclick="confirmDeleteAuditLogs()">Delete Selected</button>');
+};
+
+window.confirmDeleteAuditLogs = async function() {
+    closeModal();
+    var ids = window.selectedAuditIds.slice();
+    var success = 0;
+    for (var i = 0; i < ids.length; i++) {
+        var { ok } = await api('DELETE', '/admin/audit-logs/' + ids[i]);
+        if (ok) success++;
+    }
+    window.selectedAuditIds = [];
+    document.getElementById('selectAllAudit').checked = false;
+    showToast(success + ' log(s) deleted.');
+    loadAuditLogs();
+};
+
+window.deleteSingleAuditLog = async function(id) {
+    openModal('Delete Log', '<p>Delete this audit log entry?</p>',
+        '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-danger btn-sm" onclick="confirmSingleAudit('+id+')">Delete</button>');
+};
+
+window.confirmSingleAudit = async function(id) {
+    closeModal();
+    const { ok } = await api('DELETE', '/admin/audit-logs/' + id);
+    if (ok) { showToast('Log deleted.'); loadAuditLogs(); } else showToast('Failed.', 'error');
+};
+
+window.deleteAllAuditLogs = async function() {
+    openModal('Delete All Audit Logs',
+        '<p style="color:var(--red);">Are you sure you want to <strong>permanently delete ALL audit logs</strong>? This cannot be undone.</p>',
+        '<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-danger btn-sm" onclick="confirmDeleteAllAudit()">Delete All</button>');
+};
+
+window.confirmDeleteAllAudit = async function() {
+    closeModal();
+    const { ok } = await api('DELETE', '/admin/audit-logs/all');
+    if (ok) { showToast('All audit logs deleted.'); window.selectedAuditIds = []; loadAuditLogs(); } else showToast('Failed.', 'error');
+};
+
 async function loadAuditLogs() {
     document.getElementById('auditSpinner').style.display = 'block';
     const { ok, data } = await api('GET', '/admin/audit-logs');
     document.getElementById('auditSpinner').style.display = 'none';
     var tbody = document.querySelector('#auditTable tbody');
     tbody.innerHTML = '';
+    document.getElementById('selectAllAudit').checked = false;
+    window.selectedAuditIds = [];
+    updateAuditCount();
     if (!ok || !data.logs || !data.logs.length) {
-        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No audit logs yet</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No audit logs yet</td></tr>';
         return;
     }
     data.logs.forEach(function(l) {
-        tbody.innerHTML += '<tr><td>'+esc((l.created_at||'').replace('T',' ').substring(0,19))+'</td><td>'+esc(l.user_name||l.user_email||'System')+'</td><td>'+esc(l.action)+'</td><td>'+esc(l.ip_address||'')+'</td></tr>';
+        tbody.innerHTML += '<tr>' +
+            '<td><input type="checkbox" class="audit-checkbox" value="'+l.id+'" onchange="toggleAudit('+l.id+',this.checked)"></td>' +
+            '<td>'+esc((l.created_at||'').replace('T',' ').substring(0,19))+'</td>' +
+            '<td>'+esc(l.user_name||l.user_email||'System')+'</td>' +
+            '<td>'+esc(l.action)+'</td>' +
+            '<td>'+esc(l.ip_address||'')+'</td>' +
+            '<td><button class="btn btn-danger btn-xs" onclick="deleteSingleAuditLog('+l.id+')">X</button></td>' +
+        '</tr>';
     });
 }
 
