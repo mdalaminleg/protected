@@ -36,21 +36,12 @@
         .player-box:fullscreen { max-width: none; aspect-ratio: unset; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
-        /* Anti-leak overlay — BLOCKS all iframe interaction */
         .anti-leak-overlay {
             position: absolute; inset: 0; z-index: 6;
-            background: transparent;
-            pointer-events: all;
-            display: block;
+            background: transparent; pointer-events: all; display: block;
         }
-        .anti-leak-overlay.passive {
-            pointer-events: none;
-            z-index: 0;
-        }
+        .anti-leak-overlay.passive { pointer-events: none; z-index: 0; }
 
-        /* ═══════════ ALL SHIELDS ═══════════ */
-
-        /* Initial Cover (z:70) */
         .initial-cover {
             position: absolute; inset: 0; z-index: 70;
             background: #000; display: flex;
@@ -70,7 +61,6 @@
         .initial-cover-text { font-family: 'Fraunces', serif; font-size: 1.3rem; color: rgba(255,255,255,0.55); letter-spacing: .04em; }
         .initial-cover-subtext { font-size: .7rem; color: rgba(255,255,255,0.18); letter-spacing: .08em; text-transform: uppercase; }
 
-        /* Universal Protection Shield (z:68) */
         .protection-shield {
             position: absolute; inset: 0; z-index: 68;
             background: #000; display: none;
@@ -90,7 +80,6 @@
         .protection-shield-text { font-family: 'Fraunces', serif; font-size: 1rem; color: rgba(255,255,255,0.4); letter-spacing: .04em; }
         .protection-shield-subtext { font-size: .68rem; color: rgba(255,255,255,0.18); letter-spacing: .06em; }
 
-        /* Launch Shield (z:65) — 4 sec branded overlay on resume */
         .launch-shield {
             position: absolute; inset: 0; z-index: 65;
             background: #000; display: flex; flex-direction: column;
@@ -208,14 +197,7 @@
         .nav-info { flex: 1; min-width: 0; }
         .nav-info h2 { font-family: 'Fraunces', serif; font-size: .85rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .nav-info p { font-size: .65rem; color: rgba(255,255,255,.35); }
-        .nav-pdf-btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: var(--gold); color: #fff; border: none;
-            padding: 7px 14px; border-radius: var(--r1);
-            font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600;
-            font-size: .72rem; cursor: pointer; text-decoration: none;
-            transition: all .15s; white-space: nowrap; flex-shrink: 0;
-        }
+        .nav-pdf-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--gold); color: #fff; border: none; padding: 7px 14px; border-radius: var(--r1); font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: .72rem; cursor: pointer; text-decoration: none; transition: all .15s; white-space: nowrap; flex-shrink: 0; }
         .nav-pdf-btn:hover { background: var(--gold-2); }
         .nav-pdf-btn svg { width: 14px; height: 14px; }
         .ftr { background: var(--navy); border-top: 1px solid rgba(255,255,255,.04); padding: 8px 14px; text-align: center; flex-shrink: 0; }
@@ -260,7 +242,7 @@
         <div class="launch-shield" id="launchShield">
             <div class="launch-shield-content">
                 <div class="launch-shield-icon"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-                <div class="launch-shield-text" id="launchShieldText">Resuming</div>
+                <div class="launch-shield-text" id="launchShieldText">Starting</div>
                 <div class="launch-shield-subtext">SciVerse Academy</div>
                 <div class="launch-shield-progress"><div class="launch-shield-progress-fill" id="launchShieldProgress"></div></div>
             </div>
@@ -273,10 +255,7 @@
 
         <div class="spinner-el" id="spinner"></div>
 
-        <div class="drag-preview" id="dragPreview">
-            <img src="" id="dragThumb" alt="">
-            <div class="drag-time" id="dragTime">00:00</div>
-        </div>
+        <div class="drag-preview" id="dragPreview"><img src="" id="dragThumb" alt=""><div class="drag-time" id="dragTime">00:00</div></div>
 
         <div class="ui-layer" id="uiLayer">
             <div class="gesture-zone" id="gestureZone"></div>
@@ -322,8 +301,7 @@
 
 <div class="nav-bar">
     <div class="nav-info"><h2 id="currentTitle">Loading...</h2><p id="currentMeta"></p></div>
-    <a href="#" class="nav-pdf-btn" id="pdfLink" target="_blank" style="display:none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Lecture PDF</a>
+    <a href="#" class="nav-pdf-btn" id="pdfLink" target="_blank" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Lecture PDF</a>
 </div>
 <footer class="ftr"><p>Protected Content &copy; 2026 SciVerse Academy</p></footer>
 <div class="toast" id="toast"></div>
@@ -342,6 +320,8 @@ var currentPdfUrl = '';
 var videoIsSafe = false;
 var launchWaitingForPlay = false;
 var launchStartTime = 0;
+var playerReady = false;
+var pendingPlay = false;
 
 var speeds = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5];
 var speedIdx = 2;
@@ -380,11 +360,9 @@ var antiLeak    = document.getElementById('antiLeakOverlay');
 function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(function(){ t.classList.remove('on'); }, 2200); }
 function formatTime(sec) { if (!sec || sec < 0) return '00:00'; var m = Math.floor(sec/60), s = Math.floor(sec%60); return (m<10?'0'+m:m)+':'+(s<10?'0'+s:s); }
 
-// ─── ANTI-LEAK: Block all iframe clicks when shields active ───
 function blockIframe() { antiLeak.classList.remove('passive'); }
 function unblockIframe() { antiLeak.classList.add('passive'); }
 
-// ─── SHIELDS ───
 function hideAllShields() {
     initialCover.classList.add('hidden');
     protectionShield.classList.remove('active');
@@ -403,7 +381,7 @@ function instantProtection(msg) {
 
 function showLaunchShield(msg) {
     hideAllShields();
-    launchShieldText.textContent = msg || 'Resuming';
+    launchShieldText.textContent = msg || 'Starting';
     launchShieldProgress.style.width = '0%';
     launchShield.classList.add('active');
     markUnsafe();
@@ -431,12 +409,7 @@ function startLaunchCountdown() {
     }, totalDuration);
 }
 
-// ─── SAFE/UNSAFE ───
-function markSafe() {
-    videoIsSafe = true;
-    scheduleAutoHide();
-}
-
+function markSafe() { videoIsSafe = true; scheduleAutoHide(); }
 function markUnsafe() {
     videoIsSafe = false;
     clearTimeout(hideTimer);
@@ -450,26 +423,14 @@ function scheduleAutoHide() {
     clearTimeout(hideTimer);
     clearTimeout(topBarTimer);
     if (!videoIsSafe || isDragging) return;
-    hideTimer = setTimeout(function() {
-        if (!videoIsSafe || isDragging) return;
-        ctrlBar.classList.add('fade');
-        playerBox.classList.remove('show-ui');
-    }, 7000);
-    topBarTimer = setTimeout(function() {
-        if (!videoIsSafe || isDragging) return;
-        topBar.classList.add('hidden');
-    }, 7000);
+    hideTimer = setTimeout(function() { if (!videoIsSafe || isDragging) return; ctrlBar.classList.add('fade'); playerBox.classList.remove('show-ui'); }, 7000);
+    topBarTimer = setTimeout(function() { if (!videoIsSafe || isDragging) return; topBar.classList.add('hidden'); }, 7000);
 }
 
-function showControls() {
-    topBar.classList.remove('hidden');
-    ctrlBar.classList.remove('fade');
-    playerBox.classList.add('show-ui');
-    if (videoIsSafe) scheduleAutoHide();
-}
+function showControls() { topBar.classList.remove('hidden'); ctrlBar.classList.remove('fade'); playerBox.classList.add('show-ui'); if (videoIsSafe) scheduleAutoHide(); }
 
 function setIcons(playing) {
-    playIcon.style.display  = playing ? 'none'  : 'block';
+    playIcon.style.display = playing ? 'none' : 'block';
     pauseIcon.style.display = playing ? 'block' : 'none';
     if (playing) { ctrPauseBtn.classList.add('playing'); ctrPauseBtn.classList.remove('paused'); }
     else { ctrPauseBtn.classList.remove('playing'); ctrPauseBtn.classList.add('paused'); }
@@ -486,10 +447,11 @@ function loadLecture(idx) {
     updateNavButtons();
     if (lec.pdf_url) { currentPdfUrl = lec.pdf_url; pdfLink.href = lec.pdf_url; pdfLink.style.display = 'inline-flex'; }
     else { pdfLink.style.display = 'none'; currentPdfUrl = ''; }
-    if (player && player.loadVideoById) player.loadVideoById(lec.youtube_id);
+    if (player && player.loadVideoById) { player.loadVideoById(lec.youtube_id); }
 }
-function prevLecture() { hideAllShields(); instantProtection('Click to Start'); loadLecture(currentIndex-1); }
-function nextLecture() { hideAllShields(); instantProtection('Click to Start'); loadLecture(currentIndex+1); }
+
+function prevLecture() { if (currentIndex > 0) { hideAllShields(); instantProtection('Click to Start'); loadLecture(currentIndex-1); } }
+function nextLecture() { if (currentIndex < allLectures.length-1) { hideAllShields(); instantProtection('Click to Start'); loadLecture(currentIndex+1); } }
 
 function updateProgress() {
     if (!player || typeof player.getCurrentTime !== 'function') { requestAnimationFrame(updateProgress); return; }
@@ -502,11 +464,21 @@ function updateProgress() {
     requestAnimationFrame(updateProgress);
 }
 
+// ─── SAFE PLAY: ensures player is ready before calling playVideo ───
+function safePlay() {
+    if (!player) return;
+    if (playerReady && typeof player.playVideo === 'function') {
+        player.playVideo();
+    } else {
+        pendingPlay = true;
+    }
+}
+
 function togglePlay() {
     if (!player) return;
     var state = player.getPlayerState();
     if (state === 1) { player.pauseVideo(); }
-    else { showLaunchShield('Resuming'); player.playVideo(); }
+    else { showLaunchShield('Resuming'); safePlay(); }
 }
 
 function skip(s) {
@@ -593,22 +565,32 @@ async function init() {
 
 function createPlayer(vid) {
     if(player){ try{ player.destroy(); }catch(e){} player=null; }
+    playerReady = false;
+    pendingPlay = false;
     document.getElementById('ytPlayer').innerHTML='';
     player = new YT.Player('ytPlayer', {
         height:'100%', width:'100%', videoId:vid,
         playerVars:{ autoplay:0, controls:0, rel:0, modestbranding:1, iv_load_policy:3, fs:0, disablekb:1, playsinline:1, origin:location.origin, showinfo:0, cc_load_policy:0, autohide:1, wmode:'opaque', enablejsapi:1, widget_referrer: location.origin, hl: 'en', color: 'white', theme: 'dark' },
         events:{
-            onReady: function(){ requestAnimationFrame(updateProgress); player.setVolume(volSlider.value); player.setPlaybackRate(speeds[speedIdx]); },
+            onReady: function(){
+                playerReady = true;
+                requestAnimationFrame(updateProgress);
+                player.setVolume(volSlider.value);
+                player.setPlaybackRate(speeds[speedIdx]);
+                // If a play was requested before player was ready, execute it now
+                if (pendingPlay) {
+                    pendingPlay = false;
+                    player.playVideo();
+                }
+            },
             onStateChange: function(e){
                 var s = e.data;
                 if(s === 1){
-                    // PLAYING — YT confirmed! Start 4-sec countdown
                     spinner.style.display = 'none';
                     setIcons(true);
                     if (launchWaitingForPlay) { startLaunchCountdown(); }
                 }
                 else if(s === 2){
-                    // PAUSED — INSTANT overlay
                     setIcons(false);
                     launchWaitingForPlay = false;
                     clearTimeout(launchTimer);
@@ -616,7 +598,6 @@ function createPlayer(vid) {
                     instantProtection('Click to Resume');
                 }
                 else if(s === 3){
-                    // BUFFERING — INSTANT overlay + spinner
                     spinner.style.display = 'block';
                     setIcons(true);
                     launchWaitingForPlay = false;
@@ -625,7 +606,6 @@ function createPlayer(vid) {
                     instantProtection('Buffering...');
                 }
                 else if(s === 0){
-                    // ENDED
                     setIcons(false);
                     launchWaitingForPlay = false;
                     clearTimeout(launchTimer);
@@ -652,8 +632,15 @@ function createPlayer(vid) {
 }
 
 // ─── EVENT HANDLERS ───
-initialCover.addEventListener('click', function(){ showLaunchShield('Starting'); if(player && player.playVideo) player.playVideo(); });
-protectionShield.addEventListener('click', function(){ showLaunchShield('Resuming'); if(player && player.playVideo) player.playVideo(); });
+initialCover.addEventListener('click', function(){
+    showLaunchShield('Starting');
+    safePlay();
+});
+
+protectionShield.addEventListener('click', function(){
+    showLaunchShield('Resuming');
+    safePlay();
+});
 
 playerBox.addEventListener('mousemove', function(){ showControls(); });
 
@@ -677,18 +664,12 @@ volSlider.addEventListener('input', function(e){ if(!player) return; var v=parse
 document.getElementById('muteToggle').addEventListener('click', function(e){ e.stopPropagation(); if(!player) return; if(player.isMuted()){ player.unMute(); volSlider.value=player.getVolume(); volHigh.style.display='block'; volMute.style.display='none'; } else{ player.mute(); volSlider.value=0; volHigh.style.display='none'; volMute.style.display='block'; } });
 document.getElementById('fullscreenBtn').addEventListener('click', function(e){ e.stopPropagation(); if(!document.fullscreenElement) playerBox.requestFullscreen().catch(function(){}); else document.exitFullscreen(); });
 
-// Network events — INSTANT protection
 window.addEventListener('offline', function(){
-    launchWaitingForPlay = false;
-    clearTimeout(launchTimer);
-    clearInterval(launchProgressInterval);
-    instantProtection('No Internet');
-    spinner.style.display = 'block';
+    launchWaitingForPlay = false; clearTimeout(launchTimer); clearInterval(launchProgressInterval);
+    instantProtection('No Internet'); spinner.style.display = 'block';
     showToast('Network lost. Waiting...');
 });
-window.addEventListener('online', function(){
-    showToast('Network restored.');
-});
+window.addEventListener('online', function(){ showToast('Network restored.'); });
 
 document.addEventListener('keydown', function(e){
     if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
