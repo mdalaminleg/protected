@@ -36,12 +36,63 @@
         .player-box:fullscreen { max-width: none; aspect-ratio: unset; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
-        /* Anti-piracy overlay — blocks YT native controls when network drops or YT UI leaks */
+        /* Anti-piracy overlay — blocks YT native controls */
         .anti-leak-overlay {
             position: absolute; inset: 0; z-index: 5;
             background: transparent;
             pointer-events: all;
             display: block;
+        }
+
+        /* Thumbnail shield — shows during initial play & resume */
+        .thumbnail-shield {
+            position: absolute; inset: 0; z-index: 60;
+            background: #000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            pointer-events: all; cursor: default;
+            transition: opacity 0.5s ease;
+        }
+        .thumbnail-shield.hidden { opacity: 0; pointer-events: none; }
+        .thumbnail-shield-img {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover; opacity: 0.5;
+        }
+        .thumbnail-shield-content {
+            position: relative; z-index: 2;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 14px;
+        }
+        .thumbnail-shield-icon {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: rgba(184,117,26,0.2);
+            border: 2px solid var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            animation: pulseShield 1.2s ease-in-out infinite;
+        }
+        @keyframes pulseShield {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(184,117,26,0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 16px rgba(184,117,26,0); }
+        }
+        .thumbnail-shield-icon svg { width: 24px; height: 24px; color: var(--gold); }
+        .thumbnail-shield-text {
+            font-family: 'Fraunces', serif; font-size: 1.1rem;
+            color: rgba(255,255,255,0.7); letter-spacing: .04em;
+        }
+        .thumbnail-shield-subtext {
+            font-size: .7rem; color: rgba(255,255,255,0.3);
+            letter-spacing: .06em;
+        }
+        .thumbnail-shield-progress {
+            width: 120px; height: 2px; background: rgba(255,255,255,0.08);
+            border-radius: 1px; overflow: hidden; margin-top: 4px;
+        }
+        .thumbnail-shield-progress-fill {
+            height: 100%; background: var(--gold);
+            border-radius: 1px; width: 0%;
+            transition: width 0.1s linear;
         }
 
         .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 56px; background: #000; z-index: 50; display: flex; align-items: center; padding: 0 18px; transition: opacity 0.3s ease; pointer-events: none; }
@@ -175,8 +226,23 @@
 <div class="player-wrap">
     <div class="player-box" id="playerBox" tabindex="0">
         <div id="ytPlayer"></div>
-        <!-- Anti-piracy overlay — blocks all interaction with YouTube iframe -->
+        <!-- Anti-piracy overlay -->
         <div class="anti-leak-overlay" id="antiLeakOverlay"></div>
+
+        <!-- Thumbnail Shield — covers video during initial play & resume -->
+        <div class="thumbnail-shield" id="thumbnailShield">
+            <img class="thumbnail-shield-img" id="thumbnailShieldImg" src="" alt="">
+            <div class="thumbnail-shield-content">
+                <div class="thumbnail-shield-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+                <div class="thumbnail-shield-text" id="thumbnailShieldText">Starting</div>
+                <div class="thumbnail-shield-subtext">SciVerse Academy</div>
+                <div class="thumbnail-shield-progress">
+                    <div class="thumbnail-shield-progress-fill" id="thumbnailShieldProgress"></div>
+                </div>
+            </div>
+        </div>
 
         <div class="top-bar" id="topBar">
             <span class="top-bar-text">SciVerse Academy</span>
@@ -280,6 +346,8 @@ var allLectures = [], currentIndex = 0, player = null, isDragging = false;
 var hideTimer = null, ctrTimer = null, topBarTimer = null, pauseCoverTimer = null;
 var dragCurrentPct = 0;
 var currentPdfUrl = '';
+var shieldTimer = null;
+var shieldProgressInterval = null;
 
 var speeds = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5];
 var speedIdx = 2;
@@ -310,9 +378,46 @@ var dragPreview = document.getElementById('dragPreview'), dragThumb = document.g
 var spinner     = document.getElementById('spinner');
 var pdfLink     = document.getElementById('pdfLink');
 var antiLeak    = document.getElementById('antiLeakOverlay');
+var thumbShield = document.getElementById('thumbnailShield');
+var thumbShieldImg = document.getElementById('thumbnailShieldImg');
+var thumbShieldText = document.getElementById('thumbnailShieldText');
+var thumbShieldProgress = document.getElementById('thumbnailShieldProgress');
 
 function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(function(){ t.classList.remove('on'); }, 2200); }
 function formatTime(sec) { if (!sec || sec < 0) return '00:00'; var m = Math.floor(sec/60), s = Math.floor(sec%60); return (m<10?'0'+m:m)+':'+(s<10?'0'+s:s); }
+
+// ─── Thumbnail Shield ───
+function showThumbnailShield(message, duration) {
+    clearTimeout(shieldTimer);
+    clearInterval(shieldProgressInterval);
+    thumbShield.classList.remove('hidden');
+    thumbShieldText.textContent = message || 'Starting';
+    thumbShieldProgress.style.width = '0%';
+    
+    var startTime = Date.now();
+    var totalDuration = (duration || 3) * 1000;
+    
+    shieldProgressInterval = setInterval(function() {
+        var elapsed = Date.now() - startTime;
+        var pct = Math.min(100, (elapsed / totalDuration) * 100);
+        thumbShieldProgress.style.width = pct + '%';
+        if (pct >= 100) clearInterval(shieldProgressInterval);
+    }, 50);
+    
+    shieldTimer = setTimeout(function() {
+        hideThumbnailShield();
+    }, totalDuration);
+}
+
+function hideThumbnailShield() {
+    clearTimeout(shieldTimer);
+    clearInterval(shieldProgressInterval);
+    thumbShield.classList.add('hidden');
+}
+
+function setShieldThumbnail(videoId) {
+    thumbShieldImg.src = 'https://img.youtube.com/vi/' + videoId + '/maxresdefault.jpg';
+}
 
 // ─── 7 sec auto-hide on hover/move ───
 function showControlsAndTopBar(persist) {
@@ -376,10 +481,11 @@ function loadLecture(idx) {
         pdfLink.style.display = 'none';
         currentPdfUrl = '';
     }
+    setShieldThumbnail(lec.youtube_id);
     if (player && player.loadVideoById) player.loadVideoById(lec.youtube_id);
 }
-function prevLecture() { if (currentIndex > 0) { pauseCover.classList.remove('show'); loadLecture(currentIndex-1); } }
-function nextLecture() { if (currentIndex < allLectures.length-1) { pauseCover.classList.remove('show'); loadLecture(currentIndex+1); } }
+function prevLecture() { if (currentIndex > 0) { hideThumbnailShield(); pauseCover.classList.remove('show'); loadLecture(currentIndex-1); } }
+function nextLecture() { if (currentIndex < allLectures.length-1) { hideThumbnailShield(); pauseCover.classList.remove('show'); loadLecture(currentIndex+1); } }
 
 function updateProgress() {
     if (!player || typeof player.getCurrentTime !== 'function') { requestAnimationFrame(updateProgress); return; }
@@ -395,7 +501,11 @@ function updateProgress() {
 function togglePlay() {
     if (!player) return;
     if (player.getPlayerState() === 1) player.pauseVideo();
-    else { pauseCover.classList.remove('show'); player.playVideo(); }
+    else { 
+        pauseCover.classList.remove('show');
+        showThumbnailShield('Resuming', 3);
+        player.playVideo(); 
+    }
 }
 
 var skipLTimer = null, skipRTimer = null;
@@ -482,11 +592,12 @@ async function init() {
         if(!allLectures.length){ currentTitle.textContent='No lectures'; return; }
         loadLecture(currentIndex);
         updateNavButtons();
+        setShieldThumbnail(allLectures[currentIndex].youtube_id);
         createPlayer(allLectures[currentIndex].youtube_id);
     } catch(e){ currentTitle.textContent='Error loading course'; }
 }
 
-// ─── Spinner stays 4 seconds after video starts ───
+// ─── Player with thumbnail shield ───
 function createPlayer(vid) {
     if(player){ try{ player.destroy(); }catch(e){} player=null; }
     document.getElementById('ytPlayer').innerHTML='';
@@ -513,12 +624,23 @@ function createPlayer(vid) {
             theme: 'dark'
         },
         events:{
-            onReady: function(){ requestAnimationFrame(updateProgress); player.setVolume(volSlider.value); player.setPlaybackRate(speeds[speedIdx]); },
+            onReady: function(){ 
+                requestAnimationFrame(updateProgress); 
+                player.setVolume(volSlider.value); 
+                player.setPlaybackRate(speeds[speedIdx]); 
+            },
             onStateChange: function(e){
                 var s = e.data;
                 if(s===1){
-                    pauseCover.classList.remove('show'); setIcons(true);
-                    setTimeout(function(){ spinner.style.display='none'; }, 4000);
+                    // Video is playing — shield stays for 3 seconds
+                    pauseCover.classList.remove('show'); 
+                    setIcons(true);
+                    spinner.style.display='none';
+                    // Shield already shown by initial cover click or resume
+                    // If shield is not visible, show it now
+                    if (thumbShield.classList.contains('hidden')) {
+                        showThumbnailShield('Playing', 3);
+                    }
                     showControlsAndTopBar(false);
                     setTimeout(function(){
                         if(player && player.getAvailableQualityLevels){
@@ -530,23 +652,47 @@ function createPlayer(vid) {
                         }
                     }, 1500);
                 }
-                else if(s===2){ setIcons(false); showControlsAndTopBar(true); }
+                else if(s===2){ 
+                    // Paused
+                    setIcons(false); 
+                    showControlsAndTopBar(true); 
+                }
                 else if(s===3){ 
+                    // Buffering
                     spinner.style.display='block'; 
                     topBar.classList.remove('hidden'); 
                     playerBox.classList.add('show-ui'); 
                     ctrlBar.classList.add('on'); 
                     clearTimeout(hideTimer); clearTimeout(topBarTimer); clearTimeout(pauseCoverTimer); 
                 }
-                else if(s===0){ setIcons(false); pauseCover.querySelector('.cover-text').textContent='Click to Start'; pauseCover.classList.add('show'); if(currentIndex<allLectures.length-1) setTimeout(function(){ nextLecture(); }, 2000); }
+                else if(s===0){ 
+                    // Ended
+                    setIcons(false); 
+                    pauseCover.querySelector('.cover-text').textContent='Click to Start'; 
+                    pauseCover.classList.add('show'); 
+                    if(currentIndex<allLectures.length-1) setTimeout(function(){ nextLecture(); }, 2000); 
+                }
             }
         }
     });
 }
 
+// ─── Initial cover click — shows shield then plays ───
+initialCover.addEventListener('click', function(){ 
+    initialCover.classList.add('hidden'); 
+    showThumbnailShield('Starting', 3);
+    if(player && player.playVideo) player.playVideo(); 
+});
+
+// ─── Pause cover click — shows shield then resumes ───
+pauseCover.addEventListener('click', function(){ 
+    pauseCover.classList.remove('show'); 
+    showThumbnailShield('Resuming', 3);
+    if(player) player.playVideo(); 
+});
+
 // ─── Mouse move: 7 sec ───
 playerBox.addEventListener('mousemove', function(){ showControlsAndTopBar(false); });
-// mouseleave REMOVED — controls respect timer
 
 // ─── Click: 8 sec ───
 gestureZone.addEventListener('click', function(e){
@@ -558,8 +704,6 @@ gestureZone.addEventListener('click', function(e){
     if(inCenter && player && player.getPlayerState && player.getPlayerState() === 2) togglePlay();
 });
 ctrPauseBtn.addEventListener('click', function(e){ e.stopPropagation(); togglePlay(); });
-initialCover.addEventListener('click', function(){ initialCover.classList.add('hidden'); if(player && player.playVideo) player.playVideo(); });
-pauseCover.addEventListener('click', function(){ pauseCover.classList.remove('show'); if(player) player.playVideo(); });
 document.getElementById('playPauseBtn').addEventListener('click', function(e){ e.stopPropagation(); togglePlay(); });
 document.getElementById('rewindBtn').addEventListener('click', function(e){ e.stopPropagation(); skip(-10); showControlsAndTopBar(false); });
 document.getElementById('forwardBtn').addEventListener('click', function(e){ e.stopPropagation(); skip(10); showControlsAndTopBar(false); });
