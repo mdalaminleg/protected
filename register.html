@@ -1,228 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Create Account | SciVerse Academy</title>
-    <meta name="description" content="Register for SciVerse Academy.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --navy: #0B1F3A; --navy-2: #112D52; --navy-3: #1A3F6F;
-            --gold: #B8751A; --gold-2: #CF8B28; --gold-dim: rgba(184,117,26,0.10);
-            --white: #F0F4F8; --gray: #94A3B5; --gray2: #7A8899;
-            --red: #F0566A; --red-dim: rgba(240,86,106,0.10);
-            --green: #10D48E; --green-dim: rgba(16,212,142,0.10);
-            --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.11);
-            --radius: 9px; --radius-lg: 13px;
-            --transition: .18s cubic-bezier(.4,0,.2,1);
-            --bg: #05080F; --surface: #0B0F1A; --surface2: #111827; --surface3: #161E2E;
-        }
-        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        html { font-size:16px; }
-        body {
-            font-family:'Plus Jakarta Sans', system-ui, sans-serif;
-            background: var(--bg); color: var(--white);
-            min-height: 100vh; min-height: 100dvh;
-            display: flex; flex-direction: column;
-            -webkit-font-smoothing: antialiased;
-        }
-        .hdr {
-            height: 64px; background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; padding: 0 20px;
-            flex-shrink: 0; position: sticky; top: 0; z-index: 100;
-        }
-        .hdr-inner {
-            display: flex; align-items: center; gap: 12px;
-            width: 100%; max-width: 1200px; margin: 0 auto;
-        }
-        .logo { height: 32px; }
-        .hdr-title {
-            font-family: 'Fraunces', serif; font-size: 1.1rem;
-            font-weight: 600; color: var(--white); letter-spacing: -.01em;
-        }
-        .main {
-            flex: 1; display: flex; align-items: center; justify-content: center;
-            padding: 40px 20px;
-        }
-        .card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: var(--radius-lg); padding: 36px 30px;
-            width: 100%; max-width: 420px;
-        }
-        .card-title {
-            font-family: 'Fraunces', serif; font-size: 1.5rem;
-            font-weight: 600; color: var(--white); margin-bottom: 6px;
-        }
-        .card-subtitle {
-            font-size: .85rem; color: var(--gray); margin-bottom: 28px;
-        }
-        .form-group { margin-bottom: 18px; }
-        .form-label {
-            display: block; font-size: .75rem; font-weight: 600;
-            color: var(--gray2); margin-bottom: 6px; letter-spacing: .02em;
-            text-transform: uppercase;
-        }
-        .form-input {
-            width: 100%; padding: 11px 14px;
-            background: var(--surface2); border: 1px solid var(--border);
-            border-radius: var(--radius); color: var(--white);
-            font-family: 'Plus Jakarta Sans', sans-serif; font-size: .9rem;
-            outline: none; transition: var(--transition);
-        }
-        .form-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-dim); }
-        .form-input::placeholder { color: var(--gray2); opacity: .5; }
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 8px; font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 600; font-size: .88rem;
-            border: 1.5px solid transparent; border-radius: var(--radius);
-            cursor: pointer; text-decoration: none;
-            white-space: nowrap; transition: var(--transition);
-            letter-spacing: .01em; width: 100%; padding: 12px;
-        }
-        .btn-primary {
-            background: var(--gold); color: #fff; border-color: var(--gold);
-        }
-        .btn-primary:hover { background: var(--gold-2); border-color: var(--gold-2); }
-        .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
-        .link-text {
-            text-align: center; margin-top: 20px;
-            font-size: .82rem; color: var(--gray);
-        }
-        .link-text a { color: var(--gold); text-decoration: none; font-weight: 600; }
-        .link-text a:hover { text-decoration: underline; }
-        .alert {
-            padding: 10px 14px; border-radius: var(--radius);
-            font-size: .8rem; font-weight: 500; margin-bottom: 18px;
-            display: none;
-        }
-        .alert-error { display: block; background: var(--red-dim); color: var(--red); border: 1px solid rgba(240,86,106,0.25); }
-        .alert-success { display: block; background: var(--green-dim); color: var(--green); border: 1px solid rgba(16,212,142,0.25); }
-        .spinner {
-            width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.2);
-            border-top-color: #fff; border-radius: 50%;
-            animation: spin .6s linear infinite; display: none;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .ftr {
-            background: var(--surface); border-top: 1px solid var(--border);
-            padding: 16px 20px; text-align: center; flex-shrink: 0;
-        }
-        .ftr p { font-size: .68rem; color: rgba(255,255,255,.14); }
-        .toast {
-            position: fixed; bottom: 24px; right: 24px; z-index: 9999;
-            padding: 12px 18px; border-radius: var(--radius);
-            font-size: .8rem; font-weight: 500;
-            background: var(--surface3); color: var(--white);
-            border: 1px solid var(--border2);
-            box-shadow: 0 20px 48px rgba(0,0,0,.5);
-            opacity: 0; transform: translateY(8px);
-            transition: all .2s; pointer-events: none;
-        }
-        .toast.show { opacity: 1; transform: translateY(0); }
-        .toast-error { border-color: rgba(240,86,106,0.4); }
-        .toast-success { border-color: rgba(16,212,142,0.4); }
-        @media (max-width:600px) {
-            .card { padding: 28px 20px; }
-            .card-title { font-size: 1.3rem; }
-        }
-    </style>
-</head>
-<body>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Create Account | SciVerse Academy</title>
+<meta name="description" content="Register for SciVerse Academy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A0E1A;
+  --ink-2:#111729;
+  --ink-3:#1C2640;
+  --paper:#F6F1E4;
+  --paper-2:#FFFFFF;
+  --paper-3:#E6DEC8;
+  --text:#ECE8DA;
+  --text-mute:#8E97B3;
+  --marker:#00d4aa;
+  --marker-deep:#00b894;
+  --confirm:#34C77B;
+  --radius:14px;
+  --radius-lg:22px;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --display:'Fraunces',serif;
+  --body:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --bg:var(--ink);
+  --surface:var(--ink-2);
+  --surface-2:var(--ink-3);
+  --fg:var(--text);
+  --fg-mute:var(--text-mute);
+  --border:rgba(236,232,218,0.10);
+  --border-strong:rgba(236,232,218,0.20);
+}
+[data-theme="light"]{
+  --bg:var(--paper);
+  --surface:var(--paper-2);
+  --surface-2:#EFE8D6;
+  --fg:#1A1810;
+  --fg-mute:#766F5C;
+  --border:rgba(26,24,16,0.10);
+  --border-strong:rgba(26,24,16,0.20);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  font-family:var(--body);
+  background:var(--bg);
+  color:var(--fg);
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+  transition:background .4s var(--ease),color .4s var(--ease);
+}
+a{color:var(--marker);text-decoration:none;}
+img,svg{display:block;}
+.wrap{max-width:440px;margin:0 auto;padding:40px 24px;flex:1;display:flex;flex-direction:column;justify-content:center;}
 
-<header class="hdr">
-    <div class="hdr-inner">
-        <img src="/images/protected.png" height="32" alt="SciVerse Academy" class="logo">
-        <span class="hdr-title">SciVerse Academy</span>
-    </div>
+.site-header{
+  position:sticky;top:0;z-index:100;
+  background:color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  height:64px;
+  display:flex;
+  align-items:center;
+}
+.site-header .brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.site-header .brand img{height:28px;width:auto;}
+.site-header .brand-name{font-family:var(--display);font-weight:600;font-size:1.1rem;color:var(--fg);}
+
+.auth-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:36px 32px;
+}
+.auth-card h1{
+  font-family:var(--display);
+  font-size:1.8rem;
+  font-weight:500;
+  letter-spacing:-0.02em;
+  margin-bottom:6px;
+}
+.auth-card .sub{
+  color:var(--fg-mute);
+  font-size:0.92rem;
+  margin-bottom:24px;
+}
+.form-group{margin-bottom:18px;}
+.form-label{
+  display:block;
+  font-size:0.75rem;
+  font-weight:600;
+  color:var(--fg-mute);
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+  margin-bottom:5px;
+}
+.form-input{
+  width:100%;
+  padding:11px 14px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  color:var(--fg);
+  font-family:var(--body);
+  font-size:0.92rem;
+  outline:none;
+  transition:border-color .3s;
+}
+.form-input:focus{border-color:var(--marker);}
+.form-input::placeholder{color:var(--fg-mute);opacity:0.4;}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--body);font-weight:600;font-size:0.92rem;
+  padding:12px 24px;border-radius:var(--radius);
+  border:1.5px solid transparent;
+  cursor:pointer;text-decoration:none;
+  transition:all .25s var(--ease);
+  width:100%;
+}
+.btn-primary{background:var(--marker);color:#171206;border-color:var(--marker);}
+.btn-primary:hover{background:var(--marker-deep);border-color:var(--marker-deep);transform:translateY(-2px);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+.alert{
+  padding:10px 14px;
+  border-radius:var(--radius);
+  font-size:0.82rem;
+  font-weight:500;
+  margin-bottom:18px;
+  display:none;
+}
+.alert-error{display:block;background:rgba(240,86,106,0.12);color:#f0566a;border:1px solid rgba(240,86,106,0.2);}
+.alert-success{display:block;background:rgba(52,199,123,0.12);color:var(--confirm);border:1px solid rgba(52,199,123,0.2);}
+
+.spinner{
+  width:20px;height:20px;
+  border:2px solid rgba(23,18,6,0.2);
+  border-top-color:#171206;
+  border-radius:50%;
+  animation:spin .6s linear infinite;
+  display:none;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.link-text{
+  text-align:center;
+  margin-top:20px;
+  font-size:0.85rem;
+  color:var(--fg-mute);
+}
+.link-text a{color:var(--marker);font-weight:600;}
+.link-text a:hover{text-decoration:underline;}
+
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  padding:14px 22px;border-radius:var(--radius);
+  font-size:0.85rem;font-weight:500;
+  background:var(--surface);color:var(--fg);
+  border:1px solid var(--border-strong);
+  box-shadow:0 12px 48px rgba(0,0,0,0.4);
+  opacity:0;transform:translateY(12px);
+  transition:all .3s var(--ease);
+  pointer-events:none;max-width:90vw;
+}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast-success{border-color:var(--confirm);}
+.toast-error{border-color:#f0566a;}
+
+.footer{
+  border-top:1px solid var(--border);
+  padding:16px 24px;
+  text-align:center;
+}
+.footer p{font-size:0.7rem;color:var(--fg-mute);opacity:0.5;}
+
+@media(max-width:600px){
+  .wrap{padding:24px 16px;}
+  .auth-card{padding:28px 20px;}
+  .auth-card h1{font-size:1.5rem;}
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<header class="site-header">
+  <a href="/" class="brand">
+    <img src="/images/protected.png" alt="SciVerse Academy">
+    <span class="brand-name">SciVerse</span>
+  </a>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+    <button class="icon-btn" id="themeToggle" aria-label="Toggle theme" style="width:36px;height:36px;border-radius:50%;border:1px solid var(--border-strong);background:transparent;color:var(--fg-mute);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:18px;height:18px;"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+    </button>
+  </div>
 </header>
 
-<main class="main">
-    <div class="card">
-        <h1 class="card-title">Create Account</h1>
-        <p class="card-subtitle">Register to gain access. All accounts are reviewed by admin.</p>
+<div class="wrap">
+  <div class="auth-card">
+    <h1>Create Account</h1>
+    <p class="sub">Register to gain access. All accounts are reviewed by admin.</p>
 
-        <div class="alert" id="alert"></div>
+    <div class="alert" id="alert"></div>
 
-        <form id="registerForm" autocomplete="off">
-            <div class="form-group">
-                <label class="form-label" for="name">Full Name</label>
-                <input type="text" class="form-input" id="name" placeholder="Your full name" required autofocus>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="email">Email</label>
-                <input type="email" class="form-input" id="email" placeholder="your@email.com" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="password">Password</label>
-                <input type="password" class="form-input" id="password" placeholder="Min. 6 characters" required minlength="6">
-            </div>
-            <button type="submit" class="btn btn-primary" id="submitBtn">
-                <span id="btnText">Create Account</span>
-                <span class="spinner" id="spinner"></span>
-            </button>
-        </form>
+    <form id="registerForm">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-input" id="name" placeholder="Your full name" required autofocus>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="email" placeholder="your@email.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="password" placeholder="Min. 6 characters" required minlength="6">
+      </div>
+      <button type="submit" class="btn btn-primary" id="submitBtn">
+        <span id="btnText">Create Account</span>
+        <span class="spinner" id="spinner"></span>
+      </button>
+    </form>
 
-        <p class="link-text">Already have an account? <a href="/index.html">Sign In</a></p>
-    </div>
-</main>
+    <p class="link-text">Already have an account? <a href="/login.html">Sign In</a></p>
+  </div>
+</div>
 
-<footer class="ftr"><p>Protected Content &copy; 2026 SciVerse Academy. All rights reserved.</p></footer>
+<footer class="footer"><p>&copy; 2026 SciVerse Academy. All rights reserved.</p></footer>
 <div class="toast" id="toast"></div>
 
 <script>
-function esc(s) { const d = document.createElement('div'); d.textContent = String(s || ''); return d.innerHTML; }
-function showToast(msg, type) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast toast-' + (type || 'success') + ' show';
-    setTimeout(function(){ t.classList.remove('show'); }, 3500);
-}
-function showAlert(msg, type) {
-    const a = document.getElementById('alert');
-    a.textContent = msg;
-    a.className = 'alert alert-' + (type || 'error');
-}
-function hideAlert() {
-    const a = document.getElementById('alert');
-    a.className = 'alert';
-    a.textContent = '';
-}
-function setLoading(loading) {
-    document.getElementById('submitBtn').disabled = loading;
-    document.getElementById('spinner').style.display = loading ? 'inline-block' : 'none';
-    document.getElementById('btnText').style.display = loading ? 'none' : 'inline';
+// Theme
+(function(){
+  var stored = localStorage.getItem('sv-theme') || 'dark';
+  document.body.setAttribute('data-theme', stored);
+})();
+document.getElementById('themeToggle').addEventListener('click', function(){
+  var cur = document.body.getAttribute('data-theme');
+  var next = cur === 'dark' ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', next);
+  localStorage.setItem('sv-theme', next);
+});
+
+function showToast(msg, type){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show toast-' + (type || 'success');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3500);
 }
 
-document.getElementById('registerForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    hideAlert();
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    if (!name || !email || !password) { showAlert('Please fill in all fields.', 'error'); return; }
-    if (password.length < 6) { showAlert('Password must be at least 6 characters.', 'error'); return; }
-    setLoading(true);
-    try {
-        const res = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password })
-        });
-        const data = await res.json();
-        if (!res.ok) { showAlert(data.error || 'Registration failed.', 'error'); setLoading(false); return; }
-        showAlert('Account created! Awaiting admin approval. You will be able to log in once approved.', 'success');
-        document.getElementById('registerForm').style.display = 'none';
-        setLoading(false);
-        showToast('Registration successful.');
-    } catch (err) {
-        showAlert('Network error. Please try again.', 'error');
-        setLoading(false);
-    }
+function showAlert(msg, type){
+  var a = document.getElementById('alert');
+  a.textContent = msg;
+  a.className = 'alert alert-' + (type || 'error');
+}
+
+document.getElementById('registerForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var alert = document.getElementById('alert');
+  alert.className = 'alert';
+  
+  var name = document.getElementById('name').value.trim();
+  var email = document.getElementById('email').value.trim();
+  var password = document.getElementById('password').value;
+  
+  if (!name || !email || !password){ showAlert('Please fill in all fields.', 'error'); return; }
+  if (password.length < 6){ showAlert('Password must be at least 6 characters.', 'error'); return; }
+  
+  var btn = document.getElementById('submitBtn');
+  var spinner = document.getElementById('spinner');
+  var btnText = document.getElementById('btnText');
+  btn.disabled = true;
+  spinner.style.display = 'inline-block';
+  btnText.style.display = 'none';
+  
+  try {
+    var res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    var data = await res.json();
+    if (!res.ok){ showAlert(data.error || 'Registration failed.', 'error'); btn.disabled = false; spinner.style.display = 'none'; btnText.style.display = 'inline'; return; }
+    
+    showAlert('Account created! Awaiting admin approval. You will be able to log in once approved.', 'success');
+    document.getElementById('registerForm').style.display = 'none';
+    showToast('Registration successful.');
+    btn.disabled = false;
+    spinner.style.display = 'none';
+    btnText.style.display = 'inline';
+  } catch(err){
+    showAlert('Network error. Please try again.', 'error');
+    btn.disabled = false;
+    spinner.style.display = 'none';
+    btnText.style.display = 'inline';
+  }
 });
 </script>
 </body>
