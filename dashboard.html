@@ -1,395 +1,479 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Dashboard | SciVerse Academy</title>
-    <meta name="description" content="Your enrolled courses at SciVerse Academy.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --navy: #0B1F3A; --navy-2: #112D52; --navy-3: #1A3F6F;
-            --gold: #B8751A; --gold-2: #CF8B28; --gold-dim: rgba(184,117,26,0.10);
-            --white: #F0F4F8; --gray: #94A3B5; --gray2: #7A8899;
-            --red: #F0566A; --red-dim: rgba(240,86,106,0.10);
-            --green: #10D48E; --green-dim: rgba(16,212,142,0.10);
-            --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.11);
-            --radius: 9px; --radius-lg: 13px;
-            --transition: .18s cubic-bezier(.4,0,.2,1);
-            --bg: #05080F; --surface: #0B0F1A; --surface2: #111827; --surface3: #161E2E;
-        }
-        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        html { font-size:16px; scroll-behavior:smooth; }
-        body {
-            font-family:'Plus Jakarta Sans', system-ui, sans-serif;
-            background: var(--bg); color: var(--white);
-            min-height: 100vh; min-height: 100dvh;
-            display: flex; flex-direction: column;
-            -webkit-font-smoothing: antialiased;
-        }
-        .hdr {
-            height: 64px; background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; padding: 0 20px;
-            flex-shrink: 0; position: sticky; top: 0; z-index: 100;
-        }
-        .hdr-inner {
-            display: flex; align-items: center; gap: 12px;
-            width: 100%; max-width: 1400px; margin: 0 auto;
-        }
-        .hamburger {
-            background: none; border: none; color: var(--gray); cursor: pointer;
-            display: flex; align-items: center; padding: 4px;
-            transition: color .15s;
-        }
-        .hamburger:hover { color: var(--white); }
-        .hamburger svg { width: 22px; height: 22px; }
-        .logo { height: 32px; }
-        .hdr-title {
-            font-family: 'Fraunces', serif; font-size: 1.1rem;
-            font-weight: 600; color: var(--white); letter-spacing: -.01em;
-            flex: 1;
-        }
-        .hdr-right { display: flex; align-items: center; gap: 10px; }
-        .hdr-user {
-            display: flex; align-items: center; gap: 8px;
-            cursor: pointer; padding: 4px 8px; border-radius: var(--radius);
-            transition: background .15s; position: relative;
-        }
-        .hdr-user:hover { background: var(--surface2); }
-        .avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: var(--navy-3); display: flex; align-items: center;
-            justify-content: center; font-weight: 700; font-size: .75rem;
-            color: var(--gold); text-transform: uppercase; flex-shrink: 0;
-        }
-        .hdr-name {
-            font-size: .8rem; font-weight: 500; color: var(--white);
-            display: none;
-        }
-        @media(min-width:600px) { .hdr-name { display: block; } }
-        .dropdown {
-            position: absolute; top: 100%; right: 0;
-            background: var(--surface3); border: 1px solid var(--border2);
-            border-radius: var(--radius); min-width: 160px;
-            padding: 6px 0; margin-top: 8px;
-            box-shadow: 0 16px 48px rgba(0,0,0,.6);
-            display: none; z-index: 200;
-        }
-        .dropdown.open { display: block; }
-        .dropdown-item {
-            display: block; width: 100%; padding: 9px 16px;
-            text-align: left; background: none; border: none;
-            color: var(--gray); font-size: .8rem; font-weight: 500;
-            cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: all .12s;
-        }
-        .dropdown-item:hover { background: var(--surface2); color: var(--white); }
-        .dropdown-item.danger { color: var(--red); }
-        .dropdown-item.danger:hover { background: var(--red-dim); }
-        .sidebar-overlay {
-            position: fixed; inset:0; background: rgba(0,0,0,.6);
-            z-index: 150; display: none;
-        }
-        .sidebar-overlay.open { display: block; }
-        .sidebar {
-            position: fixed; top:0; left:0; bottom:0; width:260px;
-            background: var(--surface); border-right: 1px solid var(--border);
-            z-index: 160; transform: translateX(-100%);
-            transition: transform .25s cubic-bezier(.4,0,.2,1);
-            display: flex; flex-direction: column; overflow-y: auto;
-        }
-        .sidebar.open { transform: translateX(0); }
-        .sidebar-head {
-            padding: 20px; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 10px;
-        }
-        .sidebar-head .avatar { width: 40px; height: 40px; font-size: .9rem; }
-        .sidebar-head-info { flex:1; min-width:0; }
-        .sidebar-head-name {
-            font-family: 'Fraunces', serif; font-size: .95rem;
-            font-weight: 600; color: var(--white);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .sidebar-head-email {
-            font-size: .7rem; color: var(--gray);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .sidebar-nav { flex:1; padding: 12px 0; }
-        .sidebar-nav-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 11px 20px; color: var(--gray); text-decoration: none;
-            font-size: .82rem; font-weight: 500; transition: all .12s;
-            border-left: 2px solid transparent;
-        }
-        .sidebar-nav-item:hover, .sidebar-nav-item.active {
-            background: var(--surface2); color: var(--white);
-            border-left-color: var(--gold);
-        }
-        .sidebar-nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-        .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border); }
-        .main-wrap {
-            flex:1; display:flex; flex-direction: column;
-            max-width: 1400px; width: 100%; margin: 0 auto; padding: 0 20px;
-        }
-        .page-title {
-            font-family: 'Fraunces', serif; font-size: 1.6rem;
-            font-weight: 600; color: var(--white); margin: 32px 0 8px;
-        }
-        .page-subtitle { font-size: .85rem; color: var(--gray); margin-bottom: 28px; }
-        .course-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 18px; padding-bottom: 40px;
-        }
-        .course-card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: var(--radius-lg); padding: 24px;
-            cursor: pointer; transition: var(--transition);
-            text-decoration: none; display: block;
-        }
-        .course-card:hover {
-            border-color: var(--gold); background: var(--surface2);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(0,0,0,.3);
-        }
-        .course-card-title {
-            font-family: 'Fraunces', serif; font-size: 1.1rem;
-            font-weight: 600; color: var(--white); margin-bottom: 8px;
-        }
-        .course-card-desc {
-            font-size: .8rem; color: var(--gray); line-height: 1.6;
-            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .course-card-desc strong { color: var(--gold); }
-        .course-card-desc br { display: block; content: ''; margin-bottom: 4px; }
-        .course-card-meta {
-            margin-top: 14px; font-size: .7rem; color: var(--gray2);
-            font-weight: 500;
-        }
-        .empty-state {
-            text-align: center; padding: 60px 20px;
-        }
-        .empty-state svg { width: 56px; height: 56px; color: var(--gray); opacity: .4; margin-bottom: 16px; }
-        .empty-state h3 {
-            font-family: 'Fraunces', serif; font-size: 1.2rem;
-            font-weight: 600; color: var(--gray); margin-bottom: 6px;
-        }
-        .empty-state p { font-size: .82rem; color: var(--gray2); max-width: 400px; margin: 0 auto; }
-        .spinner-ring {
-            width: 32px; height: 32px; border: 3px solid var(--border2);
-            border-top-color: var(--gold); border-radius: 50%;
-            animation: spin .7s linear infinite; margin: 60px auto;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .ftr {
-            background: var(--surface); border-top: 1px solid var(--border);
-            padding: 24px 20px; flex-shrink: 0;
-        }
-        .ftr-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;
-            max-width: 1400px; margin: 0 auto;
-        }
-        .ftr-col h4 {
-            font-family: 'Fraunces', serif; font-size: .85rem;
-            font-weight: 600; color: var(--white); margin-bottom: 10px;
-        }
-        .ftr-col a {
-            display: block; font-size: .75rem; color: var(--gray2);
-            text-decoration: none; margin-bottom: 6px; transition: color .12s;
-        }
-        .ftr-col a:hover { color: var(--white); }
-        .ftr-bottom {
-            border-top: 1px solid var(--border); margin-top: 20px;
-            padding-top: 16px; text-align: center;
-        }
-        .ftr-bottom p { font-size: .68rem; color: rgba(255,255,255,.14); }
-        @media(max-width:768px) {
-            .ftr-grid { grid-template-columns: repeat(2, 1fr); }
-            .course-grid { grid-template-columns: 1fr; }
-        }
-        @media(max-width:600px) {
-            .page-title { font-size: 1.3rem; }
-        }
-        .toast {
-            position: fixed; bottom: 24px; right: 24px; z-index: 9999;
-            padding: 12px 18px; border-radius: var(--radius);
-            font-size: .8rem; font-weight: 500;
-            background: var(--surface3); color: var(--white);
-            border: 1px solid var(--border2);
-            box-shadow: 0 20px 48px rgba(0,0,0,.5);
-            opacity: 0; transform: translateY(8px);
-            transition: all .2s; pointer-events: none;
-        }
-        .toast.show { opacity: 1; transform: translateY(0); }
-        .toast-error { border-color: rgba(240,86,106,0.4); }
-        .toast-success { border-color: rgba(16,212,142,0.4); }
-    </style>
-</head>
-<body>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dashboard | SciVerse Academy</title>
+<meta name="description" content="Your enrolled courses at SciVerse Academy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A0E1A;
+  --ink-2:#111729;
+  --ink-3:#1C2640;
+  --paper:#F6F1E4;
+  --paper-2:#FFFFFF;
+  --paper-3:#E6DEC8;
+  --text:#ECE8DA;
+  --text-mute:#8E97B3;
+  --marker:#00d4aa;
+  --marker-deep:#00b894;
+  --confirm:#34C77B;
+  --red:#f0566a;
+  --radius:14px;
+  --radius-lg:22px;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --display:'Fraunces',serif;
+  --body:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --bg:var(--ink);
+  --surface:var(--ink-2);
+  --surface-2:var(--ink-3);
+  --fg:var(--text);
+  --fg-mute:var(--text-mute);
+  --border:rgba(236,232,218,0.10);
+  --border-strong:rgba(236,232,218,0.20);
+}
+[data-theme="light"]{
+  --bg:var(--paper);
+  --surface:var(--paper-2);
+  --surface-2:#EFE8D6;
+  --fg:#1A1810;
+  --fg-mute:#766F5C;
+  --border:rgba(26,24,16,0.10);
+  --border-strong:rgba(26,24,16,0.20);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  font-family:var(--body);
+  background:var(--bg);
+  color:var(--fg);
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+  transition:background .4s var(--ease),color .4s var(--ease);
+}
+a{color:var(--marker);text-decoration:none;}
+img,svg{display:block;}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px;flex:1;}
 
-<header class="hdr">
-    <div class="hdr-inner">
-        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
-        <img src="/images/protected.png" height="32" alt="SciVerse Academy" class="logo">
-        <span class="hdr-title">SciVerse Academy</span>
-        <div class="hdr-right">
-            <div class="hdr-user" id="profileBtn">
-                <div class="avatar" id="profileAvatar">S</div>
-                <span class="hdr-name" id="profileName">Student</span>
-                <div class="dropdown" id="profileDropdown">
-                    <button class="dropdown-item danger" id="signOutBtn">Sign Out</button>
-                </div>
-            </div>
-        </div>
+/* ======================================================
+   HEADER
+====================================================== */
+.site-header{
+  position:sticky;top:0;z-index:100;
+  background:color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  height:64px;
+  display:flex;
+  align-items:center;
+}
+.site-header .brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.site-header .brand img{height:28px;width:auto;}
+.site-header .brand-name{font-family:var(--display);font-weight:600;font-size:1.1rem;color:var(--fg);}
+
+.header-actions{display:flex;align-items:center;gap:10px;margin-left:auto;}
+
+.icon-btn{
+  width:36px;height:36px;border-radius:50%;
+  border:1px solid var(--border-strong);background:transparent;
+  color:var(--fg-mute);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .25s var(--ease);
+}
+.icon-btn:hover{color:var(--fg);background:var(--surface-2);}
+.icon-btn svg{width:18px;height:18px;}
+.icon-btn .icon-b{display:none;}
+[data-theme="light"] .icon-btn .icon-a{display:none;}
+[data-theme="light"] .icon-btn .icon-b{display:block;}
+
+.avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--marker);color:#171206;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:0.85rem;cursor:pointer;
+  text-transform:uppercase;
+  transition:transform .2s;
+}
+.avatar:hover{transform:scale(1.05);}
+
+.dropdown{
+  position:absolute;top:100%;right:0;
+  background:var(--surface);border:1px solid var(--border-strong);
+  border-radius:var(--radius);min-width:160px;
+  padding:6px 0;margin-top:8px;
+  box-shadow:0 16px 48px rgba(0,0,0,0.5);
+  display:none;z-index:200;
+}
+.dropdown.open{display:block;}
+.dropdown-item{
+  display:block;width:100%;padding:9px 16px;
+  text-align:left;background:none;border:none;
+  color:var(--fg-mute);font-size:0.82rem;font-weight:500;
+  cursor:pointer;font-family:var(--body);
+  transition:all .12s;
+}
+.dropdown-item:hover{background:var(--surface-2);color:var(--fg);}
+.dropdown-item.danger{color:var(--red);}
+.dropdown-item.danger:hover{background:rgba(240,86,106,0.1);}
+
+/* ======================================================
+   DASHBOARD
+====================================================== */
+.dashboard-header{padding:32px 0 8px;}
+.dashboard-header h1{
+  font-family:var(--display);
+  font-size:clamp(1.8rem,3.4vw,2.4rem);
+  font-weight:500;
+  letter-spacing:-0.02em;
+}
+.dashboard-header p{color:var(--fg-mute);font-size:1rem;}
+
+.course-grid{
+  display:grid;gap:24px;grid-template-columns:1fr;
+  padding:24px 0 60px;
+}
+@media(min-width:680px){.course-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:1080px){.course-grid{grid-template-columns:repeat(3,1fr);}}
+
+.course-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;
+  transition:transform .3s var(--ease),border-color .3s;
+  display:flex;flex-direction:column;
+}
+.course-card:hover{transform:translateY(-4px);border-color:var(--marker);}
+.course-thumbnail{
+  width:100%;aspect-ratio:16/9;background:var(--surface-2);overflow:hidden;
+}
+.course-thumbnail img{width:100%;height:100%;object-fit:cover;}
+.course-thumbnail .placeholder{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-size:3rem;color:var(--fg-mute);
+}
+.course-body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:8px;flex:1;}
+.course-body h3{font-family:var(--display);font-weight:500;font-size:1.1rem;}
+.course-body p{font-size:0.85rem;color:var(--fg-mute);line-height:1.55;flex:1;}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--body);font-weight:600;font-size:0.85rem;
+  padding:10px 20px;border-radius:var(--radius);
+  border:1.5px solid transparent;
+  cursor:pointer;text-decoration:none;
+  transition:all .25s var(--ease);
+}
+.btn-primary{background:var(--marker);color:#171206;border-color:var(--marker);}
+.btn-primary:hover{background:var(--marker-deep);border-color:var(--marker-deep);transform:translateY(-2px);}
+.btn-ghost{background:transparent;color:var(--fg);border-color:var(--border-strong);}
+.btn-ghost:hover{background:var(--surface-2);}
+.btn-sm{padding:6px 14px;font-size:0.78rem;}
+.btn-block{width:100%;}
+
+.empty-state{
+  grid-column:1/-1;text-align:center;padding:60px 20px;
+}
+.empty-state svg{width:56px;height:56px;color:var(--fg-mute);opacity:0.3;margin:0 auto 16px;}
+.empty-state h3{font-family:var(--display);font-size:1.2rem;color:var(--fg);}
+.empty-state p{color:var(--fg-mute);font-size:0.9rem;margin-top:4px;}
+.empty-state .btn{margin-top:16px;}
+
+.spinner-ring{
+  width:32px;height:32px;border:3px solid var(--border);
+  border-top-color:var(--marker);border-radius:50%;
+  animation:spin .7s linear infinite;margin:40px auto;
+  grid-column:1/-1;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.skeleton{background:var(--surface-2);border-radius:var(--radius);animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+
+/* ======================================================
+   FOOTER
+====================================================== */
+.site-footer{border-top:1px solid var(--border);padding:48px 0 28px;margin-top:20px;}
+.footer-grid{display:grid;gap:32px;grid-template-columns:1fr;margin-bottom:32px;}
+@media(min-width:780px){.footer-grid{grid-template-columns:2fr 1fr 1fr 1fr;}}
+.footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.footer-brand img{height:28px;width:auto;}
+.footer-brand span{font-family:var(--display);font-weight:600;font-size:1.1rem;}
+.footer-col p.label{font-size:0.82rem;color:var(--fg-mute);max-width:300px;line-height:1.6;}
+.footer-col h4{font-size:0.82rem;font-weight:600;margin-bottom:12px;}
+.footer-col a{display:block;font-size:0.82rem;color:var(--fg-mute);text-decoration:none;padding:4px 0;}
+.footer-col a:hover{color:var(--marker);}
+.footer-bottom{border-top:1px solid var(--border);padding-top:18px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.footer-bottom p{font-size:0.74rem;color:var(--fg-mute);}
+
+/* ======================================================
+   TOAST
+====================================================== */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  padding:14px 22px;border-radius:var(--radius);
+  font-size:0.85rem;font-weight:500;
+  background:var(--surface);color:var(--fg);
+  border:1px solid var(--border-strong);
+  box-shadow:0 12px 48px rgba(0,0,0,0.4);
+  opacity:0;transform:translateY(12px);
+  transition:all .3s var(--ease);
+  pointer-events:none;max-width:90vw;
+}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast-success{border-color:var(--confirm);}
+.toast-error{border-color:var(--red);}
+
+/* ======================================================
+   RESPONSIVE
+====================================================== */
+@media(max-width:600px){
+  .dashboard-header{padding:20px 0 4px;}
+  .dashboard-header h1{font-size:1.5rem;}
+  .course-grid{padding:16px 0 40px;gap:16px;}
+  .course-body{padding:16px 18px 18px;}
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- ============================================================
+HEADER
+============================================================ -->
+<header class="site-header">
+  <a href="/" class="brand">
+    <img src="/images/protected.png" alt="SciVerse Academy">
+    <span class="brand-name">SciVerse</span>
+  </a>
+
+  <div class="header-actions">
+    <button class="icon-btn" id="themeToggle" aria-label="Toggle color theme">
+      <svg class="icon-a" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+      <svg class="icon-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+    </button>
+    <div style="position:relative;">
+      <div class="avatar" id="profileAvatar">S</div>
+      <div class="dropdown" id="profileDropdown">
+        <button class="dropdown-item" id="profileNameBtn" disabled style="color:var(--fg);font-weight:600;">Student</button>
+        <button class="dropdown-item" id="profileEmailBtn" disabled style="font-size:0.7rem;color:var(--fg-mute);">email</button>
+        <hr style="border-color:var(--border);margin:4px 12px;">
+        <a href="/dashboard.html" class="dropdown-item">My Courses</a>
+        <a href="/explore-courses.html" class="dropdown-item">Browse Courses</a>
+        <button class="dropdown-item danger" id="signOutBtn">Sign Out</button>
+      </div>
     </div>
+  </div>
 </header>
 
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-head">
-        <div class="avatar" id="sidebarAvatar">S</div>
-        <div class="sidebar-head-info">
-            <div class="sidebar-head-name" id="sidebarName">Student</div>
-            <div class="sidebar-head-email" id="sidebarEmail">student@email.com</div>
-        </div>
-    </div>
-    <nav class="sidebar-nav">
-        <a href="/dashboard.html" class="sidebar-nav-item active">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-            My Courses
-        </a>
-    </nav>
-    <div class="sidebar-footer">
-        <button class="dropdown-item danger" style="width:100%; text-align:center;" id="sidebarSignOut">Sign Out</button>
-    </div>
-</aside>
+<!-- ============================================================
+DASHBOARD
+============================================================ -->
+<div class="wrap">
+  <div class="dashboard-header">
+    <h1>My Courses</h1>
+    <p>Continue where you left off.</p>
+  </div>
 
-<div class="main-wrap">
-    <h1 class="page-title">My Courses</h1>
-    <p class="page-subtitle">Continue where you left off.</p>
-    <div class="course-grid" id="courseGrid">
-        <div class="spinner-ring" id="spinner"></div>
-    </div>
-    <div class="empty-state" id="emptyState" style="display:none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        <h3>No Courses Yet</h3>
-        <p>Your enrolled courses will appear here once an admin assigns them to your account.</p>
-    </div>
+  <div class="course-grid" id="courseGrid">
+    <div class="spinner-ring"></div>
+  </div>
 </div>
 
-<footer class="ftr">
-    <div class="ftr-grid">
-        <div class="ftr-col"><h4>SciVerse Academy</h4><a href="#">About</a><a href="#">Our Mission</a></div>
-        <div class="ftr-col"><h4>Platform</h4><a href="/dashboard.html">My Courses</a><a href="#">Learning Paths</a></div>
-        <div class="ftr-col"><h4>Support</h4><a href="#">Help Center</a><a href="#">Contact</a></div>
-        <div class="ftr-col"><h4>Legal</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+<!-- ============================================================
+FOOTER
+============================================================ -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-brand">
+          <img src="/images/protected.png" alt="SciVerse Academy">
+          <span>SciVerse</span>
+        </div>
+        <p class="label">Premium courses taught by industry experts. Learn at your own pace, anywhere, anytime.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="/">Home</a>
+        <a href="/explore-courses.html">All Courses</a>
+        <a href="/dashboard.html">My Courses</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="#">Help Center</a>
+        <a href="#">Contact</a>
+        <a href="#">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
     </div>
-    <div class="ftr-bottom"><p>Protected Content &copy; 2026 SciVerse Academy. All rights reserved.</p></div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 SciVerse Academy. All rights reserved.</p>
+    </div>
+  </div>
 </footer>
+
+<!-- ============================================================
+TOAST
+============================================================ -->
 <div class="toast" id="toast"></div>
 
 <script>
-const token = localStorage.getItem('site_token');
-const user = JSON.parse(localStorage.getItem('site_user') || 'null');
-if (!token || !user) { window.location.href = '/index.html'; }
-if (user.role === 'admin') { window.location.href = '/admin.html'; }
+// ──────────────────────────────────────────────
+// THEME TOGGLE
+// ──────────────────────────────────────────────
+(function initTheme(){
+  var stored = localStorage.getItem('sv-theme');
+  var theme = stored || 'dark';
+  document.body.setAttribute('data-theme', theme);
+})();
 
-function esc(s) { const d = document.createElement('div'); d.textContent = String(s || ''); return d.innerHTML; }
-function showToast(msg, type) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast toast-' + (type || 'success') + ' show';
-    setTimeout(function(){ t.classList.remove('show'); }, 3500);
+document.getElementById('themeToggle').addEventListener('click', function(){
+  var cur = document.body.getAttribute('data-theme');
+  var next = cur === 'dark' ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', next);
+  localStorage.setItem('sv-theme', next);
+  showToast(next === 'dark' ? '🌙 Dark mode enabled' : '☀️ Light mode enabled', 'success');
+});
+
+// ──────────────────────────────────────────────
+// AUTH CHECK
+// ──────────────────────────────────────────────
+var token = localStorage.getItem('site_token');
+var user = JSON.parse(localStorage.getItem('site_user') || 'null');
+
+if (!token || !user) {
+  window.location.href = '/login.html';
 }
 
-async function api(method, path, body) {
-    try {
-        const opts = { method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }};
-        if (body) opts.body = JSON.stringify(body);
-        const res = await fetch('/api' + path, opts);
-        const data = await res.json();
-        return { ok: res.ok, data, status: res.status };
-    } catch(e) {
-        return { ok: false, data: { error: 'Network error. Please try again.' }, status: 0 };
-    }
+if (user.role === 'admin') {
+  window.location.href = '/admin.html';
 }
 
-function signOut() {
-    localStorage.removeItem('site_token');
-    localStorage.removeItem('site_user');
-    window.location.href = '/index.html';
-}
-
-// Profile setup
+// ──────────────────────────────────────────────
+// PROFILE
+// ──────────────────────────────────────────────
 document.getElementById('profileAvatar').textContent = (user.name || 'S')[0].toUpperCase();
-document.getElementById('profileName').textContent = esc(user.name || 'Student');
-document.getElementById('sidebarAvatar').textContent = (user.name || 'S')[0].toUpperCase();
-document.getElementById('sidebarName').textContent = esc(user.name || 'Student');
-document.getElementById('sidebarEmail').textContent = esc(user.email || '');
-document.getElementById('profileBtn').addEventListener('click', function(e) {
-    e.stopPropagation();
-    document.getElementById('profileDropdown').classList.toggle('open');
+document.getElementById('profileNameBtn').textContent = user.name || 'Student';
+document.getElementById('profileEmailBtn').textContent = user.email || '';
+
+document.getElementById('profileAvatar').addEventListener('click', function(e) {
+  e.stopPropagation();
+  document.getElementById('profileDropdown').classList.toggle('open');
 });
+
 document.addEventListener('click', function() {
-    document.getElementById('profileDropdown').classList.remove('open');
+  document.getElementById('profileDropdown').classList.remove('open');
 });
-document.getElementById('signOutBtn').addEventListener('click', signOut);
-document.getElementById('sidebarSignOut').addEventListener('click', signOut);
 
-// Sidebar
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('sidebarOverlay');
-function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); }
-function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
-document.getElementById('hamburgerBtn').addEventListener('click', openSidebar);
-overlay.addEventListener('click', closeSidebar);
+document.getElementById('signOutBtn').addEventListener('click', function() {
+  localStorage.removeItem('site_token');
+  localStorage.removeItem('site_user');
+  window.location.href = '/login.html';
+});
 
-// Load courses
-async function loadCourses() {
-    const grid = document.getElementById('courseGrid');
-    const spinner = document.getElementById('spinner');
-    const empty = document.getElementById('emptyState');
-
-    const { ok, data } = await api('GET', '/user/courses');
-    spinner.style.display = 'none';
-
-    if (!ok) {
-        empty.querySelector('h3').textContent = 'Error Loading Courses';
-        empty.querySelector('p').textContent = data.error || 'Please try again.';
-        empty.style.display = 'block';
-        return;
-    }
-
-    if (!data.courses || !data.courses.length) {
-        empty.style.display = 'block';
-        return;
-    }
-
-    grid.innerHTML = '';
-    data.courses.forEach(function(course) {
-        const card = document.createElement('a');
-        card.href = '/course.html?id=' + course.id;
-        card.className = 'course-card';
-        
-        // Strip HTML tags for plain text preview fallback, but render HTML in the card
-        var descHtml = course.description || 'No description';
-        var createdAt = course.created_at ? course.created_at.split('T')[0] : '';
-        
-        card.innerHTML = 
-            '<div class="course-card-title">' + esc(course.title) + '</div>' +
-            '<div class="course-card-desc">' + descHtml + '</div>' +
-            '<div class="course-card-meta">Enrolled</div>';
-        
-        grid.appendChild(card);
-    });
+// ──────────────────────────────────────────────
+// TOAST
+// ──────────────────────────────────────────────
+function showToast(msg, type){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show toast-' + (type || 'success');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3500);
 }
 
-loadCourses();
+// ──────────────────────────────────────────────
+// API HELPER
+// ──────────────────────────────────────────────
+async function api(method, path, body){
+  try {
+    var opts = { 
+      method: method, 
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      } 
+    };
+    if (body) opts.body = JSON.stringify(body);
+    var res = await fetch('/api' + path, opts);
+    var data = await res.json();
+    return { ok: res.ok, data: data, status: res.status };
+  } catch (e) {
+    return { ok: false, data: { error: 'Network error.' }, status: 0 };
+  }
+}
+
+function esc(s){
+  var d = document.createElement('div');
+  d.textContent = String(s || '');
+  return d.innerHTML;
+}
+
+// ──────────────────────────────────────────────
+// LOAD ENROLLED COURSES
+// ──────────────────────────────────────────────
+async function loadCourses(){
+  var grid = document.getElementById('courseGrid');
+  
+  // Show skeleton
+  grid.innerHTML = Array(3).fill(0).map(function(){
+    return '<div class="course-card">' +
+      '<div class="course-thumbnail"><div class="skeleton" style="width:100%;height:100%;"></div></div>' +
+      '<div class="course-body">' +
+        '<div class="skeleton" style="width:70%;height:24px;border-radius:4px;"></div>' +
+        '<div class="skeleton" style="width:90%;height:40px;border-radius:4px;"></div>' +
+        '<div class="skeleton" style="width:100%;height:38px;border-radius:var(--radius);"></div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  var { ok, data } = await api('GET', '/user/courses');
+  
+  if (!ok || !data.courses || !data.courses.length) {
+    grid.innerHTML = 
+      '<div class="empty-state">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M8 7h8M8 12h6M8 17h4"/></svg>' +
+        '<h3>No Courses Yet</h3>' +
+        '<p>Your enrolled courses will appear here once an admin assigns them to your account.</p>' +
+        '<a href="/explore-courses.html" class="btn btn-primary">Browse Courses</a>' +
+      '</div>';
+    return;
+  }
+
+  grid.innerHTML = '';
+  data.courses.forEach(function(course) {
+    var card = document.createElement('div');
+    card.className = 'course-card';
+    
+    var thumbHtml = course.thumbnail_url 
+      ? '<img src="' + esc(course.thumbnail_url) + '" alt="' + esc(course.title) + '" loading="lazy">'
+      : '<div class="placeholder">' + (course.icon || '📚') + '</div>';
+    
+    card.innerHTML = 
+      '<div class="course-thumbnail">' + thumbHtml + '</div>' +
+      '<div class="course-body">' +
+        '<h3>' + esc(course.title) + '</h3>' +
+        '<p>' + esc(course.description || 'Learn from industry experts.') + '</p>' +
+        '<a href="/course.html?id=' + course.id + '" class="btn btn-primary btn-block">Continue Learning</a>' +
+      '</div>';
+    
+    grid.appendChild(card);
+  });
+}
+
+// ──────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  loadCourses();
+});
 </script>
 </body>
 </html>
