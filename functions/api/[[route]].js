@@ -4,6 +4,8 @@
 // ============================================================
 
 const JWT_SECRET = 'sciverse-academy-jwt-secret-key-2026';
+const IMGBB_API_KEY = '32006c4775fab8a5ff2fae9d23b9f863';
+
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -93,6 +95,7 @@ async function hashFingerprint(fp) {
 // ─── DATABASE SETUP ─────────────────────────────────────────
 
 async function ensureTables(db) {
+  // Users table
   await db.prepare(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -109,16 +112,22 @@ async function ensureTables(db) {
     )
   `).run();
 
+  // Courses table
   await db.prepare(`
     CREATE TABLE IF NOT EXISTS courses (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
       description TEXT DEFAULT '',
+      thumbnail_url TEXT DEFAULT '',
+      icon TEXT DEFAULT '📚',
+      is_public INTEGER DEFAULT 0,
+      is_featured INTEGER DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `).run();
 
+  // Subjects table
   await db.prepare(`
     CREATE TABLE IF NOT EXISTS subjects (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -128,10 +137,11 @@ async function ensureTables(db) {
       sort_order INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (course_id) REFERENCES courses(id)
+      FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
     )
   `).run();
 
+  // Lectures table
   await db.prepare(`
     CREATE TABLE IF NOT EXISTS lectures (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -142,10 +152,11 @@ async function ensureTables(db) {
       sort_order INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (subject_id) REFERENCES subjects(id)
+      FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
     )
   `).run();
 
+  // Resources table
   await db.prepare(`
     CREATE TABLE IF NOT EXISTS resources (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -156,22 +167,24 @@ async function ensureTables(db) {
       sort_order INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (course_id) REFERENCES courses(id)
+      FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
     )
   `).run();
 
+  // Enrollments table
   await db.prepare(`
     CREATE TABLE IF NOT EXISTS enrollments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
       course_id INTEGER NOT NULL,
       enrolled_at TEXT NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (user_id) REFERENCES users(id),
-      FOREIGN KEY (course_id) REFERENCES courses(id),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE,
       UNIQUE(user_id, course_id)
     )
   `).run();
 
+  // Audit logs table
   await db.prepare(`
     CREATE TABLE IF NOT EXISTS audit_logs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -183,6 +196,24 @@ async function ensureTables(db) {
     )
   `).run();
 
+  // Payments table
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS payments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      course_id INTEGER NOT NULL,
+      amount INTEGER NOT NULL DEFAULT 0,
+      method TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      transaction_id TEXT,
+      status TEXT DEFAULT 'pending',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      verified_at TEXT,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+    )
+  `).run();
+
   // Indexes
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_subjects_course ON subjects(course_id)`).run();
@@ -191,18 +222,31 @@ async function ensureTables(db) {
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_enrollments_user ON enrollments(user_id)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_enrollments_course ON enrollments(course_id)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_audit_user ON audit_logs(user_id)`).run();
+  await db.prepare(`CREATE INDEX IF NOT EXISTS idx_payments_user ON payments(user_id)`).run();
+  await db.prepare(`CREATE INDEX IF NOT EXISTS idx_payments_course ON payments(course_id)`).run();
+  await db.prepare(`CREATE INDEX IF NOT EXISTS idx_payments_status ON payments(status)`).run();
 
   // Seed admin
   const adminPass = await sha256('Sc1Verse@Admin#2026');
   await db.prepare(`
     INSERT OR IGNORE INTO users (name, email, password, role, is_approved)
-    VALUES ('Admin', 'text.me.md.alamin@gmail.com', ?, 'admin', 1)
+    VALUES ('Admin', 'admin@sciverse.com', ?, 'admin', 1)
   `).bind(adminPass).run();
+
+  // Seed sample course
+  await db.prepare(`
+    INSERT OR IGNORE INTO courses (title, description, icon, is_public, is_featured)
+    VALUES ('Introduction to Science', 'Learn the fundamentals of science.', '🔬', 1, 1)
+  `).run();
 
   // Migrations
   const migrations = [
     "ALTER TABLE users ADD COLUMN device_ip TEXT",
     "ALTER TABLE users ADD COLUMN device_fingerprint TEXT",
+    "ALTER TABLE courses ADD COLUMN is_public INTEGER DEFAULT 0",
+    "ALTER TABLE courses ADD COLUMN is_featured INTEGER DEFAULT 0",
+    "ALTER TABLE courses ADD COLUMN thumbnail_url TEXT DEFAULT ''",
+    "ALTER TABLE courses ADD COLUMN icon TEXT DEFAULT '📚'",
   ];
   for (const sql of migrations) {
     try { await db.prepare(sql).run(); } catch (e) { /* column likely exists */ }
@@ -289,6 +333,108 @@ async function handleAuth(method, path, body, db, request) {
   return err('Not found', 404);
 }
 
+// ─── PUBLIC COURSE HANDLERS ──────────────────────────────────
+
+async function handlePublicCourses(method, path, db, request) {
+  // GET /api/courses/public?limit=3 - Featured courses for index
+  if (method === 'GET' && path === '/courses/public') {
+    const url = new URL(request.url);
+    const limit = parseInt(url.searchParams.get('limit')) || 3;
+    
+    const courses = await db.prepare(`
+      SELECT 
+        c.*,
+        COUNT(DISTINCT s.id) as subject_count,
+        COUNT(DISTINCT l.id) as lecture_count,
+        COUNT(DISTINCT e.id) as enrollment_count
+      FROM courses c
+      LEFT JOIN subjects s ON c.id = s.course_id
+      LEFT JOIN lectures l ON s.id = l.subject_id
+      LEFT JOIN enrollments e ON c.id = e.course_id
+      WHERE c.is_public = 1 AND c.is_featured = 1
+      GROUP BY c.id
+      ORDER BY c.created_at DESC
+      LIMIT ?
+    `).bind(limit).all();
+    
+    return json({ courses: courses.results });
+  }
+
+  // GET /api/courses/explore - All public courses
+  if (method === 'GET' && path === '/courses/explore') {
+    const courses = await db.prepare(`
+      SELECT 
+        c.*,
+        COUNT(DISTINCT s.id) as subject_count,
+        COUNT(DISTINCT l.id) as lecture_count,
+        COUNT(DISTINCT e.id) as enrollment_count
+      FROM courses c
+      LEFT JOIN subjects s ON c.id = s.course_id
+      LEFT JOIN lectures l ON s.id = l.subject_id
+      LEFT JOIN enrollments e ON c.id = e.course_id
+      WHERE c.is_public = 1
+      GROUP BY c.id
+      ORDER BY c.is_featured DESC, c.created_at DESC
+    `).all();
+    
+    return json({ courses: courses.results });
+  }
+
+  // GET /api/courses/:id - Single course detail
+  if (method === 'GET' && path.match(/^\/courses\/\d+$/)) {
+    const courseId = parseInt(path.split('/')[2]);
+    
+    const course = await db.prepare('SELECT * FROM courses WHERE id = ?').bind(courseId).first();
+    if (!course) return err('Course not found', 404);
+    
+    // Check if public or user has access
+    if (!course.is_public) {
+      const authUser = await getUser(request);
+      if (!authUser) return err('Authentication required', 401);
+      if (authUser.role !== 'admin') {
+        const enrollment = await db.prepare('SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?').bind(authUser.id, courseId).first();
+        if (!enrollment) return err('Access denied. Course is not public.', 403);
+      }
+    }
+    
+    const subjects = await db.prepare('SELECT * FROM subjects WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
+    const resources = await db.prepare('SELECT * FROM resources WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
+    const enrollmentCount = await db.prepare('SELECT COUNT(*) as count FROM enrollments WHERE course_id = ?').bind(courseId).first();
+    
+    const subjectsWithLectures = [];
+    for (const sub of subjects.results) {
+      const lectures = await db.prepare('SELECT * FROM lectures WHERE subject_id = ? ORDER BY sort_order ASC, id ASC').bind(sub.id).all();
+      subjectsWithLectures.push({ ...sub, lectures: lectures.results });
+    }
+    
+    return json({ 
+      course: { 
+        ...course, 
+        enrollment_count: enrollmentCount ? enrollmentCount.count : 0 
+      }, 
+      subjects: subjectsWithLectures, 
+      resources: resources.results 
+    });
+  }
+
+  // GET /api/courses/stats - Course statistics
+  if (method === 'GET' && path === '/courses/stats') {
+    const totalCourses = await db.prepare('SELECT COUNT(*) as count FROM courses WHERE is_public = 1').first();
+    const totalSubjects = await db.prepare('SELECT COUNT(*) as count FROM subjects').first();
+    const totalLectures = await db.prepare('SELECT COUNT(*) as count FROM lectures').first();
+    
+    return json({
+      stats: {
+        total_courses: totalCourses ? totalCourses.count : 0,
+        total_subjects: totalSubjects ? totalSubjects.count : 0,
+        total_lectures: totalLectures ? totalLectures.count : 0
+      }
+    });
+  }
+
+  return err('Not found', 404);
+}
+
 // ─── USER HANDLERS ──────────────────────────────────────────
 
 async function handleUser(method, path, body, db, user, request) {
@@ -328,7 +474,6 @@ async function handleUser(method, path, body, db, user, request) {
     const subjects = await db.prepare('SELECT * FROM subjects WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
     const resources = await db.prepare('SELECT * FROM resources WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
 
-    // Get lectures for each subject
     const subjectsWithLectures = [];
     for (const sub of subjects.results) {
       const lectures = await db.prepare('SELECT * FROM lectures WHERE subject_id = ? ORDER BY sort_order ASC, id ASC').bind(sub.id).all();
@@ -352,21 +497,21 @@ async function handleAdmin(method, path, body, db, user, request) {
 
   if (method === 'PUT' && path.match(/^\/admin\/users\/\d+\/approve$/)) {
     const userId = parseInt(path.split('/')[3]);
-    await db.prepare('UPDATE users SET is_approved = 1, updated_at = datetime(\'now\') WHERE id = ?').bind(userId).run();
+    await db.prepare('UPDATE users SET is_approved = 1, updated_at = datetime("now") WHERE id = ?').bind(userId).run();
     await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `approved_user_${userId}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
     return json({ message: 'User approved.' });
   }
 
   if (method === 'PUT' && path.match(/^\/admin\/users\/\d+\/block$/)) {
     const userId = parseInt(path.split('/')[3]);
-    await db.prepare('UPDATE users SET is_blocked = 1, updated_at = datetime(\'now\') WHERE id = ?').bind(userId).run();
+    await db.prepare('UPDATE users SET is_blocked = 1, updated_at = datetime("now") WHERE id = ?').bind(userId).run();
     await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `blocked_user_${userId}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
     return json({ message: 'User blocked.' });
   }
 
   if (method === 'PUT' && path.match(/^\/admin\/users\/\d+\/unblock$/)) {
     const userId = parseInt(path.split('/')[3]);
-    await db.prepare('UPDATE users SET is_blocked = 0, updated_at = datetime(\'now\') WHERE id = ?').bind(userId).run();
+    await db.prepare('UPDATE users SET is_blocked = 0, updated_at = datetime("now") WHERE id = ?').bind(userId).run();
     await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `unblocked_user_${userId}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
     return json({ message: 'User unblocked.' });
   }
@@ -375,6 +520,7 @@ async function handleAdmin(method, path, body, db, user, request) {
     const userId = parseInt(path.split('/')[3]);
     await db.prepare('DELETE FROM enrollments WHERE user_id = ?').bind(userId).run();
     await db.prepare('DELETE FROM audit_logs WHERE user_id = ?').bind(userId).run();
+    await db.prepare('DELETE FROM payments WHERE user_id = ?').bind(userId).run();
     await db.prepare('DELETE FROM users WHERE id = ?').bind(userId).run();
     await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `deleted_user_${userId}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
     return json({ message: 'User deleted.' });
@@ -382,12 +528,182 @@ async function handleAdmin(method, path, body, db, user, request) {
 
   if (method === 'PUT' && path.match(/^\/admin\/users\/\d+\/reset-device$/)) {
     const userId = parseInt(path.split('/')[3]);
-    await db.prepare('UPDATE users SET device_fingerprint = NULL, updated_at = datetime(\'now\') WHERE id = ?').bind(userId).run();
+    await db.prepare('UPDATE users SET device_fingerprint = NULL, updated_at = datetime("now") WHERE id = ?').bind(userId).run();
     await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `reset_device_${userId}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
     return json({ message: 'Device fingerprint reset. User can log in from a new device.' });
   }
 
+  // ── COURSES ──
+  if (method === 'GET' && path === '/admin/courses') {
+    const courses = await db.prepare('SELECT * FROM courses ORDER BY created_at DESC').all();
+    return json({ courses: courses.results });
+  }
+
+  if (method === 'POST' && path === '/admin/courses') {
+    const { title, description, thumbnail_url, icon, is_public, is_featured } = body || {};
+    if (!title) return err('Title required', 400);
+    const result = await db.prepare(
+      'INSERT INTO courses (title, description, thumbnail_url, icon, is_public, is_featured) VALUES (?, ?, ?, ?, ?, ?)'
+    ).bind(title.trim(), description || '', thumbnail_url || '', icon || '📚', is_public || 0, is_featured || 0).run();
+    await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `created_course_${result.meta.last_row_id}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
+    return json({ id: result.meta.last_row_id, message: 'Course created.' }, 201);
+  }
+
+  if (method === 'PUT' && path.match(/^\/admin\/courses\/\d+$/)) {
+    const courseId = parseInt(path.split('/')[3]);
+    const { title, description, thumbnail_url, icon, is_public, is_featured } = body || {};
+    if (!title) return err('Title required', 400);
+    await db.prepare(
+      'UPDATE courses SET title = ?, description = ?, thumbnail_url = ?, icon = ?, is_public = ?, is_featured = ?, updated_at = datetime("now") WHERE id = ?'
+    ).bind(title.trim(), description || '', thumbnail_url || '', icon || '📚', is_public || 0, is_featured || 0, courseId).run();
+    return json({ message: 'Course updated.' });
+  }
+
+  if (method === 'DELETE' && path.match(/^\/admin\/courses\/\d+$/)) {
+    const courseId = parseInt(path.split('/')[3]);
+    await db.prepare('DELETE FROM courses WHERE id = ?').bind(courseId).run();
+    await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `deleted_course_${courseId}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
+    return json({ message: 'Course deleted.' });
+  }
+
+  // Toggle public
+  if (method === 'PUT' && path.match(/^\/admin\/courses\/\d+\/toggle-public$/)) {
+    const courseId = parseInt(path.split('/')[3]);
+    const course = await db.prepare('SELECT is_public FROM courses WHERE id = ?').bind(courseId).first();
+    if (!course) return err('Course not found', 404);
+    const newVal = course.is_public ? 0 : 1;
+    await db.prepare('UPDATE courses SET is_public = ?, updated_at = datetime("now") WHERE id = ?').bind(newVal, courseId).run();
+    return json({ is_public: newVal, message: 'Course visibility toggled.' });
+  }
+
+  // Toggle featured
+  if (method === 'PUT' && path.match(/^\/admin\/courses\/\d+\/toggle-featured$/)) {
+    const courseId = parseInt(path.split('/')[3]);
+    const course = await db.prepare('SELECT is_featured FROM courses WHERE id = ?').bind(courseId).first();
+    if (!course) return err('Course not found', 404);
+    const newVal = course.is_featured ? 0 : 1;
+    await db.prepare('UPDATE courses SET is_featured = ?, updated_at = datetime("now") WHERE id = ?').bind(newVal, courseId).run();
+    return json({ is_featured: newVal, message: 'Course featured toggled.' });
+  }
+
+  // Upload thumbnail via ImgBB
+  if (method === 'POST' && path.match(/^\/admin\/courses\/\d+\/thumbnail$/)) {
+    const courseId = parseInt(path.split('/')[3]);
+    const formData = await request.formData();
+    const image = formData.get('image');
+    if (!image) return err('Image required', 400);
+
+    try {
+      const imgFormData = new FormData();
+      imgFormData.append('image', image);
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+        method: 'POST',
+        body: imgFormData
+      });
+      const data = await response.json();
+      if (!data.success) return err('Failed to upload to ImgBB', 400);
+      
+      const thumbnail_url = data.data.url;
+      await db.prepare('UPDATE courses SET thumbnail_url = ?, updated_at = datetime("now") WHERE id = ?').bind(thumbnail_url, courseId).run();
+      return json({ thumbnail_url, message: 'Thumbnail uploaded successfully.' });
+    } catch (e) {
+      return err('Failed to upload image.', 500);
+    }
+  }
+
+  // ── SUBJECTS ──
+  if (method === 'GET' && path === '/admin/subjects') {
+    const subjects = await db.prepare('SELECT * FROM subjects ORDER BY course_id, sort_order ASC').all();
+    return json({ subjects: subjects.results });
+  }
+
+  if (method === 'POST' && path === '/admin/subjects') {
+    const { course_id, title, description, sort_order } = body || {};
+    if (!course_id || !title) return err('course_id and title required', 400);
+    const result = await db.prepare('INSERT INTO subjects (course_id, title, description, sort_order) VALUES (?, ?, ?, ?)').bind(course_id, title.trim(), description || '', sort_order || 0).run();
+    return json({ id: result.meta.last_row_id, message: 'Subject created.' }, 201);
+  }
+
+  if (method === 'PUT' && path.match(/^\/admin\/subjects\/\d+$/)) {
+    const subjectId = parseInt(path.split('/')[3]);
+    const { title, description, sort_order } = body || {};
+    if (!title) return err('Title required', 400);
+    await db.prepare('UPDATE subjects SET title = ?, description = ?, sort_order = ?, updated_at = datetime("now") WHERE id = ?').bind(title.trim(), description || '', sort_order || 0, subjectId).run();
+    return json({ message: 'Subject updated.' });
+  }
+
+  if (method === 'DELETE' && path.match(/^\/admin\/subjects\/\d+$/)) {
+    const subjectId = parseInt(path.split('/')[3]);
+    await db.prepare('DELETE FROM subjects WHERE id = ?').bind(subjectId).run();
+    return json({ message: 'Subject deleted.' });
+  }
+
+  // ── LECTURES ──
+  if (method === 'GET' && path === '/admin/lectures') {
+    const lectures = await db.prepare('SELECT * FROM lectures ORDER BY subject_id, sort_order ASC').all();
+    return json({ lectures: lectures.results });
+  }
+
+  if (method === 'POST' && path === '/admin/lectures') {
+    const { subject_id, title, youtube_id, pdf_url, sort_order } = body || {};
+    if (!subject_id || !title) return err('subject_id and title required', 400);
+    const result = await db.prepare('INSERT INTO lectures (subject_id, title, youtube_id, pdf_url, sort_order) VALUES (?, ?, ?, ?, ?)').bind(subject_id, title.trim(), youtube_id || '', pdf_url || '', sort_order || 0).run();
+    return json({ id: result.meta.last_row_id, message: 'Lecture created.' }, 201);
+  }
+
+  if (method === 'PUT' && path.match(/^\/admin\/lectures\/\d+$/)) {
+    const lectureId = parseInt(path.split('/')[3]);
+    const { title, youtube_id, pdf_url, sort_order } = body || {};
+    if (!title) return err('Title required', 400);
+    await db.prepare('UPDATE lectures SET title = ?, youtube_id = ?, pdf_url = ?, sort_order = ?, updated_at = datetime("now") WHERE id = ?').bind(title.trim(), youtube_id || '', pdf_url || '', sort_order || 0, lectureId).run();
+    return json({ message: 'Lecture updated.' });
+  }
+
+  if (method === 'DELETE' && path.match(/^\/admin\/lectures\/\d+$/)) {
+    const lectureId = parseInt(path.split('/')[3]);
+    await db.prepare('DELETE FROM lectures WHERE id = ?').bind(lectureId).run();
+    return json({ message: 'Lecture deleted.' });
+  }
+
+  // ── RESOURCES ──
+  if (method === 'GET' && path === '/admin/resources') {
+    const resources = await db.prepare('SELECT * FROM resources ORDER BY course_id, sort_order ASC').all();
+    return json({ resources: resources.results });
+  }
+
+  if (method === 'POST' && path === '/admin/resources') {
+    const { course_id, title, description, link_url, sort_order } = body || {};
+    if (!course_id || !title) return err('course_id and title required', 400);
+    const result = await db.prepare('INSERT INTO resources (course_id, title, description, link_url, sort_order) VALUES (?, ?, ?, ?, ?)').bind(course_id, title.trim(), description || '', link_url || '', sort_order || 0).run();
+    return json({ id: result.meta.last_row_id, message: 'Resource created.' }, 201);
+  }
+
+  if (method === 'PUT' && path.match(/^\/admin\/resources\/\d+$/)) {
+    const resourceId = parseInt(path.split('/')[3]);
+    const { title, description, link_url, sort_order } = body || {};
+    if (!title) return err('Title required', 400);
+    await db.prepare('UPDATE resources SET title = ?, description = ?, link_url = ?, sort_order = ?, updated_at = datetime("now") WHERE id = ?').bind(title.trim(), description || '', link_url || '', sort_order || 0, resourceId).run();
+    return json({ message: 'Resource updated.' });
+  }
+
+  if (method === 'DELETE' && path.match(/^\/admin\/resources\/\d+$/)) {
+    const resourceId = parseInt(path.split('/')[3]);
+    await db.prepare('DELETE FROM resources WHERE id = ?').bind(resourceId).run();
+    return json({ message: 'Resource deleted.' });
+  }
+
   // ── ENROLLMENTS ──
+  if (method === 'GET' && path === '/admin/enrollments') {
+    const enrollments = await db.prepare(`
+      SELECT e.*, u.name as user_name, u.email as user_email, c.title as course_title
+      FROM enrollments e
+      JOIN users u ON e.user_id = u.id
+      JOIN courses c ON e.course_id = c.id
+      ORDER BY e.enrolled_at DESC
+    `).all();
+    return json({ enrollments: enrollments.results });
+  }
+
   if (method === 'POST' && path === '/admin/enrollments') {
     const { user_id, course_id } = body || {};
     if (!user_id || !course_id) return err('user_id and course_id required', 400);
@@ -405,118 +721,50 @@ async function handleAdmin(method, path, body, db, user, request) {
     return json({ message: 'User unenrolled from course.' });
   }
 
-  if (method === 'GET' && path === '/admin/enrollments') {
-    const enrollments = await db.prepare(`
-      SELECT e.*, u.name as user_name, u.email as user_email, c.title as course_title
-      FROM enrollments e
-      JOIN users u ON e.user_id = u.id
-      JOIN courses c ON e.course_id = c.id
-      ORDER BY e.enrolled_at DESC
+  // ── PAYMENTS ──
+  if (method === 'GET' && path === '/admin/payments') {
+    const payments = await db.prepare(`
+      SELECT p.*, u.name as user_name, u.email as user_email, c.title as course_title
+      FROM payments p
+      JOIN users u ON p.user_id = u.id
+      JOIN courses c ON p.course_id = c.id
+      ORDER BY p.created_at DESC
     `).all();
-    return json({ enrollments: enrollments.results });
+    return json({ payments: payments.results });
   }
 
-  // ── COURSES ──
-  if (method === 'GET' && path === '/admin/courses') {
-    const courses = await db.prepare('SELECT * FROM courses ORDER BY created_at DESC').all();
-    return json({ courses: courses.results });
+  if (method === 'GET' && path === '/admin/payments/pending') {
+    const payments = await db.prepare(`
+      SELECT p.*, u.name as user_name, u.email as user_email, c.title as course_title
+      FROM payments p
+      JOIN users u ON p.user_id = u.id
+      JOIN courses c ON p.course_id = c.id
+      WHERE p.status = 'pending'
+      ORDER BY p.created_at ASC
+    `).all();
+    return json({ payments: payments.results });
   }
 
-  if (method === 'POST' && path === '/admin/courses') {
-    const { title, description } = body || {};
-    if (!title) return err('Title required', 400);
-    const result = await db.prepare('INSERT INTO courses (title, description) VALUES (?, ?)').bind(title.trim(), description || '').run();
-    await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `created_course_${result.meta.last_row_id}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
-    return json({ id: result.meta.last_row_id, message: 'Course created.' }, 201);
+  if (method === 'PUT' && path.match(/^\/admin\/payments\/\d+\/verify$/)) {
+    const paymentId = parseInt(path.split('/')[3]);
+    const payment = await db.prepare('SELECT * FROM payments WHERE id = ?').bind(paymentId).first();
+    if (!payment) return err('Payment not found', 404);
+    if (payment.status !== 'pending') return err('Payment already verified or rejected', 400);
+    
+    await db.prepare('UPDATE payments SET status = "verified", verified_at = datetime("now") WHERE id = ?').bind(paymentId).run();
+    await db.prepare('INSERT OR IGNORE INTO enrollments (user_id, course_id) VALUES (?, ?)').bind(payment.user_id, payment.course_id).run();
+    await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `verified_payment_${paymentId}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
+    return json({ message: 'Payment verified and user enrolled.' });
   }
 
-  if (method === 'PUT' && path.match(/^\/admin\/courses\/\d+$/)) {
-    const courseId = parseInt(path.split('/')[3]);
-    const { title, description } = body || {};
-    if (!title) return err('Title required', 400);
-    await db.prepare('UPDATE courses SET title = ?, description = ?, updated_at = datetime(\'now\') WHERE id = ?').bind(title.trim(), description || '', courseId).run();
-    return json({ message: 'Course updated.' });
-  }
-
-  if (method === 'DELETE' && path.match(/^\/admin\/courses\/\d+$/)) {
-    const courseId = parseInt(path.split('/')[3]);
-    const subjects = await db.prepare('SELECT id FROM subjects WHERE course_id = ?').bind(courseId).all();
-    for (const sub of subjects.results) {
-      await db.prepare('DELETE FROM lectures WHERE subject_id = ?').bind(sub.id).run();
-    }
-    await db.prepare('DELETE FROM subjects WHERE course_id = ?').bind(courseId).run();
-    await db.prepare('DELETE FROM resources WHERE course_id = ?').bind(courseId).run();
-    await db.prepare('DELETE FROM enrollments WHERE course_id = ?').bind(courseId).run();
-    await db.prepare('DELETE FROM courses WHERE id = ?').bind(courseId).run();
-    await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `deleted_course_${courseId}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
-    return json({ message: 'Course and all related data deleted.' });
-  }
-
-  // ── SUBJECTS ──
-  if (method === 'POST' && path === '/admin/subjects') {
-    const { course_id, title, description, sort_order } = body || {};
-    if (!course_id || !title) return err('course_id and title required', 400);
-    const result = await db.prepare('INSERT INTO subjects (course_id, title, description, sort_order) VALUES (?, ?, ?, ?)').bind(course_id, title.trim(), description || '', sort_order || 0).run();
-    return json({ id: result.meta.last_row_id, message: 'Subject created.' }, 201);
-  }
-
-  if (method === 'PUT' && path.match(/^\/admin\/subjects\/\d+$/)) {
-    const subjectId = parseInt(path.split('/')[3]);
-    const { title, description, sort_order } = body || {};
-    if (!title) return err('Title required', 400);
-    await db.prepare('UPDATE subjects SET title = ?, description = ?, sort_order = ?, updated_at = datetime(\'now\') WHERE id = ?').bind(title.trim(), description || '', sort_order || 0, subjectId).run();
-    return json({ message: 'Subject updated.' });
-  }
-
-  if (method === 'DELETE' && path.match(/^\/admin\/subjects\/\d+$/)) {
-    const subjectId = parseInt(path.split('/')[3]);
-    await db.prepare('DELETE FROM lectures WHERE subject_id = ?').bind(subjectId).run();
-    await db.prepare('DELETE FROM subjects WHERE id = ?').bind(subjectId).run();
-    return json({ message: 'Subject deleted.' });
-  }
-
-  // ── LECTURES ──
-  if (method === 'POST' && path === '/admin/lectures') {
-    const { subject_id, title, youtube_id, pdf_url, sort_order } = body || {};
-    if (!subject_id || !title) return err('subject_id and title required', 400);
-    const result = await db.prepare('INSERT INTO lectures (subject_id, title, youtube_id, pdf_url, sort_order) VALUES (?, ?, ?, ?, ?)').bind(subject_id, title.trim(), youtube_id || '', pdf_url || '', sort_order || 0).run();
-    return json({ id: result.meta.last_row_id, message: 'Lecture created.' }, 201);
-  }
-
-  if (method === 'PUT' && path.match(/^\/admin\/lectures\/\d+$/)) {
-    const lectureId = parseInt(path.split('/')[3]);
-    const { title, youtube_id, pdf_url, sort_order } = body || {};
-    if (!title) return err('Title required', 400);
-    await db.prepare('UPDATE lectures SET title = ?, youtube_id = ?, pdf_url = ?, sort_order = ?, updated_at = datetime(\'now\') WHERE id = ?').bind(title.trim(), youtube_id || '', pdf_url || '', sort_order || 0, lectureId).run();
-    return json({ message: 'Lecture updated.' });
-  }
-
-  if (method === 'DELETE' && path.match(/^\/admin\/lectures\/\d+$/)) {
-    const lectureId = parseInt(path.split('/')[3]);
-    await db.prepare('DELETE FROM lectures WHERE id = ?').bind(lectureId).run();
-    return json({ message: 'Lecture deleted.' });
-  }
-
-  // ── RESOURCES ──
-  if (method === 'POST' && path === '/admin/resources') {
-    const { course_id, title, description, link_url, sort_order } = body || {};
-    if (!course_id || !title) return err('course_id and title required', 400);
-    const result = await db.prepare('INSERT INTO resources (course_id, title, description, link_url, sort_order) VALUES (?, ?, ?, ?, ?)').bind(course_id, title.trim(), description || '', link_url || '', sort_order || 0).run();
-    return json({ id: result.meta.last_row_id, message: 'Resource created.' }, 201);
-  }
-
-  if (method === 'PUT' && path.match(/^\/admin\/resources\/\d+$/)) {
-    const resourceId = parseInt(path.split('/')[3]);
-    const { title, description, link_url, sort_order } = body || {};
-    if (!title) return err('Title required', 400);
-    await db.prepare('UPDATE resources SET title = ?, description = ?, link_url = ?, sort_order = ?, updated_at = datetime(\'now\') WHERE id = ?').bind(title.trim(), description || '', link_url || '', sort_order || 0, resourceId).run();
-    return json({ message: 'Resource updated.' });
-  }
-
-  if (method === 'DELETE' && path.match(/^\/admin\/resources\/\d+$/)) {
-    const resourceId = parseInt(path.split('/')[3]);
-    await db.prepare('DELETE FROM resources WHERE id = ?').bind(resourceId).run();
-    return json({ message: 'Resource deleted.' });
+  if (method === 'DELETE' && path.match(/^\/admin\/payments\/\d+$/)) {
+    const paymentId = parseInt(path.split('/')[3]);
+    const payment = await db.prepare('SELECT * FROM payments WHERE id = ?').bind(paymentId).first();
+    if (!payment) return err('Payment not found', 404);
+    
+    await db.prepare('DELETE FROM payments WHERE id = ?').bind(paymentId).run();
+    await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `deleted_payment_${paymentId}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
+    return json({ message: 'Payment deleted.' });
   }
 
   // ── AUDIT LOGS ──
@@ -531,14 +779,12 @@ async function handleAdmin(method, path, body, db, user, request) {
     return json({ logs: logs.results });
   }
 
-  // DELETE single audit log
   if (method === 'DELETE' && path.match(/^\/admin\/audit-logs\/\d+$/)) {
     const logId = parseInt(path.split('/')[3]);
     await db.prepare('DELETE FROM audit_logs WHERE id = ?').bind(logId).run();
     return json({ message: 'Log deleted.' });
   }
 
-  // DELETE all audit logs
   if (method === 'DELETE' && path === '/admin/audit-logs/all') {
     await db.prepare('DELETE FROM audit_logs').run();
     await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, 'deleted_all_audit_logs', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
@@ -552,15 +798,62 @@ async function handleAdmin(method, path, body, db, user, request) {
     const totalEnrollments = await db.prepare('SELECT COUNT(*) as count FROM enrollments').first();
     const pendingUsers = await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_approved = 0 AND is_blocked = 0').first();
     const blockedUsers = await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_blocked = 1').first();
+    const totalPayments = await db.prepare('SELECT COUNT(*) as count FROM payments WHERE status = "verified"').first();
+    const totalRevenue = await db.prepare('SELECT SUM(amount) as total FROM payments WHERE status = "verified"').first();
     return json({
       stats: {
-        total_users: totalUsers.count,
-        total_courses: totalCourses.count,
-        total_enrollments: totalEnrollments.count,
-        pending_users: pendingUsers.count,
-        blocked_users: blockedUsers.count
+        total_users: totalUsers ? totalUsers.count : 0,
+        total_courses: totalCourses ? totalCourses.count : 0,
+        total_enrollments: totalEnrollments ? totalEnrollments.count : 0,
+        pending_users: pendingUsers ? pendingUsers.count : 0,
+        blocked_users: blockedUsers ? blockedUsers.count : 0,
+        total_payments: totalPayments ? totalPayments.count : 0,
+        total_revenue: totalRevenue ? totalRevenue.total : 0
       }
     });
+  }
+
+  return err('Not found', 404);
+}
+
+// ─── PAYMENT HANDLERS ──────────────────────────────────────
+
+async function handlePayments(method, path, body, db, user, request) {
+  // POST /api/payments - Submit payment
+  if (method === 'POST' && path === '/payments') {
+    const { course_id, method, phone, transaction_id, amount } = body || {};
+    if (!course_id || !method || !phone) return err('course_id, method, and phone are required', 400);
+    if (!['bkash', 'nagad'].includes(method)) return err('Invalid payment method', 400);
+    
+    const course = await db.prepare('SELECT * FROM courses WHERE id = ?').bind(course_id).first();
+    if (!course) return err('Course not found', 404);
+    
+    // Check if already enrolled
+    const enrolled = await db.prepare('SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?').bind(user.id, course_id).first();
+    if (enrolled) return err('Already enrolled in this course', 400);
+    
+    // Check if payment already exists
+    const existing = await db.prepare('SELECT * FROM payments WHERE user_id = ? AND course_id = ? AND status = "pending"').bind(user.id, course_id).first();
+    if (existing) return err('You already have a pending payment for this course', 400);
+    
+    const result = await db.prepare(
+      'INSERT INTO payments (user_id, course_id, amount, method, phone, transaction_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    ).bind(user.id, course_id, amount || 0, method, phone, transaction_id || '', 'pending').run();
+    
+    await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `submitted_payment_${result.meta.last_row_id}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
+    
+    return json({ 
+      id: result.meta.last_row_id, 
+      message: 'Payment submitted successfully. Awaiting admin verification.' 
+    }, 201);
+  }
+
+  // GET /api/payments/status/:id - Check payment status
+  if (method === 'GET' && path.match(/^\/payments\/status\/\d+$/)) {
+    const paymentId = parseInt(path.split('/')[3]);
+    const payment = await db.prepare('SELECT status, created_at, verified_at FROM payments WHERE id = ? AND user_id = ?').bind(paymentId, user.id).first();
+    if (!payment) return err('Payment not found', 404);
+    return json({ payment });
   }
 
   return err('Not found', 404);
@@ -588,7 +881,18 @@ export async function onRequest(context) {
 
   let body = null;
   if (method === 'POST' || method === 'PUT') {
-    try { body = await request.json(); } catch (e) { body = {}; }
+    const contentType = request.headers.get('Content-Type') || '';
+    if (contentType.includes('multipart/form-data')) {
+      // Handle form data for file uploads
+      // Will be processed in the specific handler
+    } else {
+      try { body = await request.json(); } catch (e) { body = {}; }
+    }
+  }
+
+  // Public course routes (no auth required)
+  if (path.startsWith('/courses/')) {
+    return handlePublicCourses(method, path, db, request);
   }
 
   // Auth routes (no login required)
@@ -611,8 +915,12 @@ export async function onRequest(context) {
     return handleUser(method, path, body, db, authUser, request);
   }
 
-  // GET /api/courses/:id — for lecture page & admin panel loading full course data
-  // ADMIN BYPASS: admins don't need enrollment to view course data
+  // Payment routes
+  if (path.startsWith('/payments/') || path === '/payments') {
+    return handlePayments(method, path, body, db, authUser, request);
+  }
+
+  // GET /api/courses/:id — for admin panel loading full course data
   if (method === 'GET' && path.match(/^\/courses\/\d+$/)) {
     const courseId = parseInt(path.split('/')[2]);
 
