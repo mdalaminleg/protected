@@ -1,352 +1,700 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Course | SciVerse Academy</title>
-    <meta name="description" content="Course subjects and resources.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         :root {
-            --navy: #0B1F3A; --navy-2: #112D52; --navy-3: #1A3F6F;
-            --gold: #B8751A; --gold-2: #CF8B28; --gold-dim: rgba(184,117,26,0.10);
-            --white: #F0F4F8; --gray: #94A3B5; --gray2: #7A8899;
-            --red: #F0566A; --red-dim: rgba(240,86,106,0.10);
-            --green: #10D48E; --green-dim: rgba(16,212,142,0.10);
-            --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.11);
-            --radius: 9px; --radius-lg: 13px;
-            --transition: .18s cubic-bezier(.4,0,.2,1);
-            --bg: #05080F; --surface: #0B0F1A; --surface2: #111827; --surface3: #161E2E;
+            --primary: #7C3AED;
+            --primary-light: #8B5CF6;
+            --primary-dark: #6D28D9;
+            --primary-gradient: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+            --bg: #0B0815;
+            --bg-light: #F4F2F9;
+            --surface: #15102A;
+            --surface-light: #FFFFFF;
+            --surface-hover: #1E1836;
+            --surface-hover-light: #F0EEF8;
+            --text: #FFFFFF;
+            --text-light: #1A1528;
+            --text-secondary: #A5B4CB;
+            --text-secondary-light: #6B7A99;
+            --text-muted: #6B7A99;
+            --text-muted-light: #94A3B8;
+            --border: rgba(255,255,255,0.06);
+            --border-light: rgba(0,0,0,0.08);
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+            --shadow-light: 0 4px 20px rgba(0,0,0,0.06);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        html { font-size:16px; scroll-behavior:smooth; }
-        body {
-            font-family:'Plus Jakarta Sans', system-ui, sans-serif;
-            background: var(--bg); color: var(--white);
-            min-height: 100vh; min-height: 100dvh;
-            display: flex; flex-direction: column;
+
+        [data-theme="light"] {
+            --bg: #F4F2F9;
+            --surface: #FFFFFF;
+            --surface-hover: #F0EEF8;
+            --text: #1A1528;
+            --text-secondary: #4A4658;
+            --text-muted: #94A3B8;
+            --border: rgba(0,0,0,0.08);
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             -webkit-font-smoothing: antialiased;
+            transition: background var(--transition), color var(--transition);
         }
-        .hdr {
-            height: 64px; background: var(--surface);
+
+        .app {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+
+        .header {
+            background: var(--surface);
             border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; padding: 0 20px;
-            flex-shrink: 0; position: sticky; top: 0; z-index: 100;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .hdr-inner {
-            display: flex; align-items: center; gap: 12px;
-            width: 100%; max-width: 1400px; margin: 0 auto;
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .back-btn {
-            background: none; border: none; color: var(--gray); cursor: pointer;
-            display: flex; align-items: center; padding: 4px;
-            text-decoration: none; transition: color .15s;
+
+        .header-left .logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            overflow: hidden;
+            flex-shrink: 0;
         }
-        .back-btn:hover { color: var(--white); }
-        .back-btn svg { width: 20px; height: 20px; }
-        .logo { height: 32px; }
-        .hdr-title {
-            font-family: 'Fraunces', serif; font-size: 1.1rem;
-            font-weight: 600; color: var(--white); letter-spacing: -.01em;
+
+        .header-left .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .header-left .back {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            transition: color var(--transition);
+        }
+
+        .header-left .back:hover {
+            color: var(--text);
+        }
+
+        .header-left .back svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .header-left .brand {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-right .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #fff;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            color: var(--text);
+        }
+
+        .theme-toggle svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .main {
             flex: 1;
+            padding: 24px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
         }
-        .hdr-right { display: flex; align-items: center; gap: 10px; }
-        .avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: var(--navy-3); display: flex; align-items: center;
-            justify-content: center; font-weight: 700; font-size: .75rem;
-            color: var(--gold); cursor: pointer;
+
+        .course-header {
+            margin-bottom: 28px;
         }
-        .main-wrap {
-            flex:1; max-width: 1400px; width:100%; margin:0 auto;
-            padding: 0 20px;
+
+        .course-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
-        .course-header { margin: 32px 0 24px; }
-        .course-title {
-            font-family: 'Fraunces', serif; font-size: 1.8rem;
-            font-weight: 600; color: var(--white); margin-bottom: 12px;
+
+        .course-header .desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            line-height: 1.6;
         }
-        .course-desc { 
-            font-size: .9rem; color: var(--gray); line-height: 1.7; 
+
+        .course-header .desc strong {
+            color: var(--primary-light);
         }
-        .course-desc strong { color: var(--gold); }
-        .course-desc br { display: block; content: ''; margin-bottom: 6px; }
+
         .tabs {
-            display: flex; gap: 0; border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--border);
             margin-bottom: 24px;
         }
+
         .tab-btn {
-            padding: 12px 24px; background: none; border: none;
+            padding: 12px 24px;
+            background: none;
+            border: none;
             border-bottom: 2px solid transparent;
-            color: var(--gray); font-size: .85rem; font-weight: 600;
-            cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: all .15s;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all var(--transition);
         }
-        .tab-btn:hover { color: var(--white); }
-        .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
-        .tab-panel { display: none; padding-bottom: 40px; }
-        .tab-panel.active { display: block; }
-        .subject-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .tab-btn:hover {
+            color: var(--text);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-light);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-panel {
+            display: none;
+            padding-bottom: 40px;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .subject-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         .subject-card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: var(--radius); overflow: hidden;
-            transition: var(--transition);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all var(--transition);
         }
+
+        .subject-card:hover {
+            border-color: var(--border);
+        }
+
         .subject-header {
-            padding: 16px 20px; display: flex; align-items: center;
-            justify-content: space-between; cursor: pointer;
-            transition: background .15s;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background var(--transition);
         }
-        .subject-header:hover { background: var(--surface2); }
-        .subject-title {
-            font-family: 'Fraunces', serif; font-size: 1rem;
-            font-weight: 600; color: var(--white);
+
+        .subject-header:hover {
+            background: var(--surface-hover);
         }
-        .subject-desc {
-            font-size: .75rem; color: var(--gray2); margin-top: 4px; line-height: 1.5;
+
+        .subject-header .title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
         }
-        .subject-desc strong { color: var(--white); }
+
+        .subject-header .desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .subject-header .desc strong {
+            color: var(--primary-light);
+        }
+
         .subject-arrow {
-            width: 18px; height: 18px; color: var(--gray);
-            transition: transform .2s; flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
         }
-        .subject-card.expanded .subject-arrow { transform: rotate(180deg); }
-        .lecture-list { display: none; border-top: 1px solid var(--border); }
-        .subject-card.expanded .lecture-list { display: block; }
+
+        .subject-card.expanded .subject-arrow {
+            transform: rotate(180deg);
+        }
+
+        .lecture-list {
+            display: none;
+            border-top: 1px solid var(--border);
+        }
+
+        .subject-card.expanded .lecture-list {
+            display: block;
+        }
+
         .lecture-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 12px 20px 12px 36px; text-decoration: none;
-            color: var(--gray); font-size: .82rem; font-weight: 500;
-            transition: all .12s; border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px 12px 36px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--transition);
+            border-bottom: 1px solid var(--border);
         }
-        .lecture-item:last-child { border-bottom: none; }
-        .lecture-item:hover { background: var(--surface2); color: var(--white); }
-        .lecture-item svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--gold); }
-        .resource-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .lecture-item:last-child {
+            border-bottom: none;
+        }
+
+        .lecture-item:hover {
+            background: var(--surface-hover);
+            color: var(--text);
+        }
+
+        .lecture-item svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            color: var(--primary-light);
+        }
+
+        .lecture-item .empty {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         .resource-card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 16px 20px;
-            transition: var(--transition);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            transition: all var(--transition);
         }
-        .resource-card:hover { border-color: var(--gold); background: var(--surface2); }
-        .resource-title {
-            font-family: 'Fraunces', serif; font-size: .95rem;
-            font-weight: 600; color: var(--white); margin-bottom: 4px;
+
+        .resource-card:hover {
+            border-color: var(--primary);
+            background: var(--surface-hover);
         }
-        .resource-desc { 
-            font-size: .78rem; color: var(--gray2); margin-bottom: 10px; line-height: 1.5; 
+
+        .resource-card .title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
         }
-        .resource-desc strong { color: var(--white); }
-        .resource-link {
-            display: inline-flex; align-items: center; gap: 6px;
-            color: var(--gold); font-size: .78rem; font-weight: 600;
-            text-decoration: none; transition: color .12s;
+
+        .resource-card .desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 12px;
         }
-        .resource-link:hover { color: var(--gold-2); }
-        .resource-link svg { width: 14px; height: 14px; }
+
+        .resource-card .desc strong {
+            color: var(--primary-light);
+        }
+
+        .resource-card .link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary-light);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+
+        .resource-card .link:hover {
+            color: var(--text);
+        }
+
+        .resource-card .link svg {
+            width: 14px;
+            height: 14px;
+        }
+
         .empty-state {
-            text-align: center; padding: 40px 20px;
+            text-align: center;
+            padding: 60px 20px;
         }
-        .empty-state svg { width: 48px; height: 48px; color: var(--gray); opacity: .4; margin-bottom: 12px; }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            color: var(--text-muted);
+            opacity: 0.4;
+            margin-bottom: 16px;
+        }
+
         .empty-state h3 {
-            font-family: 'Fraunces', serif; font-size: 1rem;
-            font-weight: 600; color: var(--gray);
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
         }
-        .empty-state p { font-size: .78rem; color: var(--gray2); }
-        .spinner-ring {
-            width: 32px; height: 32px; border: 3px solid var(--border2);
-            border-top-color: var(--gold); border-radius: 50%;
-            animation: spin .7s linear infinite; margin: 60px auto;
+
+        .empty-state p {
+            font-size: 14px;
+            color: var(--text-muted);
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .ftr {
-            background: var(--surface); border-top: 1px solid var(--border);
-            padding: 20px; text-align: center; flex-shrink: 0;
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 40px auto;
         }
-        .ftr p { font-size: .68rem; color: rgba(255,255,255,.14); }
-        .toast {
-            position: fixed; bottom: 24px; right: 24px; z-index: 9999;
-            padding: 12px 18px; border-radius: var(--radius);
-            font-size: .8rem; font-weight: 500;
-            background: var(--surface3); color: var(--white);
-            border: 1px solid var(--border2);
-            box-shadow: 0 20px 48px rgba(0,0,0,.5);
-            opacity: 0; transform: translateY(8px);
-            transition: all .2s; pointer-events: none;
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-        .toast.show { opacity: 1; transform: translateY(0); }
-        @media(max-width:600px) {
-            .course-title { font-size: 1.4rem; }
-            .tab-btn { padding: 10px 16px; font-size: .78rem; }
+
+        @media (max-width: 600px) {
+            .course-header h1 {
+                font-size: 22px;
+            }
+            .tab-btn {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+            .subject-header .title {
+                font-size: 14px;
+            }
+            .lecture-item {
+                padding: 10px 16px 10px 28px;
+                font-size: 13px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="app">
+        <header class="header">
+            <div class="header-left">
+                <a href="/dashboard.html" class="back">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                </a>
+                <div class="logo">
+                    <img src="/images/protected.png" alt="SciVerse" />
+                </div>
+                <span class="brand" id="headerTitle">Loading...</span>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    </svg>
+                </button>
+                <div class="avatar" id="avatar">S</div>
+            </div>
+        </header>
 
-<header class="hdr">
-    <div class="hdr-inner">
-        <a href="/dashboard.html" class="back-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-        </a>
-        <img src="/images/protected.png" height="32" alt="SciVerse Academy" class="logo">
-        <span class="hdr-title" id="headerCourseTitle">Loading...</span>
-        <div class="hdr-right">
-            <div class="avatar" id="profileAvatar" onclick="window.location.href='/dashboard.html'">S</div>
-        </div>
+        <main class="main">
+            <div class="course-header">
+                <h1 id="courseTitle">Loading...</h1>
+                <div class="desc" id="courseDesc"></div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="subjects">Subjects</button>
+                <button class="tab-btn" data-tab="resources">Resources</button>
+            </div>
+
+            <div class="tab-panel active" id="panel-subjects">
+                <div class="subject-list" id="subjectList">
+                    <div class="spinner" id="subjectsSpinner"></div>
+                </div>
+                <div class="empty-state" id="emptySubjects" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <line x1="9" y1="9" x2="15" y2="9" />
+                        <line x1="9" y1="13" x2="15" y2="13" />
+                    </svg>
+                    <h3>No Subjects</h3>
+                    <p>Subjects for this course will appear here.</p>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="panel-resources">
+                <div class="resource-list" id="resourceList"></div>
+                <div class="empty-state" id="emptyResources" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+                        <polyline points="13 2 13 9 20 9" />
+                    </svg>
+                    <h3>No Resources</h3>
+                    <p>Additional resources for this course will appear here.</p>
+                </div>
+            </div>
+        </main>
     </div>
-</header>
 
-<div class="main-wrap">
-    <div class="course-header">
-        <h1 class="course-title" id="courseTitle">Loading...</h1>
-        <div class="course-desc" id="courseDesc"></div>
-    </div>
+    <script src="/network-check.js"></script>
+    <script src="/api-fix.js"></script>
+    <script>
+        const API = 'https://sciverseacademy.pages.dev/api';
 
-    <div class="tabs">
-        <button class="tab-btn active" data-tab="subjects">Subjects</button>
-        <button class="tab-btn" data-tab="resources">Resources</button>
-    </div>
+        const token = localStorage.getItem('site_token');
+        const user = JSON.parse(localStorage.getItem('site_user') || 'null');
 
-    <div class="tab-panel active" id="panel-subjects">
-        <div class="subject-list" id="subjectList">
-            <div class="spinner-ring" id="spinner"></div>
-        </div>
-        <div class="empty-state" id="emptySubjects" style="display:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
-            <h3>No Subjects Yet</h3>
-            <p>Subjects for this course will appear here.</p>
-        </div>
-    </div>
+        if (!token || !user) {
+            window.location.href = '/index.html';
+        }
 
-    <div class="tab-panel" id="panel-resources">
-        <div class="resource-list" id="resourceList"></div>
-        <div class="empty-state" id="emptyResources" style="display:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-            <h3>No Resources</h3>
-            <p>Additional resources for this course will appear here.</p>
-        </div>
-    </div>
-</div>
+        const params = new URLSearchParams(location.search);
+        const courseId = params.get('id');
 
-<footer class="ftr"><p>Protected Content &copy; 2026 SciVerse Academy. All rights reserved.</p></footer>
-<div class="toast" id="toast"></div>
+        if (!courseId) {
+            window.location.href = '/dashboard.html';
+        }
 
-<script>
-const token = localStorage.getItem('site_token');
-const user = JSON.parse(localStorage.getItem('site_user') || 'null');
-if (!token || !user) { window.location.href = '/index.html'; }
+        const themeToggle = document.getElementById('themeToggle');
+        const savedTheme = localStorage.getItem('sciverse-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
 
-const params = new URLSearchParams(location.search);
-const courseId = params.get('id');
-if (!courseId) { window.location.href = '/dashboard.html'; }
+        themeToggle.addEventListener('click', function() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sciverse-theme', next);
+        });
 
-function esc(s) { const d = document.createElement('div'); d.textContent = String(s || ''); return d.innerHTML; }
-function showToast(msg, type) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast toast-' + (type || 'success') + ' show';
-    setTimeout(function(){ t.classList.remove('show'); }, 3500);
-}
+        const initial = (user.name || 'S')[0].toUpperCase();
+        document.getElementById('avatar').textContent = initial;
 
-async function api(method, path, body) {
-    try {
-        const opts = { method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }};
-        if (body) opts.body = JSON.stringify(body);
-        const res = await fetch('/api' + path, opts);
-        const data = await res.json();
-        return { ok: res.ok, data, status: res.status };
-    } catch(e) {
-        return { ok: false, data: { error: 'Network error. Please try again.' }, status: 0 };
-    }
-}
+        // Tabs
+        document.querySelectorAll('.tab-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(function(b) {
+                    b.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-panel').forEach(function(p) {
+                    p.classList.remove('active');
+                });
+                btn.classList.add('active');
+                document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+            });
+        });
 
-// Tabs
-document.querySelectorAll('.tab-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-        document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
-        btn.classList.add('active');
-        document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
-    });
-});
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
-// Profile
-document.getElementById('profileAvatar').textContent = (user.name || 'S')[0].toUpperCase();
-
-// Load course
-async function loadCourse() {
-    const { ok, data } = await api('GET', '/user/course?id=' + courseId);
-    document.getElementById('spinner').style.display = 'none';
-
-    if (!ok) {
-        showToast(data.error || 'Failed to load course.', 'error');
-        return;
-    }
-
-    document.getElementById('courseTitle').textContent = data.course.title;
-    document.getElementById('headerCourseTitle').textContent = data.course.title;
-    // Use innerHTML to render HTML tags in description
-    document.getElementById('courseDesc').innerHTML = data.course.description || '';
-    document.title = data.course.title + ' | SciVerse Academy';
-
-    // Subjects
-    const subjectList = document.getElementById('subjectList');
-    if (!data.subjects || !data.subjects.length) {
-        document.getElementById('emptySubjects').style.display = 'block';
-    } else {
-        subjectList.innerHTML = '';
-        data.subjects.forEach(function(sub) {
-            const card = document.createElement('div');
-            card.className = 'subject-card';
-            var descHtml = sub.description ? '<div class="subject-desc">' + sub.description + '</div>' : '';
-            var lecturesHtml = '';
-            if (sub.lectures && sub.lectures.length) {
-                lecturesHtml = sub.lectures.map(function(lec) {
-                    return '<a href="/lecture.html?lecture_id=' + lec.id + '&course_id=' + courseId + '" class="lecture-item">' +
-                        '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19 8 5"/></svg>' +
-                        esc(lec.title) +
-                    '</a>';
-                }).join('');
-            } else {
-                lecturesHtml = '<div class="lecture-item" style="color:var(--gray2);">No lectures yet</div>';
+        async function loadCourse() {
+            if (!navigator.onLine) {
+                document.getElementById('subjectsSpinner').style.display = 'none';
+                document.getElementById('emptySubjects').style.display = 'block';
+                document.querySelector('#emptySubjects h3').textContent = 'No Internet Connection';
+                document.querySelector('#emptySubjects p').textContent = 'Please check your network settings.';
+                return;
             }
-            card.innerHTML = 
-                '<div class="subject-header" onclick="this.parentElement.classList.toggle(\'expanded\')">' +
-                    '<div><div class="subject-title">' + esc(sub.title) + '</div>' +
-                    descHtml +
-                    '</div>' +
-                    '<svg class="subject-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>' +
-                '</div>' +
-                '<div class="lecture-list">' + lecturesHtml + '</div>';
-            subjectList.appendChild(card);
-        });
-    }
 
-    // Resources
-    const resourceList = document.getElementById('resourceList');
-    if (!data.resources || !data.resources.length) {
-        document.getElementById('emptyResources').style.display = 'block';
-    } else {
-        resourceList.innerHTML = '';
-        data.resources.forEach(function(res) {
-            const card = document.createElement('div');
-            card.className = 'resource-card';
-            var descHtml = res.description ? '<div class="resource-desc">' + res.description + '</div>' : '';
-            card.innerHTML =
-                '<div class="resource-title">' + esc(res.title) + '</div>' +
-                descHtml +
-                '<a href="' + esc(res.link_url) + '" target="_blank" rel="noopener" class="resource-link">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
-                    'Open Resource' +
-                '</a>';
-            resourceList.appendChild(card);
-        });
-    }
-}
+            try {
+                const res = await fetch(API + '/user/course?id=' + courseId, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await res.json();
 
-loadCourse();
-</script>
+                document.getElementById('subjectsSpinner').style.display = 'none';
+
+                if (!res.ok) {
+                    document.getElementById('emptySubjects').style.display = 'block';
+                    document.querySelector('#emptySubjects h3').textContent = 'Error Loading';
+                    document.querySelector('#emptySubjects p').textContent = data.error || 'Failed to load course.';
+                    return;
+                }
+
+                document.getElementById('courseTitle').textContent = data.course.title;
+                document.getElementById('headerTitle').textContent = data.course.title;
+                document.getElementById('courseDesc').innerHTML = data.course.description || '';
+                document.title = data.course.title + ' | SciVerse Academy';
+
+                // Subjects
+                const subjectList = document.getElementById('subjectList');
+
+                if (!data.subjects || !data.subjects.length) {
+                    document.getElementById('emptySubjects').style.display = 'block';
+                    document.querySelector('#emptySubjects h3').textContent = 'No Subjects Yet';
+                    document.querySelector('#emptySubjects p').textContent = 'Subjects for this course will appear here.';
+                } else {
+                    subjectList.innerHTML = '';
+                    data.subjects.forEach(function(sub) {
+                        const card = document.createElement('div');
+                        card.className = 'subject-card';
+
+                        let descHtml = '';
+                        if (sub.description) {
+                            descHtml = '<div class="desc">' + sub.description + '</div>';
+                        }
+
+                        let lecturesHtml = '';
+                        if (sub.lectures && sub.lectures.length) {
+                            lecturesHtml = sub.lectures.map(function(lec) {
+                                return '<a href="/lecture.html?lecture_id=' + lec.id + '&course_id=' + courseId + '" class="lecture-item">' +
+                                    '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>' +
+                                    escapeHtml(lec.title) +
+                                '</a>';
+                            }).join('');
+                        } else {
+                            lecturesHtml = '<div class="lecture-item"><span class="empty">No lectures available</span></div>';
+                        }
+
+                        card.innerHTML = 
+                            '<div class="subject-header" onclick="this.parentElement.classList.toggle(\'expanded\')">' +
+                                '<div>' +
+                                    '<div class="title">' + escapeHtml(sub.title) + '</div>' +
+                                    descHtml +
+                                '</div>' +
+                                '<svg class="subject-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                                    '<polyline points="6 9 12 15 18 9" />' +
+                                '</svg>' +
+                            '</div>' +
+                            '<div class="lecture-list">' + lecturesHtml + '</div>';
+
+                        subjectList.appendChild(card);
+                    });
+                }
+
+                // Resources
+                const resourceList = document.getElementById('resourceList');
+
+                if (!data.resources || !data.resources.length) {
+                    document.getElementById('emptyResources').style.display = 'block';
+                    document.querySelector('#emptyResources h3').textContent = 'No Resources';
+                    document.querySelector('#emptyResources p').textContent = 'Additional resources for this course will appear here.';
+                } else {
+                    resourceList.innerHTML = '';
+                    data.resources.forEach(function(res) {
+                        const card = document.createElement('div');
+                        card.className = 'resource-card';
+
+                        let descHtml = '';
+                        if (res.description) {
+                            descHtml = '<div class="desc">' + res.description + '</div>';
+                        }
+
+                        card.innerHTML =
+                            '<div class="title">' + escapeHtml(res.title) + '</div>' +
+                            descHtml +
+                            '<a href="' + escapeHtml(res.link_url) + '" target="_blank" rel="noopener" class="link">' +
+                                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                                    '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />' +
+                                    '<polyline points="15 3 21 3 21 9" />' +
+                                    '<line x1="10" y1="14" x2="21" y2="3" />' +
+                                '</svg>' +
+                                'Open Resource' +
+                            '</a>';
+
+                        resourceList.appendChild(card);
+                    });
+                }
+
+            } catch (err) {
+                document.getElementById('subjectsSpinner').style.display = 'none';
+                document.getElementById('emptySubjects').style.display = 'block';
+                if (!navigator.onLine) {
+                    document.querySelector('#emptySubjects h3').textContent = 'No Internet Connection';
+                    document.querySelector('#emptySubjects p').textContent = 'Please check your network settings.';
+                } else {
+                    document.querySelector('#emptySubjects h3').textContent = 'Connection Error';
+                    document.querySelector('#emptySubjects p').textContent = 'Please try again.';
+                }
+            }
+        }
+
+        loadCourse();
+    </script>
 </body>
 </html>
