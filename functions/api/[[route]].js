@@ -834,6 +834,37 @@ export async function onRequest(context) {
     return handleUser(method, path, body, db, authUser, request);
   }
 
+  // ============================================================
+  // NEW ROUTE: GET /api/user/lecture/:id
+  // ============================================================
+  if (method === 'GET' && path.match(/^\/user\/lecture\/\d+$/)) {
+    const lectureId = parseInt(path.split('/')[3]);
+
+    const lecture = await db.prepare('SELECT * FROM lectures WHERE id = ?').bind(lectureId).first();
+    if (!lecture) return err('Lecture not found', 404);
+
+    // Check enrollment
+    if (authUser.role !== 'admin') {
+      const enrollment = await db.prepare(`
+        SELECT e.* FROM enrollments e
+        JOIN subjects s ON s.course_id = e.course_id
+        WHERE e.user_id = ? AND s.id = ?
+      `).bind(authUser.id, lecture.subject_id).first();
+      if (!enrollment) return err('Not enrolled in this course', 403);
+    }
+
+    // Get subject name
+    const subject = await db.prepare('SELECT title FROM subjects WHERE id = ?').bind(lecture.subject_id).first();
+
+    const responseData = {
+      ...lecture,
+      subject_name: subject ? subject.title : '',
+      youtube_id: obfuscateYoutubeId(lecture.youtube_id)
+    };
+
+    return await jsonEncrypted(responseData);
+  }
+
   // GET /api/courses/:id — for lecture page
   if (method === 'GET' && path.match(/^\/courses\/\d+$/)) {
     const courseId = parseInt(path.split('/')[2]);
@@ -861,31 +892,6 @@ export async function onRequest(context) {
     }
 
     const responseData = { course, subjects: subjectsWithLectures, resources: resources.results };
-    return await jsonEncrypted(responseData);
-  }
-
-  // GET /api/user/lecture/:id - Get single lecture with obfuscated YouTube ID
-  if (method === 'GET' && path.match(/^\/user\/lecture\/\d+$/)) {
-    const lectureId = parseInt(path.split('/')[3]);
-
-    const lecture = await db.prepare('SELECT * FROM lectures WHERE id = ?').bind(lectureId).first();
-    if (!lecture) return err('Lecture not found', 404);
-
-    // Check enrollment
-    if (authUser.role !== 'admin') {
-      const enrollment = await db.prepare(`
-        SELECT e.* FROM enrollments e
-        JOIN subjects s ON s.course_id = e.course_id
-        WHERE e.user_id = ? AND s.id = ?
-      `).bind(authUser.id, lecture.subject_id).first();
-      if (!enrollment) return err('Not enrolled in this course', 403);
-    }
-
-    const responseData = {
-      ...lecture,
-      youtube_id: obfuscateYoutubeId(lecture.youtube_id)
-    };
-
     return await jsonEncrypted(responseData);
   }
 
