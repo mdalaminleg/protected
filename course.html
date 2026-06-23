@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Course | SciVerse Academy</title>
+    <title>Course | SciVerse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -522,7 +522,57 @@
     <script src="/network-check.js"></script>
     <script src="/api-fix.js"></script>
     <script>
+        // ============================================================
+        // DECRYPTION HELPERS
+        // ============================================================
+
         const API = 'https://sciverseacademy.pages.dev/api';
+        const ENCRYPTION_SECRET = 'sciverse-encrypt-2026-secure-key';
+
+        async function decryptResponse(encryptedBase64) {
+            try {
+                const combined = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
+                const iv = combined.slice(0, 12);
+                const encrypted = combined.slice(12);
+
+                const encoder = new TextEncoder();
+                const keyData = encoder.encode(ENCRYPTION_SECRET);
+
+                const cryptoKey = await crypto.subtle.importKey(
+                    'raw',
+                    keyData,
+                    { name: 'AES-GCM' },
+                    false,
+                    ['decrypt']
+                );
+
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    cryptoKey,
+                    encrypted
+                );
+
+                const decoder = new TextDecoder();
+                return JSON.parse(decoder.decode(decrypted));
+            } catch (e) {
+                console.error('Decryption failed:', e);
+                return null;
+            }
+        }
+
+        function deobfuscateYoutubeId(obfuscated) {
+            if (!obfuscated) return '';
+            try {
+                const decoded = atob(obfuscated);
+                return decoded.split('').reverse().join('');
+            } catch (e) {
+                return obfuscated;
+            }
+        }
+
+        // ============================================================
+        // AUTH CHECK
+        // ============================================================
 
         const token = localStorage.getItem('site_token');
         const user = JSON.parse(localStorage.getItem('site_user') || 'null');
@@ -538,6 +588,10 @@
             window.location.href = '/dashboard.html';
         }
 
+        // ============================================================
+        // THEME
+        // ============================================================
+
         const themeToggle = document.getElementById('themeToggle');
         const savedTheme = localStorage.getItem('sciverse-theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -549,10 +603,17 @@
             localStorage.setItem('sciverse-theme', next);
         });
 
+        // ============================================================
+        // AVATAR
+        // ============================================================
+
         const initial = (user.name || 'S')[0].toUpperCase();
         document.getElementById('avatar').textContent = initial;
 
-        // Tabs
+        // ============================================================
+        // TABS
+        // ============================================================
+
         document.querySelectorAll('.tab-btn').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.tab-btn').forEach(function(b) {
@@ -566,15 +627,49 @@
             });
         });
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        // ============================================================
+        // API HELPER WITH DECRYPTION
+        // ============================================================
+
+        async function api(method, path, body) {
+            try {
+                const opts = {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token,
+                        'X-Encrypted': 'true'
+                    }
+                };
+                if (body) opts.body = JSON.stringify(body);
+
+                const res = await fetch(API + path, opts);
+                const data = await res.json();
+
+                // Decrypt if encrypted
+                if (data.encrypted && data.data) {
+                    const decrypted = await decryptResponse(data.data);
+                    if (decrypted) {
+                        return { ok: res.ok, data: decrypted, status: res.status };
+                    }
+                    return { ok: false, data: { error: 'Decryption failed' }, status: 500 };
+                }
+
+                return { ok: res.ok, data, status: res.status };
+            } catch (e) {
+                return { ok: false, data: { error: 'Network error. Please try again.' }, status: 0 };
+            }
         }
 
+        // ============================================================
+        // LOAD COURSE
+        // ============================================================
+
         async function loadCourse() {
+            const spinner = document.getElementById('subjectsSpinner');
+
             if (!navigator.onLine) {
-                document.getElementById('subjectsSpinner').style.display = 'none';
+                spinner.style.display = 'none';
                 document.getElementById('emptySubjects').style.display = 'block';
                 document.querySelector('#emptySubjects h3').textContent = 'No Internet Connection';
                 document.querySelector('#emptySubjects p').textContent = 'Please check your network settings.';
@@ -582,24 +677,22 @@
             }
 
             try {
-                const res = await fetch(API + '/user/course?id=' + courseId, {
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                const data = await res.json();
+                const result = await api('GET', '/user/course?id=' + courseId);
+                spinner.style.display = 'none';
 
-                document.getElementById('subjectsSpinner').style.display = 'none';
-
-                if (!res.ok) {
+                if (!result.ok) {
                     document.getElementById('emptySubjects').style.display = 'block';
                     document.querySelector('#emptySubjects h3').textContent = 'Error Loading';
-                    document.querySelector('#emptySubjects p').textContent = data.error || 'Failed to load course.';
+                    document.querySelector('#emptySubjects p').textContent = result.data.error || 'Failed to load course.';
                     return;
                 }
+
+                const data = result.data;
 
                 document.getElementById('courseTitle').textContent = data.course.title;
                 document.getElementById('headerTitle').textContent = data.course.title;
                 document.getElementById('courseDesc').innerHTML = data.course.description || '';
-                document.title = data.course.title + ' | SciVerse Academy';
+                document.title = data.course.title + ' | SciVerse';
 
                 // Subjects
                 const subjectList = document.getElementById('subjectList');
@@ -622,7 +715,9 @@
                         let lecturesHtml = '';
                         if (sub.lectures && sub.lectures.length) {
                             lecturesHtml = sub.lectures.map(function(lec) {
-                                return '<a href="/lecture.html?lecture_id=' + lec.id + '&course_id=' + courseId + '" class="lecture-item">' +
+                                // Obfuscated YouTube ID is already encrypted, pass it as is
+                                const ytId = lec.youtube_id || '';
+                                return '<a href="/lecture.html?lid=' + lec.id + '&cid=' + courseId + '" class="lecture-item">' +
                                     '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>' +
                                     escapeHtml(lec.title) +
                                 '</a>';
@@ -631,7 +726,7 @@
                             lecturesHtml = '<div class="lecture-item"><span class="empty">No lectures available</span></div>';
                         }
 
-                        card.innerHTML = 
+                        card.innerHTML =
                             '<div class="subject-header" onclick="this.parentElement.classList.toggle(\'expanded\')">' +
                                 '<div>' +
                                     '<div class="title">' + escapeHtml(sub.title) + '</div>' +
@@ -682,7 +777,7 @@
                 }
 
             } catch (err) {
-                document.getElementById('subjectsSpinner').style.display = 'none';
+                spinner.style.display = 'none';
                 document.getElementById('emptySubjects').style.display = 'block';
                 if (!navigator.onLine) {
                     document.querySelector('#emptySubjects h3').textContent = 'No Internet Connection';
@@ -692,6 +787,12 @@
                     document.querySelector('#emptySubjects p').textContent = 'Please try again.';
                 }
             }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         loadCourse();
