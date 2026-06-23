@@ -1,41 +1,6 @@
 (function() {
     'use strict';
 
-    // ============================================================
-    // PROXY TOOL DETECTION
-    // ============================================================
-
-    function detectProxyTools() {
-        // Check for common proxy tool headers
-        const suspiciousProperties = [
-            '__CANARY__',
-            '__CANARY_DEVTOOLS__',
-            '__RQ__',
-            'requestly',
-            '__PROXY__',
-            '__CHARLES__',
-            '__FIDDLER__'
-        ];
-
-        for (let prop of suspiciousProperties) {
-            if (typeof window[prop] !== 'undefined') return true;
-        }
-
-        // Check for DevTools (potential sniffing)
-        const threshold = 160;
-        if (window.outerWidth - window.innerWidth > threshold) return true;
-        if (window.outerHeight - window.innerHeight > threshold) return true;
-
-        // Check for network monitoring extensions
-        if (navigator.webdriver) return true;
-
-        return false;
-    }
-
-    // ============================================================
-    // NETWORK BLOCKER
-    // ============================================================
-
     let isOnline = navigator.onLine;
     let isBlocking = false;
 
@@ -161,28 +126,6 @@
         checkConnection(false);
     });
 
-    // ============================================================
-    // PROXY DETECTION BLOCK
-    // ============================================================
-
-    if (detectProxyTools()) {
-        document.body.innerHTML = `
-            <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0B0815;font-family:Inter,sans-serif;color:#fff;flex-direction:column;padding:20px;text-align:center;">
-                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.5">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                <h2 style="margin-top:16px;font-weight:700;">Access Restricted</h2>
-                <p style="color:#A5B4CB;max-width:300px;margin-top:8px;">Please disable proxy tools and refresh.</p>
-            </div>
-        `;
-    }
-
-    // ============================================================
-    // FETCH OVERRIDE
-    // ============================================================
-
     const originalFetch = window.fetch;
 
     window.fetch = function(url, options) {
@@ -190,10 +133,6 @@
             blocker.style.display = 'flex';
             isBlocking = true;
             return Promise.reject(new Error('No internet connection'));
-        }
-
-        if (detectProxyTools()) {
-            return Promise.reject(new Error('Proxy detected'));
         }
 
         return originalFetch.call(this, url, options).catch(function(error) {
@@ -204,10 +143,6 @@
             throw error;
         });
     };
-
-    // ============================================================
-    // NAVIGATION BLOCK
-    // ============================================================
 
     function blockNavigation() {
         if (!navigator.onLine) {
