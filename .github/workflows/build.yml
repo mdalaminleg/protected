@@ -61,7 +61,7 @@ jobs:
           }
           if (!fs.existsSync('dist')) fs.mkdirSync('dist');
           ITEMS.forEach(item => { copy(item, path.join('dist', item)); });
-          console.log('✅ Build complete');
+          console.log('Build complete');
           BUILDJS
 
       - name: Create capacitor.config.json
@@ -74,7 +74,8 @@ jobs:
             "server": {
               "androidScheme": "https",
               "hostname": "sciverseacademy.pages.dev",
-              "cleartext": true
+              "cleartext": true,
+              "allowNavigation": ["*.pages.dev", "sciverseacademy.pages.dev"]
             },
             "android": {
               "allowMixedContent": true
@@ -106,6 +107,134 @@ jobs:
             cp images/protected.png android/app/src/main/res/mipmap-${size}/ic_launcher_foreground.png
           done
 
+      - name: Update AndroidManifest.xml
+        run: |
+          cat > android/app/src/main/AndroidManifest.xml << 'MANIFEST'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              package="dev.sciverse.app">
+
+              <uses-permission android:name="android.permission.INTERNET" />
+              <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+              <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+              <application
+                  android:allowBackup="true"
+                  android:icon="@mipmap/ic_launcher"
+                  android:label="@string/app_name"
+                  android:roundIcon="@mipmap/ic_launcher_round"
+                  android:supportsRtl="true"
+                  android:theme="@style/AppTheme"
+                  android:usesCleartextTraffic="true"
+                  android:allowClearUserData="true"
+                  android:hardwareAccelerated="true"
+                  android:largeHeap="true">
+
+                  <activity
+                      android:name=".MainActivity"
+                      android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
+                      android:exported="true"
+                      android:label="@string/app_name"
+                      android:launchMode="singleTask"
+                      android:theme="@style/AppTheme.NoActionBar"
+                      android:windowSoftInputMode="adjustResize">
+
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+
+                      <intent-filter>
+                          <action android:name="android.intent.action.VIEW" />
+                          <category android:name="android.intent.category.DEFAULT" />
+                          <category android:name="android.intent.category.BROWSABLE" />
+                          <data android:scheme="https" android:host="sciverseacademy.pages.dev" />
+                      </intent-filter>
+
+                  </activity>
+
+                  <meta-data
+                      android:name="android.webkit.WebView.EnableSafeBrowsing"
+                      android:value="true" />
+
+              </application>
+
+          </manifest>
+          MANIFEST
+
+      - name: Update strings.xml
+        run: |
+          mkdir -p android/app/src/main/res/values
+          cat > android/app/src/main/res/values/strings.xml << 'STRINGS'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <string name="app_name">SciVerse</string>
+          </resources>
+          STRINGS
+
+      - name: Update styles.xml
+        run: |
+          mkdir -p android/app/src/main/res/values
+          cat > android/app/src/main/res/values/styles.xml << 'STYLES'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+
+              <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+                  <item name="colorPrimary">@color/colorPrimary</item>
+                  <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+                  <item name="colorAccent">@color/colorAccent</item>
+                  <item name="android:windowBackground">@color/activityBackground</item>
+              </style>
+
+              <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">
+                  <item name="colorPrimary">@color/colorPrimary</item>
+                  <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+                  <item name="colorAccent">@color/colorAccent</item>
+                  <item name="android:windowBackground">@color/activityBackground</item>
+                  <item name="android:windowFullscreen">false</item>
+                  <item name="android:windowContentOverlay">@null</item>
+                  <item name="android:windowIsTranslucent">false</item>
+              </style>
+
+              <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+                  <item name="android:windowBackground">@drawable/splash_background</item>
+                  <item name="android:windowFullscreen">true</item>
+                  <item name="android:windowNoTitle">true</item>
+              </style>
+
+          </resources>
+          STYLES
+
+      - name: Update colors.xml
+        run: |
+          mkdir -p android/app/src/main/res/values
+          cat > android/app/src/main/res/values/colors.xml << 'COLORS'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <color name="colorPrimary">#7C3AED</color>
+              <color name="colorPrimaryDark">#6D28D9</color>
+              <color name="colorAccent">#8B5CF6</color>
+              <color name="activityBackground">#0B0815</color>
+              <color name="splashBackground">#0B0815</color>
+          </resources>
+          COLORS
+
+      - name: Create splash_background.xml
+        run: |
+          mkdir -p android/app/src/main/res/drawable
+          cat > android/app/src/main/res/drawable/splash_background.xml << 'SPLASH'
+          <?xml version="1.0" encoding="utf-8"?>
+          <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+              <item android:drawable="@color/splashBackground" />
+              <item>
+                  <bitmap
+                      android:gravity="center"
+                      android:src="@mipmap/ic_launcher" />
+              </item>
+          </layer-list>
+          SPLASH
+
       - name: Build Android APK
         run: |
           cd android
@@ -129,6 +258,6 @@ jobs:
 
       - name: Build Complete
         run: |
-          echo "✅ SciVerse APK built successfully!"
-          echo "📱 Download from Artifacts"
+          echo "SciVerse APK built successfully"
+          echo "Download from Artifacts"
           ls -lh android/app/build/outputs/apk/debug/*.apk
