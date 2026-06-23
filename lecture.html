@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Lecture | SciVerse Academy</title>
+    <title>Lecture | SciVerse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -39,10 +39,6 @@
             --radius: 12px;
             --radius-lg: 16px;
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --gold: #B8751A;
-            --gold-2: #CF8B28;
-            --red: #EF4444;
-            --green: #10B981;
         }
 
         [data-theme="light"] {
@@ -1161,7 +1157,7 @@
                             </svg>
                         </div>
                         <div class="initial-cover-text">Click to Start</div>
-                        <div class="initial-cover-subtext">SciVerse Academy</div>
+                        <div class="initial-cover-subtext">SciVerse</div>
                     </div>
                 </div>
 
@@ -1173,7 +1169,7 @@
                             </svg>
                         </div>
                         <div class="dead-shield-text" id="deadShieldText">Click to Resume</div>
-                        <div class="dead-shield-subtext">SciVerse Academy</div>
+                        <div class="dead-shield-subtext">SciVerse</div>
                     </div>
                 </div>
 
@@ -1185,7 +1181,7 @@
                             </svg>
                         </div>
                         <div class="pause-shield-text">Click to Resume</div>
-                        <div class="pause-shield-subtext">SciVerse Academy</div>
+                        <div class="pause-shield-subtext">SciVerse</div>
                     </div>
                 </div>
 
@@ -1197,7 +1193,7 @@
                             </svg>
                         </div>
                         <div class="launch-shield-text" id="launchShieldText">Starting</div>
-                        <div class="launch-shield-subtext">SciVerse Academy</div>
+                        <div class="launch-shield-subtext">SciVerse</div>
                         <div class="launch-shield-progress">
                             <div class="launch-shield-progress-fill" id="launchShieldProgress"></div>
                         </div>
@@ -1205,7 +1201,7 @@
                 </div>
 
                 <div class="top-bar" id="topBar">
-                    <span class="top-bar-text">SciVerse Academy</span>
+                    <span class="top-bar-text">SciVerse</span>
                     <span class="top-bar-watermark">Protected Content</span>
                 </div>
 
@@ -1344,7 +1340,7 @@
         </div>
 
         <div class="footer">
-            <p>Protected Content &copy; 2026 SciVerse Academy</p>
+            <p>Protected Content &copy; 2026 SciVerse</p>
         </div>
 
         <div class="toast" id="toast"></div>
@@ -1354,10 +1350,56 @@
     <script src="/api-fix.js"></script>
     <script>
         // ============================================================
-        // ALL EXISTING LOGIC - UNCHANGED
+        // DECRYPTION HELPERS
         // ============================================================
 
         const API = 'https://sciverseacademy.pages.dev/api';
+        const ENCRYPTION_SECRET = 'sciverse-encrypt-2026-secure-key';
+
+        async function decryptResponse(encryptedBase64) {
+            try {
+                const combined = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
+                const iv = combined.slice(0, 12);
+                const encrypted = combined.slice(12);
+
+                const encoder = new TextEncoder();
+                const keyData = encoder.encode(ENCRYPTION_SECRET);
+
+                const cryptoKey = await crypto.subtle.importKey(
+                    'raw',
+                    keyData,
+                    { name: 'AES-GCM' },
+                    false,
+                    ['decrypt']
+                );
+
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    cryptoKey,
+                    encrypted
+                );
+
+                const decoder = new TextDecoder();
+                return JSON.parse(decoder.decode(decrypted));
+            } catch (e) {
+                console.error('Decryption failed:', e);
+                return null;
+            }
+        }
+
+        function deobfuscateYoutubeId(obfuscated) {
+            if (!obfuscated) return '';
+            try {
+                const decoded = atob(obfuscated);
+                return decoded.split('').reverse().join('');
+            } catch (e) {
+                return obfuscated;
+            }
+        }
+
+        // ============================================================
+        // AUTH CHECK
+        // ============================================================
 
         function getToken() { return localStorage.getItem('site_token') || ''; }
 
@@ -1365,7 +1407,10 @@
 
         if (!getUser()) { window.location.href = '/index.html'; }
 
-        // Theme
+        // ============================================================
+        // THEME
+        // ============================================================
+
         const themeToggle = document.getElementById('themeToggle');
         const savedTheme = localStorage.getItem('sciverse-theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -1377,10 +1422,50 @@
             localStorage.setItem('sciverse-theme', next);
         });
 
-        // Avatar
+        // ============================================================
+        // AVATAR
+        // ============================================================
+
         const user = getUser();
         const initial = (user.name || 'S')[0].toUpperCase();
         document.getElementById('avatar').textContent = initial;
+
+        // ============================================================
+        // API HELPER WITH DECRYPTION
+        // ============================================================
+
+        async function api(method, path, body) {
+            try {
+                const opts = {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + getToken(),
+                        'X-Encrypted': 'true'
+                    }
+                };
+                if (body) opts.body = JSON.stringify(body);
+
+                const res = await fetch(API + path, opts);
+                const data = await res.json();
+
+                if (data.encrypted && data.data) {
+                    const decrypted = await decryptResponse(data.data);
+                    if (decrypted) {
+                        return { ok: res.ok, data: decrypted, status: res.status };
+                    }
+                    return { ok: false, data: { error: 'Decryption failed' }, status: 500 };
+                }
+
+                return { ok: res.ok, data, status: res.status };
+            } catch (e) {
+                return { ok: false, data: { error: 'Network error. Please try again.' }, status: 0 };
+            }
+        }
+
+        // ============================================================
+        // VARIABLES
+        // ============================================================
 
         var allLectures = [],
             currentIndex = 0,
@@ -1447,13 +1532,25 @@
         var spinner = document.getElementById('spinner');
         var pdfLink = document.getElementById('pdfLink');
 
+        // ============================================================
+        // TOAST
+        // ============================================================
+
         function showToast(msg) { var t = document.getElementById('toast');
             t.textContent = msg;
             t.classList.add('on');
             setTimeout(function() { t.classList.remove('on'); }, 2200); }
 
+        // ============================================================
+        // FORMAT TIME
+        // ============================================================
+
         function formatTime(sec) { if (!sec || sec < 0) return '00:00'; var m = Math.floor(sec / 60),
                 s = Math.floor(sec % 60); return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s); }
+
+        // ============================================================
+        // PLAYER CONTROLS VISIBILITY
+        // ============================================================
 
         function enforceBarsVisibility() {
             const isPausedOrStopped = (currentPlayerState === 2 || currentPlayerState === 0 || currentPlayerState === -1);
@@ -1568,6 +1665,10 @@
         function updateNavButtons() { prevBtn.style.display = currentIndex > 0 ? 'inline-flex' : 'none';
             nextBtn.style.display = currentIndex < allLectures.length - 1 ? 'inline-flex' : 'none'; }
 
+        // ============================================================
+        // LOAD LECTURE
+        // ============================================================
+
         function loadLecture(idx) {
             if (!allLectures.length || idx < 0 || idx >= allLectures.length) return;
             var lec = allLectures[idx];
@@ -1580,7 +1681,12 @@
                 pdfLink.href = lec.pdf_url;
                 pdfLink.style.display = 'inline-flex'; } else { pdfLink.style.display = 'none';
                 currentPdfUrl = ''; }
-            if (player && player.loadVideoById) player.loadVideoById(lec.youtube_id);
+
+            // Deobfuscate YouTube ID
+            const ytId = deobfuscateYoutubeId(lec.youtube_id);
+            if (player && player.loadVideoById && ytId) {
+                player.loadVideoById(ytId);
+            }
             markUnsafe();
             enforceBarsVisibility();
         }
@@ -1591,6 +1697,10 @@
         window.nextLecture = function() { hideAllShields();
             markUnsafe();
             loadLecture(currentIndex + 1); };
+
+        // ============================================================
+        // UPDATE PROGRESS
+        // ============================================================
 
         function updateProgress() {
             if (!player || typeof player.getCurrentTime !== 'function') { requestAnimationFrame(updateProgress); return; }
@@ -1604,6 +1714,10 @@
             }
             requestAnimationFrame(updateProgress);
         }
+
+        // ============================================================
+        // PLAYBACK CONTROLS
+        // ============================================================
 
         function togglePlay() {
             if (!player) return;
@@ -1647,7 +1761,12 @@
             dragTime.textContent = formatTime(dragCurrentPct * d);
             var x = e.touches ? e.touches[0].clientX : e.clientX;
             dragPreview.style.left = x + 'px';
-            dragThumb.src = 'https://img.youtube.com/vi/' + allLectures[currentIndex].youtube_id + '/maxresdefault.jpg'; }
+            dragThumb.src = 'https://img.youtube.com/vi/' + deobfuscateYoutubeId(allLectures[currentIndex].youtube_id) +
+                '/maxresdefault.jpg'; }
+
+        // ============================================================
+        // PROGRESS BAR EVENTS
+        // ============================================================
 
         progTrack.addEventListener('click', function(e) { if (!player) return; var rect = progTrack.getBoundingClientRect();
             player.seekTo(((e.clientX - rect.left) / rect.width) * player.getDuration(), true);
@@ -1690,6 +1809,10 @@
             if (player) { player.seekTo(dragCurrentPct * player.getDuration(), true);
                 showControls(); } });
 
+        // ============================================================
+        // SPEED & QUALITY
+        // ============================================================
+
         function buildSpeedPopup() { speedPopup.innerHTML = '';
             speeds.forEach(function(s, i) { var el = document.createElement('div');
                 el.className = 'speed-popup-item' + (i === speedIdx ? ' active' : '');
@@ -1725,34 +1848,77 @@
         document.addEventListener('click', function() { speedPopup.classList.remove('open');
             qualityPopup.classList.remove('open'); });
 
+        // ============================================================
+        // INIT
+        // ============================================================
+
         async function init() {
             var params = new URLSearchParams(location.search);
-            var lid = params.get('lecture_id'),
+            var lid = params.get('lid');
+            var cid = params.get('cid');
+
+            if (!lid || !cid) {
+                // Fallback to old param names
+                lid = params.get('lecture_id');
                 cid = params.get('course_id');
+            }
+
             if (!lid || !cid) { window.location.href = '/dashboard.html'; return; }
+
             document.getElementById('backLink').href = '/course.html?id=' + cid;
+
             var savedSpeed = parseFloat(localStorage.getItem('sv_speed') || '1');
             var si = speeds.indexOf(savedSpeed); if (si >= 0) speedIdx = si;
             speedBtn.innerHTML = speeds[speedIdx] + 'x';
             buildSpeedPopup();
             buildQualityPopup();
+
             try {
-                var r = await fetch(API + '/courses/' + cid, { headers: { 'Authorization': 'Bearer ' + getToken() } });
-                var d = await r.json();
-                if (!r.ok) { showToast('Failed to load course data.'); return; }
-                (d.subjects || []).forEach(function(s) { (s.lectures || []).forEach(function(l) { allLectures
-                        .push({ id: l.id, title: l.title, youtube_id: l.youtube_id, pdf_url: l.pdf_url,
-                            subject_name: s.title }); }); });
-                currentIndex = allLectures.findIndex(function(l) { return String(l.id) === String(lid); }); if (
-                    currentIndex < 0) currentIndex = 0;
-                if (!allLectures.length) { currentTitle.textContent = 'No lectures'; return; }
-                loadLecture(currentIndex);
+                // Get lecture data from API with decryption
+                const result = await api('GET', '/user/lecture/' + lid);
+
+                if (!result.ok) {
+                    showToast('Failed to load lecture data.');
+                    return;
+                }
+
+                const lec = result.data;
+                currentTitle.textContent = lec.title;
+                currentMeta.textContent = lec.subject_name || '';
+                headerTitle.textContent = lec.title;
+
+                if (lec.pdf_url) { currentPdfUrl = lec.pdf_url;
+                    pdfLink.href = lec.pdf_url;
+                    pdfLink.style.display = 'inline-flex'; } else { pdfLink.style.display = 'none'; }
+
+                // Deobfuscate YouTube ID
+                const ytId = deobfuscateYoutubeId(lec.youtube_id);
+
+                if (!ytId) {
+                    showToast('No video available for this lecture.');
+                    return;
+                }
+
+                // Create player with actual YouTube ID
+                createPlayer(ytId);
+
+                // Store lecture for navigation
+                allLectures = [lec];
+                currentIndex = 0;
                 updateNavButtons();
+
                 initialCover.classList.remove('hidden');
                 markUnsafe();
-                createPlayer(allLectures[currentIndex].youtube_id);
-            } catch (e) { currentTitle.textContent = 'Error loading course'; }
+
+            } catch (e) {
+                currentTitle.textContent = 'Error loading lecture';
+                showToast('Failed to load lecture.');
+            }
         }
+
+        // ============================================================
+        // CREATE YOUTUBE PLAYER
+        // ============================================================
 
         function createPlayer(vid) {
             if (player) { try { player.destroy(); } catch (e) {} player = null; }
@@ -1812,6 +1978,10 @@
                 }
             });
         }
+
+        // ============================================================
+        // EVENT LISTENERS
+        // ============================================================
 
         initialCover.addEventListener('click', function() { showLaunchShield('Starting'); if (player && player
                 .playVideo) player.playVideo(); });
