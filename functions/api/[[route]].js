@@ -380,7 +380,7 @@ async function handlePublicCourses(method, path, db, request) {
     return json({ courses: courses.results });
   }
 
-  // GET /api/courses/:id - Single course detail
+  // GET /api/courses/:id - Single course detail (public if is_public=1)
   if (method === 'GET' && path.match(/^\/courses\/\d+$/)) {
     const courseId = parseInt(path.split('/')[2]);
     
@@ -881,26 +881,26 @@ export async function onRequest(context) {
 
   let body = null;
   if (method === 'POST' || method === 'PUT') {
-    const contentType = request.headers.get('Content-Type') || '';
-    if (contentType.includes('multipart/form-data')) {
-      // Handle form data for file uploads
-      // Will be processed in the specific handler
-    } else {
-      try { body = await request.json(); } catch (e) { body = {}; }
-    }
+    try { body = await request.json(); } catch (e) { body = {}; }
   }
 
-  // Public course routes (no auth required)
-  if (path.startsWith('/courses/')) {
-    return handlePublicCourses(method, path, db, request);
-  }
-
-  // Auth routes (no login required)
+  // ═══════════════════════════════════════════════════════════
+  // ⚠️ AUTH ROUTES - NO AUTH REQUIRED (MUST COME FIRST)
+  // ═══════════════════════════════════════════════════════════
   if (path.startsWith('/auth/')) {
     return handleAuth(method, path, body, db, request);
   }
 
-  // Protected routes
+  // ═══════════════════════════════════════════════════════════
+  // ⚠️ PUBLIC COURSE ROUTES - NO AUTH REQUIRED
+  // ═══════════════════════════════════════════════════════════
+  if (path.startsWith('/courses/')) {
+    return handlePublicCourses(method, path, db, request);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // ⚠️ PROTECTED ROUTES - AUTH REQUIRED
+  // ═══════════════════════════════════════════════════════════
   const authUser = await getUser(request);
   if (!authUser) return err('Authentication required.', 401);
 
@@ -918,31 +918,6 @@ export async function onRequest(context) {
   // Payment routes
   if (path.startsWith('/payments/') || path === '/payments') {
     return handlePayments(method, path, body, db, authUser, request);
-  }
-
-  // GET /api/courses/:id — for admin panel loading full course data
-  if (method === 'GET' && path.match(/^\/courses\/\d+$/)) {
-    const courseId = parseInt(path.split('/')[2]);
-
-    // Skip enrollment check for admin users
-    if (authUser.role !== 'admin') {
-      const enrollment = await db.prepare('SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?').bind(authUser.id, courseId).first();
-      if (!enrollment) return err('Not enrolled in this course', 403);
-    }
-
-    const course = await db.prepare('SELECT * FROM courses WHERE id = ?').bind(courseId).first();
-    if (!course) return err('Course not found', 404);
-
-    const subjects = await db.prepare('SELECT * FROM subjects WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
-    const resources = await db.prepare('SELECT * FROM resources WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
-
-    const subjectsWithLectures = [];
-    for (const sub of subjects.results) {
-      const lectures = await db.prepare('SELECT * FROM lectures WHERE subject_id = ? ORDER BY sort_order ASC, id ASC').bind(sub.id).all();
-      subjectsWithLectures.push({ ...sub, lectures: lectures.results });
-    }
-
-    return json({ course, subjects: subjectsWithLectures, resources: resources.results });
   }
 
   return err('API endpoint not found', 404);
