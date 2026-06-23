@@ -1,201 +1,16 @@
 // ============================================================
-// SciVerse Academy — Complete Protected Backend
+// SciVerse Academy — Complete Backend
+// functions/api/[[route]].js
 // ============================================================
 
 const JWT_SECRET = 'sciverse-academy-jwt-secret-key-2026';
-const ENCRYPTION_SECRET = 'sciverse-encrypt-2026-secure-key';
-
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Encrypted',
-  'Access-Control-Allow-Credentials': 'true',
-  'Access-Control-Max-Age': '86400'
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 };
 
-// ============================================================
-// BLOCKED USER AGENTS (Proxy Tools)
-// ============================================================
-
-const BLOCKED_USER_AGENTS = [
-  'HTTPS Canary', 'Requestly', 'Charles', 'Fiddler', 'Burp',
-  'Postman', 'Insomnia', 'Wireshark', 'Mitmproxy', 'ZAP',
-  'OWASP', 'Nessus', 'Nmap', 'Sqlmap', 'Hydra', 'John',
-  'Aircrack', 'Metasploit', 'Nikto', 'WPScan', 'Dirbuster',
-  'Gobuster', 'FFUF', 'WFuzz', 'OpenVAS', 'Nexpose'
-];
-
-function isBlockedUserAgent(userAgent) {
-  if (!userAgent) return false;
-  const ua = userAgent.toLowerCase();
-  return BLOCKED_USER_AGENTS.some(agent => ua.includes(agent.toLowerCase()));
-}
-
-// ============================================================
-// ENCRYPTION HELPERS
-// ============================================================
-
-async function encryptResponse(data) {
-  const encoder = new TextEncoder();
-  const keyData = encoder.encode(ENCRYPTION_SECRET);
-
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    keyData,
-    { name: 'AES-GCM' },
-    false,
-    ['encrypt']
-  );
-
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const encodedData = encoder.encode(JSON.stringify(data));
-
-  const encrypted = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv: iv },
-    cryptoKey,
-    encodedData
-  );
-
-  const combined = new Uint8Array(iv.length + encrypted.byteLength);
-  combined.set(iv);
-  combined.set(new Uint8Array(encrypted), iv.length);
-
-  return btoa(String.fromCharCode(...combined));
-}
-
-async function decryptResponse(encryptedBase64) {
-  try {
-    const combined = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
-    const iv = combined.slice(0, 12);
-    const encrypted = combined.slice(12);
-
-    const encoder = new TextEncoder();
-    const keyData = encoder.encode(ENCRYPTION_SECRET);
-
-    const cryptoKey = await crypto.subtle.importKey(
-      'raw',
-      keyData,
-      { name: 'AES-GCM' },
-      false,
-      ['decrypt']
-    );
-
-    const decrypted = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv: iv },
-      cryptoKey,
-      encrypted
-    );
-
-    const decoder = new TextDecoder();
-    return JSON.parse(decoder.decode(decrypted));
-  } catch (e) {
-    return null;
-  }
-}
-
-// ============================================================
-// YOUTUBE ID OBFUSCATION
-// ============================================================
-
-function obfuscateYoutubeId(id) {
-  if (!id) return '';
-  const reversed = id.split('').reverse().join('');
-  return btoa(reversed);
-}
-
-function deobfuscateYoutubeId(obfuscated) {
-  try {
-    const decoded = atob(obfuscated);
-    return decoded.split('').reverse().join('');
-  } catch (e) {
-    return null;
-  }
-}
-
-// ============================================================
-// RATE LIMITING
-// ============================================================
-
-async function checkRateLimit(db, userId, action = 'default') {
-  try {
-    const minute = Math.floor(Date.now() / 60000);
-    const key = `rate_${userId || 'anonymous'}_${action}_${minute}`;
-
-    const existing = await db.prepare('SELECT count FROM rate_limits WHERE id = ?').bind(key).first();
-
-    const limit = userId ? 100 : 20;
-
-    if (existing && existing.count >= limit) {
-      return false;
-    }
-
-    await db.prepare(
-      'INSERT INTO rate_limits (id, count, created_at) VALUES (?, 1, datetime("now")) ON CONFLICT(id) DO UPDATE SET count = count + 1'
-    ).bind(key).run();
-
-    return true;
-  } catch (e) {
-    return true;
-  }
-}
-
-// ============================================================
-// ORIGIN VALIDATION
-// ============================================================
-
-function isValidOrigin(request) {
-  const origin = request.headers.get('Origin') || '';
-  const referer = request.headers.get('Referer') || '';
-
-  const allowedDomains = [
-    'sciverseacademy.pages.dev',
-    'sciverse-api.workers.dev',
-    'localhost',
-    '127.0.0.1'
-  ];
-
-  const check = (url) => {
-    try {
-      const parsed = new URL(url);
-      return allowedDomains.some(domain => parsed.hostname.includes(domain));
-    } catch {
-      return false;
-    }
-  };
-
-  return check(origin) || check(referer);
-}
-
-// ============================================================
-// RESPONSE HELPERS
-// ============================================================
-
-async function jsonEncrypted(data, status = 200) {
-  const encrypted = await encryptResponse(data);
-  return new Response(JSON.stringify({
-    encrypted: true,
-    data: encrypted,
-    timestamp: Date.now()
-  }), {
-    status,
-    headers: { ...CORS, 'Content-Type': 'application/json' }
-  });
-}
-
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { ...CORS, 'Content-Type': 'application/json' }
-  });
-}
-
-function err(msg, status = 400) {
-  return json({ error: msg }, status);
-}
-
-// ============================================================
-// JWT HELPERS
-// ============================================================
+// ─── HELPERS ────────────────────────────────────────────────
 
 async function sha256(text) {
   const encoder = new TextEncoder();
@@ -214,6 +29,17 @@ async function hmacSha256(key, data) {
   const signature = await crypto.subtle.sign('HMAC', cryptoKey, encoder.encode(data));
   const bytes = Array.from(new Uint8Array(signature));
   return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { ...CORS, 'Content-Type': 'application/json' }
+  });
+}
+
+function err(msg, status = 400) {
+  return json({ error: msg }, status);
 }
 
 function base64UrlDecode(str) {
@@ -264,9 +90,7 @@ async function hashFingerprint(fp) {
   return await sha256(fp);
 }
 
-// ============================================================
-// DATABASE SETUP
-// ============================================================
+// ─── DATABASE SETUP ─────────────────────────────────────────
 
 async function ensureTables(db) {
   await db.prepare(`
@@ -359,14 +183,7 @@ async function ensureTables(db) {
     )
   `).run();
 
-  await db.prepare(`
-    CREATE TABLE IF NOT EXISTS rate_limits (
-      id TEXT PRIMARY KEY,
-      count INTEGER DEFAULT 0,
-      created_at TEXT
-    )
-  `).run();
-
+  // Indexes
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_subjects_course ON subjects(course_id)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_lectures_subject ON lectures(subject_id)`).run();
@@ -392,9 +209,7 @@ async function ensureTables(db) {
   }
 }
 
-// ============================================================
-// AUTH HANDLERS
-// ============================================================
+// ─── AUTH HANDLERS ──────────────────────────────────────────
 
 async function handleAuth(method, path, body, db, request) {
   // POST /api/auth/register
@@ -474,9 +289,7 @@ async function handleAuth(method, path, body, db, request) {
   return err('Not found', 404);
 }
 
-// ============================================================
-// USER HANDLERS
-// ============================================================
+// ─── USER HANDLERS ──────────────────────────────────────────
 
 async function handleUser(method, path, body, db, user, request) {
   // GET /api/user/me
@@ -515,27 +328,20 @@ async function handleUser(method, path, body, db, user, request) {
     const subjects = await db.prepare('SELECT * FROM subjects WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
     const resources = await db.prepare('SELECT * FROM resources WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
 
-    // Get lectures for each subject with obfuscated YouTube IDs
+    // Get lectures for each subject
     const subjectsWithLectures = [];
     for (const sub of subjects.results) {
       const lectures = await db.prepare('SELECT * FROM lectures WHERE subject_id = ? ORDER BY sort_order ASC, id ASC').bind(sub.id).all();
-      const obfuscatedLectures = lectures.results.map(lec => ({
-        ...lec,
-        youtube_id: obfuscateYoutubeId(lec.youtube_id)
-      }));
-      subjectsWithLectures.push({ ...sub, lectures: obfuscatedLectures });
+      subjectsWithLectures.push({ ...sub, lectures: lectures.results });
     }
 
-    const responseData = { course, subjects: subjectsWithLectures, resources: resources.results };
-    return await jsonEncrypted(responseData);
+    return json({ course, subjects: subjectsWithLectures, resources: resources.results });
   }
 
   return err('Not found', 404);
 }
 
-// ============================================================
-// ADMIN HANDLERS
-// ============================================================
+// ─── ADMIN HANDLERS ─────────────────────────────────────────
 
 async function handleAdmin(method, path, body, db, user, request) {
   // ── USERS ──
@@ -725,12 +531,14 @@ async function handleAdmin(method, path, body, db, user, request) {
     return json({ logs: logs.results });
   }
 
+  // DELETE single audit log
   if (method === 'DELETE' && path.match(/^\/admin\/audit-logs\/\d+$/)) {
     const logId = parseInt(path.split('/')[3]);
     await db.prepare('DELETE FROM audit_logs WHERE id = ?').bind(logId).run();
     return json({ message: 'Log deleted.' });
   }
 
+  // DELETE all audit logs
   if (method === 'DELETE' && path === '/admin/audit-logs/all') {
     await db.prepare('DELETE FROM audit_logs').run();
     await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, 'deleted_all_audit_logs', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
@@ -758,9 +566,7 @@ async function handleAdmin(method, path, body, db, user, request) {
   return err('Not found', 404);
 }
 
-// ============================================================
-// MAIN ROUTER
-// ============================================================
+// ─── MAIN ROUTER ────────────────────────────────────────────
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -772,29 +578,6 @@ export async function onRequest(context) {
   // CORS preflight
   if (method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: CORS });
-  }
-
-  // Block proxy tools
-  const userAgent = request.headers.get('User-Agent') || '';
-  if (isBlockedUserAgent(userAgent)) {
-    return new Response(JSON.stringify({
-      error: 'Access Denied',
-      message: 'Proxy tools are not allowed'
-    }), {
-      status: 403,
-      headers: { ...CORS, 'Content-Type': 'application/json' }
-    });
-  }
-
-  // Validate origin
-  if (!isValidOrigin(request)) {
-    return new Response(JSON.stringify({
-      error: 'Invalid Request',
-      message: 'Origin not allowed'
-    }), {
-      status: 403,
-      headers: { ...CORS, 'Content-Type': 'application/json' }
-    });
   }
 
   // Ensure tables once per worker
@@ -817,12 +600,6 @@ export async function onRequest(context) {
   const authUser = await getUser(request);
   if (!authUser) return err('Authentication required.', 401);
 
-  // Check rate limit
-  const rateLimitOk = await checkRateLimit(db, authUser.id, path);
-  if (!rateLimitOk) {
-    return err('Too many requests. Please try again later.', 429);
-  }
-
   // Admin routes
   if (path.startsWith('/admin/')) {
     if (authUser.role !== 'admin') return err('Forbidden. Admin access required.', 403);
@@ -834,38 +611,8 @@ export async function onRequest(context) {
     return handleUser(method, path, body, db, authUser, request);
   }
 
-  // ============================================================
-  // NEW ROUTE: GET /api/user/lecture/:id
-  // ============================================================
-  if (method === 'GET' && path.match(/^\/user\/lecture\/\d+$/)) {
-    const lectureId = parseInt(path.split('/')[3]);
-
-    const lecture = await db.prepare('SELECT * FROM lectures WHERE id = ?').bind(lectureId).first();
-    if (!lecture) return err('Lecture not found', 404);
-
-    // Check enrollment
-    if (authUser.role !== 'admin') {
-      const enrollment = await db.prepare(`
-        SELECT e.* FROM enrollments e
-        JOIN subjects s ON s.course_id = e.course_id
-        WHERE e.user_id = ? AND s.id = ?
-      `).bind(authUser.id, lecture.subject_id).first();
-      if (!enrollment) return err('Not enrolled in this course', 403);
-    }
-
-    // Get subject name
-    const subject = await db.prepare('SELECT title FROM subjects WHERE id = ?').bind(lecture.subject_id).first();
-
-    const responseData = {
-      ...lecture,
-      subject_name: subject ? subject.title : '',
-      youtube_id: obfuscateYoutubeId(lecture.youtube_id)
-    };
-
-    return await jsonEncrypted(responseData);
-  }
-
-  // GET /api/courses/:id — for lecture page
+  // GET /api/courses/:id — for lecture page & admin panel loading full course data
+  // ADMIN BYPASS: admins don't need enrollment to view course data
   if (method === 'GET' && path.match(/^\/courses\/\d+$/)) {
     const courseId = parseInt(path.split('/')[2]);
 
@@ -884,15 +631,10 @@ export async function onRequest(context) {
     const subjectsWithLectures = [];
     for (const sub of subjects.results) {
       const lectures = await db.prepare('SELECT * FROM lectures WHERE subject_id = ? ORDER BY sort_order ASC, id ASC').bind(sub.id).all();
-      const obfuscatedLectures = lectures.results.map(lec => ({
-        ...lec,
-        youtube_id: obfuscateYoutubeId(lec.youtube_id)
-      }));
-      subjectsWithLectures.push({ ...sub, lectures: obfuscatedLectures });
+      subjectsWithLectures.push({ ...sub, lectures: lectures.results });
     }
 
-    const responseData = { course, subjects: subjectsWithLectures, resources: resources.results };
-    return await jsonEncrypted(responseData);
+    return json({ course, subjects: subjectsWithLectures, resources: resources.results });
   }
 
   return err('API endpoint not found', 404);
