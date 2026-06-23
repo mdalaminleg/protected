@@ -1,5 +1,5 @@
 // ============================================================
-// SciVerse Academy — Complete Backend
+// SciVerse Academy — Complete Backend (FULLY FIXED)
 // functions/api/[[route]].js
 // ============================================================
 
@@ -239,6 +239,18 @@ async function ensureTables(db) {
     VALUES ('Introduction to Science', 'Learn the fundamentals of science.', '🔬', 1, 1)
   `).run();
 
+  // Seed sample subject
+  await db.prepare(`
+    INSERT OR IGNORE INTO subjects (course_id, title, description, sort_order)
+    VALUES (1, 'Chapter 1: Basics', 'Introduction to basic concepts', 0)
+  `).run();
+
+  // Seed sample lecture
+  await db.prepare(`
+    INSERT OR IGNORE INTO lectures (subject_id, title, youtube_id, sort_order)
+    VALUES (1, 'Lesson 1: Getting Started', 'dQw4w9WgXcQ', 0)
+  `).run();
+
   // Migrations
   const migrations = [
     "ALTER TABLE users ADD COLUMN device_ip TEXT",
@@ -336,7 +348,7 @@ async function handleAuth(method, path, body, db, request) {
 // ─── PUBLIC COURSE HANDLERS ──────────────────────────────────
 
 async function handlePublicCourses(method, path, db, request) {
-  // GET /api/courses/public?limit=3 - Featured courses for index
+  // GET /api/courses/public - Featured courses for index
   if (method === 'GET' && path === '/courses/public') {
     const url = new URL(request.url);
     const limit = parseInt(url.searchParams.get('limit')) || 3;
@@ -380,14 +392,14 @@ async function handlePublicCourses(method, path, db, request) {
     return json({ courses: courses.results });
   }
 
-  // GET /api/courses/:id - Single course detail (public if is_public=1)
+  // GET /api/courses/:id - Single course detail
   if (method === 'GET' && path.match(/^\/courses\/\d+$/)) {
     const courseId = parseInt(path.split('/')[2]);
     
     const course = await db.prepare('SELECT * FROM courses WHERE id = ?').bind(courseId).first();
     if (!course) return err('Course not found', 404);
     
-    // Check if public or user has access
+    // If course is not public, check auth
     if (!course.is_public) {
       const authUser = await getUser(request);
       if (!authUser) return err('Authentication required', 401);
@@ -868,6 +880,8 @@ export async function onRequest(context) {
   const method = request.method;
   const path = url.pathname.replace('/api', '');
 
+  console.log('📡 Request:', method, path);
+
   // CORS preflight
   if (method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: CORS });
@@ -875,50 +889,82 @@ export async function onRequest(context) {
 
   // Ensure tables once per worker
   if (!globalThis.__tablesReady) {
+    console.log('📦 Creating tables...');
     await ensureTables(db);
     globalThis.__tablesReady = true;
+    console.log('✅ Tables ready');
   }
 
   let body = null;
   if (method === 'POST' || method === 'PUT') {
-    try { body = await request.json(); } catch (e) { body = {}; }
+    try { 
+      body = await request.json(); 
+      console.log('📦 Body:', JSON.stringify(body));
+    } catch (e) { 
+      body = {}; 
+    }
   }
 
   // ═══════════════════════════════════════════════════════════
-  // ⚠️ AUTH ROUTES - NO AUTH REQUIRED (MUST COME FIRST)
+  // ROUTE: AUTH - NO AUTH REQUIRED (MUST BE FIRST)
   // ═══════════════════════════════════════════════════════════
-  if (path.startsWith('/auth/')) {
+  if (path === '/auth/login' || path === '/auth/register') {
+    console.log('🔐 Auth route:', path);
     return handleAuth(method, path, body, db, request);
   }
 
   // ═══════════════════════════════════════════════════════════
-  // ⚠️ PUBLIC COURSE ROUTES - NO AUTH REQUIRED
+  // ROUTE: PUBLIC COURSES - NO AUTH REQUIRED
   // ═══════════════════════════════════════════════════════════
-  if (path.startsWith('/courses/')) {
+  if (path === '/courses/public' || path === '/courses/explore' || path === '/courses/stats') {
+    console.log('📚 Public courses route:', path);
     return handlePublicCourses(method, path, db, request);
   }
 
+  // Single course - check if public
+  if (path.match(/^\/courses\/\d+$/)) {
+    console.log('📖 Single course route:', path);
+    const courseId = parseInt(path.split('/')[2]);
+    const course = await db.prepare('SELECT is_public FROM courses WHERE id = ?').bind(courseId).first();
+    
+    // If course is public, allow access without auth
+    if (course && course.is_public === 1) {
+      return handlePublicCourses(method, path, db, request);
+    }
+  }
+
   // ═══════════════════════════════════════════════════════════
-  // ⚠️ PROTECTED ROUTES - AUTH REQUIRED
+  // PROTECTED ROUTES - AUTH REQUIRED
   // ═══════════════════════════════════════════════════════════
   const authUser = await getUser(request);
-  if (!authUser) return err('Authentication required.', 401);
+  if (!authUser) {
+    console.log('❌ No auth token');
+    return err('Authentication required.', 401);
+  }
+  console.log('✅ Auth user:', authUser.email);
 
   // Admin routes
   if (path.startsWith('/admin/')) {
-    if (authUser.role !== 'admin') return err('Forbidden. Admin access required.', 403);
+    if (authUser.role !== 'admin') {
+      console.log('❌ Not admin:', authUser.role);
+      return err('Forbidden. Admin access required.', 403);
+    }
+    console.log('👑 Admin route:', path);
     return handleAdmin(method, path, body, db, authUser, request);
   }
 
   // User routes
   if (path.startsWith('/user/')) {
+    console.log('👤 User route:', path);
     return handleUser(method, path, body, db, authUser, request);
   }
 
   // Payment routes
-  if (path.startsWith('/payments/') || path === '/payments') {
+  if (path === '/payments' || path.startsWith('/payments/')) {
+    console.log('💳 Payment route:', path);
     return handlePayments(method, path, body, db, authUser, request);
   }
 
+  console.log('❌ Route not found:', path);
   return err('API endpoint not found', 404);
 }
