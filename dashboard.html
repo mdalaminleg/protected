@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />  <title>Dashboard — SciVerse Academy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Dashboard — SciVerse Academy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -273,41 +274,39 @@
 
     const header = document.getElementById('header');
     let lastY = 0, ticking = false;
-    window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', function() {
         if (!ticking) {
-            requestAnimationFrame(() => {
-                const y = window.scrollY;
-                header.classList.toggle('hidden', y > lastY && y > 80);
-                lastY = y; ticking = false;
+            requestAnimationFrame(function() {
+                var y = window.scrollY;
+                if (y > lastY && y > 80) {
+                    header.classList.add('hidden');
+                } else {
+                    header.classList.remove('hidden');
+                }
+                lastY = y;
+                ticking = false;
             });
             ticking = true;
         }
     }, { passive: true });
 
     function toast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg; t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
+        var t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(function() { t.classList.remove('show'); }, 3000);
     }
+
     function escapeHtml(str) {
-        const d = document.createElement('div');
+        var d = document.createElement('div');
         d.textContent = str || '';
         return d.innerHTML;
     }
 
     // Header
-    const init = (user.name || 'U')[0].toUpperCase();
-    document.getElementById('headerRight').innerHTML = `
-        <button class="icon-btn sign-out" id="soBtn" title="Sign out">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-        </button>
-        <div class="avatar">${init}</div>
-    `;
-    document.getElementById('soBtn').addEventListener('click', () => {
+    var init = (user.name || 'U')[0].toUpperCase();
+    document.getElementById('headerRight').innerHTML = '<button class="icon-btn sign-out" id="soBtn" title="Sign out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button><div class="avatar">' + init + '</div>';
+    document.getElementById('soBtn').addEventListener('click', function() {
         localStorage.removeItem('site_token');
         localStorage.removeItem('site_user');
         window.location.href = '/index.html';
@@ -315,15 +314,15 @@
 
     // Load courses
     async function loadCourses() {
-        const grid = document.getElementById('courseGrid');
-        const spinner = document.getElementById('spinner');
-        const empty = document.getElementById('emptyState');
+        var grid = document.getElementById('courseGrid');
+        var spinner = document.getElementById('spinner');
+        var empty = document.getElementById('emptyState');
 
         try {
-            const res = await fetch(API + '/user/courses', {
+            var res = await fetch(API + '/user/courses', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
-            const data = await res.json();
+            var data = await res.json();
             spinner.style.display = 'none';
 
             if (!res.ok || !data.courses || !data.courses.length) {
@@ -332,21 +331,12 @@
             }
 
             grid.innerHTML = '';
-            data.courses.forEach(course => {
-                const desc = course.description || 'No description available.';
-                const card = document.createElement('a');
+            data.courses.forEach(function(course) {
+                var desc = course.description || 'No description available.';
+                var card = document.createElement('a');
                 card.href = '/course.html?id=' + course.id;
                 card.className = 'course-card';
-                card.innerHTML = `
-                    <div class="course-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    </div>
-                    <h3>${escapeHtml(course.title)}</h3>
-                    <p>${escapeHtml(desc)}</p>
-                    <div class="meta">
-                        <span class="pill">Enrolled</span>
-                    </div>
-                `;
+                card.innerHTML = '<div class="course-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><h3>' + escapeHtml(course.title) + '</h3><p>' + desc + '</p><div class="meta"><span class="pill">Enrolled</span></div>';
                 grid.appendChild(card);
             });
         } catch (err) {
