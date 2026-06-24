@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />   <title>SciVerse Academy — Learn Without Limits</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>SciVerse Academy — Learn Without Limits</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -12,7 +13,7 @@
 
         :root{
             --blue:#1a73e8;--blue-h:#1557b0;--red:#d93025;--red-bg:#fce8e6;
-            --green:#1e8e3e;--grn-bg:#e6f4ea;--yellow:#f9ab00;--ylw-bg:#fef7e0;
+            --green:#1e8e3e;--grn-bg:#e6f4ea;
             --bg:#f8f9fa;--surf:#ffffff;--hov:#f1f3f4;--border:#dadce0;
             --t1:#202124;--t2:#3c4043;--t3:#5f6368;--t4:#80868b;
             --gs:'Google Sans','Roboto',system-ui,sans-serif;
@@ -23,6 +24,7 @@
         body{
             font-family:var(--rb);background:var(--bg);color:var(--t2);
             -webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;
+            display:flex;flex-direction:column;
         }
 
         .header{
@@ -37,7 +39,18 @@
         .logo-wrap{display:flex;align-items:center;gap:10px;text-decoration:none}
         .logo-img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
         .logo-text{font-family:var(--gs);font-size:1.25rem;font-weight:500;color:var(--t1);letter-spacing:-0.2px}
-        .header-right{display:flex;align-items:center;gap:4px}
+        .header-right{display:flex;align-items:center;gap:8px}
+        .btn{
+            display:inline-flex;align-items:center;justify-content:center;gap:6px;
+            padding:8px 18px;font-family:var(--gs);font-size:.85rem;font-weight:500;
+            border:none;border-radius:var(--r);cursor:pointer;
+            transition:all var(--tr);text-decoration:none;white-space:nowrap;
+        }
+        .btn-primary{background:var(--blue);color:#fff}
+        .btn-primary:hover{background:var(--blue-h);box-shadow:0 1px 2px rgba(60,64,67,.3),0 2px 6px rgba(60,64,67,.15)}
+        .btn-outline{background:transparent;color:var(--blue);border:1px solid var(--border)}
+        .btn-outline:hover{background:#e8f0fe;border-color:var(--blue)}
+        .btn-lg{padding:12px 28px;font-size:1rem}
         .icon-btn{
             width:40px;height:40px;border:none;background:none;border-radius:50%;
             display:flex;align-items:center;justify-content:center;
@@ -47,155 +60,53 @@
         .icon-btn svg{width:20px;height:20px}
         .icon-btn.sign-out:hover{background:var(--red-bg);color:var(--red)}
         .avatar{
-            width:32px;height:32px;border-radius:50%;background:#1a73e8;
+            width:32px;height:32px;border-radius:50%;background:var(--blue);
             display:flex;align-items:center;justify-content:center;
             font-family:var(--gs);font-weight:500;font-size:13px;
             color:#fff;cursor:pointer;flex-shrink:0;margin-left:4px;
             border:2px solid transparent;
         }
         .avatar:hover{border-color:var(--border)}
-        .btn-signin{
-            padding:8px 16px;border:1px solid var(--blue);border-radius:var(--r);
-            background:var(--surf);color:var(--blue);font-family:var(--gs);
-            font-size:.875rem;font-weight:500;cursor:pointer;white-space:nowrap;
-            letter-spacing:.25px;transition:background var(--tr),box-shadow var(--tr);
-            text-decoration:none;display:inline-flex;align-items:center;
-        }
-        .btn-signin:hover{background:#e8f0fe;box-shadow:0 1px 3px rgba(60,64,67,.2)}
 
-        .main{padding-top:var(--hh)}
+        .main{flex:1;padding-top:var(--hh)}
 
-        .hero{
-            padding:80px 24px 48px;text-align:center;max-width:860px;margin:0 auto;
-        }
+        .hero{padding:100px 24px 60px;text-align:center;max-width:800px;margin:0 auto}
         .hero h1{
             font-family:var(--gs);font-size:3.5rem;font-weight:500;
             color:var(--t1);margin-bottom:20px;letter-spacing:-1px;line-height:1.1;
         }
         .hero p{
-            font-size:1rem;color:var(--t3);max-width:600px;margin:0 auto 36px;line-height:1.6;
+            font-size:1.1rem;color:var(--t3);max-width:560px;margin:0 auto 40px;line-height:1.7;
         }
         .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-        .btn-blue{
-            padding:0 24px;height:36px;background:var(--blue);color:#fff;
-            border:1px solid transparent;border-radius:var(--r);font-family:var(--gs);
-            font-size:.875rem;font-weight:500;cursor:pointer;letter-spacing:.25px;
-            transition:box-shadow var(--tr),background var(--tr);text-decoration:none;
-            display:inline-flex;align-items:center;gap:8px;
-        }
-        .btn-blue:hover{background:var(--blue-h);box-shadow:0 1px 2px rgba(60,64,67,.3),0 2px 6px 2px rgba(60,64,67,.15)}
-        .btn-white{
-            padding:0 24px;height:36px;background:var(--surf);color:var(--blue);
-            border:1px solid var(--border);border-radius:var(--r);font-family:var(--gs);
-            font-size:.875rem;font-weight:500;cursor:pointer;letter-spacing:.25px;
-            transition:box-shadow var(--tr),background var(--tr);text-decoration:none;
-            display:inline-flex;align-items:center;
-        }
-        .btn-white:hover{background:var(--hov);box-shadow:0 1px 2px rgba(60,64,67,.3),0 2px 6px 2px rgba(60,64,67,.15)}
+        .hero-greeting{font-family:var(--gs);font-size:1.3rem;font-weight:500;color:var(--t2);margin-bottom:24px}
 
-        .split{
-            max-width:1080px;margin:0 auto;padding:24px 24px 80px;
-            display:grid;grid-template-columns:1fr 400px;gap:64px;align-items:start;
-        }
-        .split-left{padding-top:16px}
-        .split-left h2{
-            font-family:var(--gs);font-size:1.75rem;font-weight:400;
-            color:var(--t1);margin-bottom:16px;line-height:1.25;
-        }
-        .split-left p{font-size:.95rem;color:var(--t3);line-height:1.7}
-        .feat-list{margin-top:28px;display:flex;flex-direction:column;gap:18px}
-        .feat-item{display:flex;align-items:flex-start;gap:12px}
-        .feat-dot{
-            width:20px;height:20px;flex-shrink:0;margin-top:2px;
-            display:flex;align-items:center;justify-content:center;
-        }
-        .feat-dot svg{width:18px;height:18px;color:var(--green)}
-        .feat-item span{font-size:.9rem;color:var(--t3)}
+        .section{max-width:1080px;margin:0 auto;padding:80px 24px;border-top:1px solid var(--border)}
+        .section-eyebrow{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--t4);margin-bottom:8px}
+        .section h2{font-family:var(--gs);font-size:2rem;font-weight:500;color:var(--t1);margin-bottom:12px;letter-spacing:-0.3px}
+        .section .sub{font-size:.95rem;color:var(--t3);margin-bottom:40px;max-width:560px;line-height:1.6}
 
-        .signin-card{
-            background:var(--surf);border:1px solid var(--border);
-            border-radius:var(--rl);padding:48px 40px 36px;
-            position:sticky;top:calc(var(--hh) + 24px);
-        }
-        .signin-card h2{
-            font-family:var(--gs);font-size:1.5rem;font-weight:400;
-            text-align:center;color:var(--t1);margin-bottom:8px;
-        }
-        .signin-sub{
-            font-family:var(--rb);font-size:.875rem;color:var(--t2);
-            text-align:center;margin-bottom:28px;
-        }
-        .signin-sub strong{font-weight:500}
-        .field{margin-bottom:24px}
-        .field-label{
-            display:block;font-size:.75rem;font-weight:500;color:var(--t3);
-            margin-bottom:4px;letter-spacing:.3px;
-        }
-        .field-input{
-            width:100%;padding:13px 15px;border:1px solid var(--border);
-            border-radius:var(--r);font-family:var(--rb);font-size:1rem;
-            color:var(--t1);background:var(--surf);outline:none;transition:border var(--tr);
-        }
-        .field-input:hover{border-color:var(--t3)}
-        .field-input:focus{border:2px solid var(--blue);padding:12px 14px}
-        .alert{padding:12px 16px;border-radius:var(--r);font-size:.85rem;margin-bottom:20px;display:none}
-        .alert-e{display:block;background:var(--red-bg);color:var(--red);border:1px solid rgba(217,48,37,.2)}
-        .alert-s{display:block;background:var(--grn-bg);color:var(--green);border:1px solid rgba(30,142,62,.2)}
-        .btn-next{
-            width:100%;height:36px;background:var(--blue);color:#fff;
-            border:none;border-radius:var(--r);font-family:var(--gs);
-            font-size:.875rem;font-weight:500;cursor:pointer;letter-spacing:.25px;
-            transition:box-shadow var(--tr),background var(--tr);
-            display:flex;align-items:center;justify-content:center;gap:8px;
-        }
-        .btn-next:hover{background:var(--blue-h);box-shadow:0 1px 2px rgba(60,64,67,.3),0 2px 6px rgba(60,64,67,.15)}
-        .btn-next:disabled{background:var(--hov);color:var(--t4);cursor:not-allowed;box-shadow:none}
-        .spinner{
-            width:16px;height:16px;border:2px solid rgba(255,255,255,.35);
-            border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;
-        }
-        @keyframes spin{to{transform:rotate(360deg)}}
-        .card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:28px}
-        .card-create{font-size:.875rem;color:var(--blue);text-decoration:none;font-weight:500}
-        .card-create:hover{text-decoration:underline}
-
-        .g-section{max-width:1080px;margin:0 auto;padding:64px 24px;border-top:1px solid var(--border)}
-        .section-eyebrow{
-            font-size:.75rem;font-weight:700;text-transform:uppercase;
-            letter-spacing:1px;color:var(--t4);margin-bottom:8px;
-        }
-        .g-section h2{
-            font-family:var(--gs);font-size:1.75rem;font-weight:400;
-            color:var(--t1);margin-bottom:8px;
-        }
-        .g-section .sub{
-            font-size:.95rem;color:var(--t3);margin-bottom:40px;
-            max-width:560px;line-height:1.6;
-        }
         .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
         .g-card{
-            background:var(--surf);border:1px solid var(--border);
-            border-radius:var(--rl);padding:24px;transition:box-shadow var(--tr);
+            background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
+            padding:24px;transition:box-shadow var(--tr);
         }
         .g-card:hover{box-shadow:0 1px 3px rgba(60,64,67,.3),0 4px 8px 3px rgba(60,64,67,.15)}
         .g-card-icon{
-            width:40px;height:40px;border-radius:50%;
-            display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+            width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
+            justify-content:center;margin-bottom:16px;
         }
         .g-card-icon svg{width:20px;height:20px}
         .icon-blue{background:#e8f0fe;color:var(--blue)}
         .icon-red{background:var(--red-bg);color:var(--red)}
         .icon-green{background:var(--grn-bg);color:var(--green)}
-        .g-card h3{
-            font-family:var(--gs);font-size:1rem;font-weight:500;
-            color:var(--t1);margin-bottom:8px;
-        }
+        .g-card h3{font-family:var(--gs);font-size:1rem;font-weight:500;color:var(--t1);margin-bottom:8px}
         .g-card p{font-size:.875rem;color:var(--t3);line-height:1.55}
 
         .steps-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
         .step{
-            background:var(--surf);border:1px solid var(--border);
-            border-radius:var(--rl);padding:28px 24px;text-align:center;
+            background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
+            padding:28px 24px;text-align:center;
         }
         .step-num{
             width:44px;height:44px;border-radius:50%;margin:0 auto 16px;
@@ -205,28 +116,53 @@
         .num-blue{background:#e8f0fe;color:var(--blue)}
         .num-red{background:var(--red-bg);color:var(--red)}
         .num-green{background:var(--grn-bg);color:var(--green)}
-        .step h3{
-            font-family:var(--gs);font-size:1rem;font-weight:500;
-            color:var(--t1);margin-bottom:8px;
-        }
+        .step h3{font-family:var(--gs);font-size:1rem;font-weight:500;color:var(--t1);margin-bottom:8px}
         .step p{font-size:.875rem;color:var(--t3);line-height:1.55}
 
-        .footer{background:var(--surf);border-top:1px solid var(--border);margin-top:16px}
+        /* ── LOGIN MODAL ── */
+        .modal-overlay{
+            position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;
+            display:none;align-items:center;justify-content:center;padding:20px;
+        }
+        .modal-overlay.open{display:flex}
+        .modal{
+            background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
+            padding:40px;width:100%;max-width:420px;box-shadow:0 24px 50px rgba(0,0,0,.3);
+        }
+        .modal h2{font-family:var(--gs);font-size:1.4rem;font-weight:500;color:var(--t1);text-align:center;margin-bottom:4px}
+        .modal .subtitle{font-size:.85rem;color:var(--t3);text-align:center;margin-bottom:28px}
+        .modal .subtitle strong{font-weight:500;color:var(--t2)}
+        .field{margin-bottom:18px}
+        .field-label{display:block;font-size:.75rem;font-weight:500;color:var(--t3);margin-bottom:4px;letter-spacing:.3px}
+        .field-input{
+            width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);
+            font-family:var(--rb);font-size:.95rem;color:var(--t1);background:var(--surf);
+            outline:none;transition:border var(--tr);
+        }
+        .field-input:hover{border-color:var(--t3)}
+        .field-input:focus{border:2px solid var(--blue);padding:11px 13px}
+        .alert{padding:10px 14px;border-radius:var(--r);font-size:.8rem;margin-bottom:16px;display:none}
+        .alert-e{display:block;background:var(--red-bg);color:var(--red);border:1px solid rgba(217,48,37,.2)}
+        .spinner-inline{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .btn-full{width:100%;height:38px;justify-content:center}
+        .btn-full:disabled{background:var(--hov);color:var(--t4);cursor:not-allowed;box-shadow:none}
+        .modal-footer-link{text-align:center;margin-top:20px;font-size:.85rem;color:var(--t3)}
+        .modal-footer-link a{color:var(--blue);text-decoration:none;font-weight:500}
+        .modal-footer-link a:hover{text-decoration:underline}
+
+        .footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
         .footer-inner{
             max-width:1080px;margin:0 auto;padding:40px 24px 24px;
             display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
         }
-        .fc h4{
-            font-family:var(--gs);font-size:.875rem;font-weight:500;
-            color:var(--t2);margin-bottom:12px;
-        }
+        .fc h4{font-family:var(--gs);font-size:.875rem;font-weight:500;color:var(--t2);margin-bottom:12px}
         .fc p{font-size:.8rem;color:var(--t3);line-height:1.7}
         .fc a{display:block;font-size:.8rem;color:var(--t3);text-decoration:none;line-height:2}
         .fc a:hover{color:var(--blue);text-decoration:underline}
         .footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
         .footer-bottom{
-            max-width:1080px;margin:0 auto;padding:16px 24px;
-            border-top:1px solid var(--border);
+            max-width:1080px;margin:0 auto;padding:16px 24px;border-top:1px solid var(--border);
             display:flex;justify-content:space-between;align-items:center;
             font-size:.75rem;color:var(--t4);flex-wrap:wrap;gap:8px;
         }
@@ -247,20 +183,19 @@
         }
         .toast.show{transform:translateY(0);opacity:1}
 
-        @media(max-width:960px){
-            .split{grid-template-columns:1fr;gap:40px}
-            .signin-card{position:static}
+        @media(max-width:900px){
+            .hero h1{font-size:2.6rem}
             .card-grid,.steps-row{grid-template-columns:1fr;max-width:480px;margin:0 auto}
             .footer-inner{grid-template-columns:1fr 1fr;gap:28px}
-            .hero h1{font-size:2.8rem}
         }
         @media(max-width:600px){
-            .hero h1{font-size:2.2rem}
-            .split-left h2,.g-section h2{font-size:1.4rem}
+            .hero h1{font-size:2rem}
+            .hero{padding:80px 20px 40px}
+            .section h2{font-size:1.5rem}
+            .section{padding:60px 20px}
             .footer-inner{grid-template-columns:1fr;gap:20px}
             .footer-bottom{flex-direction:column;text-align:center}
-            .signin-card{padding:32px 24px 28px}
-            .hero{padding:60px 20px 40px}
+            .modal{padding:28px 22px}
         }
     </style>
 </head>
@@ -280,115 +215,71 @@
 
     <section class="hero">
         <h1>SciVerse Academy</h1>
-        <p>Expert-led courses in physics, chemistry, biology and more — structured video lessons, downloadable guides, and progress tracking from one unified portal.</p>
-        <div class="hero-actions">
-            <a href="/register.html" class="btn-blue">Get started</a>
-            <a href="#features" class="btn-white">Learn more</a>
+        <p id="heroSubtitle">Expert-led courses in physics, chemistry, biology and more — structured video lessons, downloadable guides, and progress tracking from one unified portal.</p>
+        <div class="hero-actions" id="heroActions">
+            <button class="btn btn-primary btn-lg" id="heroPrimaryBtn" onclick="openLoginModal()">Sign in</button>
+            <a href="/register.html" class="btn btn-outline btn-lg">Create account</a>
         </div>
     </section>
 
-    <div class="split">
-        <div class="split-left">
-            <h2>Clean. Structured. Accessible.</h2>
-            <p>First-rate conceptual learning within clear reach — step-by-step video frameworks built alongside comprehensive companion notes, all from a single organised portal.</p>
-            <div class="feat-list">
-                <div class="feat-item">
-                    <div class="feat-dot">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <span>Structured chapters with clear modular video lessons</span>
-                </div>
-                <div class="feat-item">
-                    <div class="feat-dot">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <span>Downloadable lecture syllabi and PDF companion guides</span>
-                </div>
-                <div class="feat-item">
-                    <div class="feat-dot">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <span>Persistent account sync logs your precise progress</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="signin-card" id="loginCard">
-            <h2>Sign in</h2>
-            <p class="signin-sub">to continue to <strong>SciVerse Academy</strong></p>
-            <div class="alert" id="alert"></div>
-            <form id="loginForm" autocomplete="off">
-                <div class="field">
-                    <label class="field-label" for="email">Email or phone</label>
-                    <input type="email" class="field-input" id="email" required />
-                </div>
-                <div class="field">
-                    <label class="field-label" for="password">Password</label>
-                    <input type="password" class="field-input" id="password" required />
-                </div>
-                <button type="submit" class="btn-next" id="submitBtn">
-                    <span id="btnText">Next</span>
-                    <span class="spinner" id="spinner"></span>
-                </button>
-            </form>
-            <div class="card-footer">
-                <a href="/register.html" class="card-create">Create account</a>
-            </div>
-        </div>
-    </div>
-
-    <section class="g-section" id="features">
+    <section class="section" id="features">
         <div class="section-eyebrow">Overview</div>
         <h2>A unified space for study</h2>
         <p class="sub">Everything built seamlessly to align with your learning goals.</p>
         <div class="card-grid">
             <div class="g-card">
-                <div class="g-card-icon icon-blue">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                </div>
+                <div class="g-card-icon icon-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
                 <h3>Video Tutorials</h3>
                 <p>Stream clear, comprehensive video content designed to explain challenging topics step by step.</p>
             </div>
             <div class="g-card">
-                <div class="g-card-icon icon-red">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                </div>
+                <div class="g-card-icon icon-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
                 <h3>Shared Resources</h3>
                 <p>Access study notes, reference sheets, and assignments — all organised inside your dashboard.</p>
             </div>
             <div class="g-card">
-                <div class="g-card-icon icon-green">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                </div>
+                <div class="g-card-icon icon-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
                 <h3>Progress Tracking</h3>
                 <p>Automatically log completed lessons and jump back to exactly where you left off.</p>
             </div>
         </div>
     </section>
 
-    <section class="g-section" id="how-it-works">
+    <section class="section" id="how-it-works">
         <div class="section-eyebrow">Getting Started</div>
         <h2>Three simple steps</h2>
         <p class="sub">Begin navigating resources in under a minute.</p>
         <div class="steps-row">
-            <div class="step">
-                <div class="step-num num-blue">1</div>
-                <h3>Create your profile</h3>
-                <p>Set up an account with your email — takes less than a minute.</p>
-            </div>
-            <div class="step">
-                <div class="step-num num-red">2</div>
-                <h3>Verification review</h3>
-                <p>A quick admin check confirms your access to the full course catalog.</p>
-            </div>
-            <div class="step">
-                <div class="step-num num-green">3</div>
-                <h3>Access content</h3>
-                <p>Log in and start exploring your learning space with zero barriers.</p>
-            </div>
+            <div class="step"><div class="step-num num-blue">1</div><h3>Create your profile</h3><p>Set up an account with your email — takes less than a minute.</p></div>
+            <div class="step"><div class="step-num num-red">2</div><h3>Verification review</h3><p>A quick admin check confirms your access to the full course catalog.</p></div>
+            <div class="step"><div class="step-num num-green">3</div><h3>Access content</h3><p>Log in and start exploring your learning space with zero barriers.</p></div>
         </div>
     </section>
 </main>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+    <div class="modal">
+        <h2>Sign in</h2>
+        <p class="subtitle">to continue to <strong>SciVerse Academy</strong></p>
+        <div class="alert" id="modalAlert"></div>
+        <form id="loginForm" autocomplete="off">
+            <div class="field">
+                <label class="field-label" for="loginEmail">Email address</label>
+                <input type="email" class="field-input" id="loginEmail" required autofocus />
+            </div>
+            <div class="field">
+                <label class="field-label" for="loginPassword">Password</label>
+                <input type="password" class="field-input" id="loginPassword" required />
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" id="loginSubmitBtn">
+                <span id="loginBtnText">Next</span>
+                <span class="spinner-inline" id="loginSpinner"></span>
+            </button>
+        </form>
+        <div class="modal-footer-link">Don't have an account? <a href="/register.html">Create one</a></div>
+    </div>
+</div>
 
 <footer class="footer">
     <div class="footer-inner">
@@ -399,31 +290,13 @@
             </div>
             <p>Enabling comprehensive academic exploration through structured, accessible learning resources.</p>
         </div>
-        <div class="fc">
-            <h4>Platform</h4>
-            <a href="/register.html">Get Started</a>
-            <a href="#features">Features</a>
-            <a href="#how-it-works">How It Works</a>
-        </div>
-        <div class="fc">
-            <h4>Support</h4>
-            <a href="mailto:text.me.md.alamin@gmail.com">Contact Admin</a>
-            <a href="#">Help Center</a>
-            <a href="#">Report Issue</a>
-        </div>
-        <div class="fc">
-            <h4>Legal</h4>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-        </div>
+        <div class="fc"><h4>Platform</h4><a href="/register.html">Get Started</a><a href="#features">Features</a><a href="#how-it-works">How It Works</a></div>
+        <div class="fc"><h4>Support</h4><a href="mailto:text.me.md.alamin@gmail.com">Contact Admin</a><a href="#">Help Center</a><a href="#">Report Issue</a></div>
+        <div class="fc"><h4>Legal</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
     </div>
     <div class="footer-bottom">
         <span>&copy; 2026 SciVerse Academy</span>
-        <div class="footer-links">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Settings</a>
-        </div>
+        <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Settings</a></div>
         <div class="footer-social">
             <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
             <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg></a>
@@ -437,6 +310,9 @@
 <script src="/api-fix.js"></script>
 <script>
     const API = 'https://sciverseacademy.pages.dev/api';
+    const token = localStorage.getItem('site_token');
+    const user = JSON.parse(localStorage.getItem('site_user') || 'null');
+    const loggedIn = !!(token && user);
 
     const header = document.getElementById('header');
     let lastY = 0, ticking = false;
@@ -451,91 +327,99 @@
         }
     }, { passive: true });
 
-    const token = localStorage.getItem('site_token');
-    const user = JSON.parse(localStorage.getItem('site_user') || 'null');
-    const loggedIn = !!(token && user);
+    function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+    function modalAlert(msg) { const el = document.getElementById('modalAlert'); el.textContent = msg; el.className = 'alert alert-e'; }
+    function clearModalAlert() { const el = document.getElementById('modalAlert'); el.className = 'alert'; el.textContent = ''; }
 
-    function toast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg; t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
-    }
-    function alert_(msg, type) {
-        const el = document.getElementById('alert');
-        el.textContent = msg; el.className = 'alert alert-' + type;
-    }
-    function clearAlert() {
-        const el = document.getElementById('alert');
-        el.className = 'alert'; el.textContent = '';
-    }
-
-    function renderHeader() {
+    // ── HEADER + HERO BASED ON AUTH STATE ──
+    function renderUI() {
         const hr = document.getElementById('headerRight');
+        const heroActions = document.getElementById('heroActions');
+
         if (loggedIn) {
             const init = (user.name || 'U')[0].toUpperCase();
             hr.innerHTML = `
                 <button class="icon-btn sign-out" id="soBtn" title="Sign out">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                        <polyline points="16 17 21 12 16 7"/>
-                        <line x1="21" y1="12" x2="9" y2="12"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 </button>
                 <div class="avatar">${init}</div>
             `;
             document.getElementById('soBtn').addEventListener('click', () => {
                 localStorage.removeItem('site_token');
                 localStorage.removeItem('site_user');
-                location.href = '/index.html';
+                window.location.href = '/index.html';
             });
-            document.getElementById('loginCard').style.display = 'none';
+
+            const dashboardUrl = user.role === 'admin' ? '/admin.html' : '/dashboard.html';
+            document.getElementById('heroSubtitle').textContent = 'Welcome back! Continue your learning journey or manage your courses.';
+            heroActions.innerHTML = `
+                <a href="${dashboardUrl}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+                <a href="#features" class="btn btn-outline btn-lg">Learn more</a>
+            `;
         } else {
-            hr.innerHTML = '<a href="/register.html" class="btn-signin">Create account</a>';
+            hr.innerHTML = `
+                <button class="btn btn-outline btn-sm" onclick="openLoginModal()">Sign in</button>
+                <a href="/register.html" class="btn btn-primary btn-sm">Create account</a>
+            `;
+            heroActions.innerHTML = `
+                <button class="btn btn-primary btn-lg" onclick="openLoginModal()">Sign in</button>
+                <a href="/register.html" class="btn btn-outline btn-lg">Create account</a>
+            `;
         }
     }
-    renderHeader();
+    renderUI();
 
-    if (!loggedIn) {
-        document.getElementById('loginForm').addEventListener('submit', async e => {
-            e.preventDefault();
-            clearAlert();
-            if (!navigator.onLine) { alert_('No internet connection.', 'e'); return; }
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            if (!email || !password) { alert_('Please fill in all fields.', 'e'); return; }
+    // ── LOGIN MODAL ──
+    window.openLoginModal = function() {
+        document.getElementById('loginModal').classList.add('open');
+        document.getElementById('loginEmail').focus();
+    };
+    window.closeLoginModal = function() {
+        document.getElementById('loginModal').classList.remove('open');
+        clearModalAlert();
+        document.getElementById('loginForm').reset();
+    };
+    document.getElementById('loginModal').addEventListener('click', function(e) { if (e.target === this) closeLoginModal(); });
 
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            document.getElementById('spinner').style.display = 'inline-block';
-            document.getElementById('btnText').style.display = 'none';
-
-            try {
-                const res = await fetch(API + '/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                const data = await res.json();
-                if (!res.ok) { alert_(data.error || 'Login failed.', 'e'); resetBtn(); return; }
-                localStorage.setItem('site_token', data.token);
-                localStorage.setItem('site_user', JSON.stringify(data.user));
-                toast('Signed in successfully.');
-                setTimeout(() => {
-                    location.href = data.user.role === 'admin' ? '/admin.html' : '/dashboard.html';
-                }, 500);
-            } catch {
-                alert_('Network error. Please try again.', 'e');
-                resetBtn();
-            }
-        });
+    function resetLoginBtn() {
+        document.getElementById('loginSubmitBtn').disabled = false;
+        document.getElementById('loginSpinner').style.display = 'none';
+        document.getElementById('loginBtnText').style.display = 'inline';
     }
 
-    function resetBtn() {
-        const btn = document.getElementById('submitBtn');
-        btn.disabled = false;
-        document.getElementById('spinner').style.display = 'none';
-        document.getElementById('btnText').style.display = 'inline';
-    }
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        clearModalAlert();
+        if (!navigator.onLine) { modalAlert('No internet connection.'); return; }
+
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        if (!email || !password) { modalAlert('Please fill in all fields.'); return; }
+
+        const btn = document.getElementById('loginSubmitBtn');
+        btn.disabled = true;
+        document.getElementById('loginSpinner').style.display = 'inline-block';
+        document.getElementById('loginBtnText').style.display = 'none';
+
+        try {
+            const res = await fetch(API + '/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (!res.ok) { modalAlert(data.error || 'Login failed.'); resetLoginBtn(); return; }
+            localStorage.setItem('site_token', data.token);
+            localStorage.setItem('site_user', JSON.stringify(data.user));
+            toast('Signed in successfully.');
+            setTimeout(() => {
+                window.location.href = data.user.role === 'admin' ? '/admin.html' : '/dashboard.html';
+            }, 400);
+        } catch {
+            modalAlert('Network error. Please try again.');
+            resetLoginBtn();
+        }
+    });
 </script>
 </body>
 </html>
