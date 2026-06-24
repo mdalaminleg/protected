@@ -2,1887 +2,718 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Lecture | SciVerse Academy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Lecture — SciVerse Academy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        :root {
-            --primary: #7C3AED;
-            --primary-light: #8B5CF6;
-            --primary-dark: #6D28D9;
-            --primary-gradient: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
-            --bg: #0B0815;
-            --bg-light: #F4F2F9;
-            --surface: #15102A;
-            --surface-light: #FFFFFF;
-            --surface-hover: #1E1836;
-            --surface-hover-light: #F0EEF8;
-            --text: #FFFFFF;
-            --text-light: #1A1528;
-            --text-secondary: #A5B4CB;
-            --text-secondary-light: #6B7A99;
-            --text-muted: #6B7A99;
-            --text-muted-light: #94A3B8;
-            --border: rgba(255,255,255,0.06);
-            --border-light: rgba(0,0,0,0.08);
-            --shadow: 0 4px 20px rgba(0,0,0,0.3);
-            --shadow-light: 0 4px 20px rgba(0,0,0,0.06);
-            --radius: 12px;
-            --radius-lg: 16px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --gold: #B8751A;
-            --gold-2: #CF8B28;
-            --red: #EF4444;
-            --green: #10B981;
-        }
-
-        [data-theme="light"] {
-            --bg: #F4F2F9;
-            --surface: #FFFFFF;
-            --surface-hover: #F0EEF8;
-            --text: #1A1528;
-            --text-secondary: #4A4658;
-            --text-muted: #94A3B8;
-            --border: rgba(0,0,0,0.08);
-            --shadow: 0 4px 20px rgba(0,0,0,0.06);
-        }
-
-        html, body {
-            height: 100%;
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            -webkit-font-smoothing: antialiased;
-            transition: background var(--transition), color var(--transition);
-        }
-
-        .app {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            min-height: 100dvh;
-            background: var(--bg);
-        }
-
-        .header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            flex-shrink: 0;
-            transition: background var(--transition), border-color var(--transition);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .header-left .back {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 4px;
-            display: flex;
-            align-items: center;
-            transition: color var(--transition);
-        }
-
-        .header-left .back:hover {
-            color: var(--text);
-        }
-
-        .header-left .back svg {
-            width: 22px;
-            height: 22px;
-        }
-
-        .header-left .logo {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .header-left .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .header-left .title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-
-        .header-right .avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 13px;
-            color: #fff;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .theme-toggle {
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            width: 34px;
-            height: 34px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all var(--transition);
-        }
-
-        .theme-toggle:hover {
-            border-color: var(--primary);
-            color: var(--text);
-        }
-
-        .theme-toggle svg {
-            width: 17px;
-            height: 17px;
-        }
-
-        .player-wrap {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-            position: relative;
-        }
-
-        .player-box {
-            position: relative;
-            width: 100%;
-            max-width: 1200px;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            overflow: hidden;
-        }
-
-        .player-box:fullscreen {
-            max-width: none;
-            aspect-ratio: unset;
-        }
-
-        #ytPlayer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .anti-leak-overlay {
-            position: absolute;
-            inset: 0;
-            z-index: 5;
-            background: transparent;
-            pointer-events: all;
-            display: block;
-        }
-
-        .initial-cover {
-            position: absolute;
-            inset: 0;
-            z-index: 70;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: opacity 0.4s ease;
-        }
-
-        .initial-cover.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .initial-cover-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .initial-cover-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .initial-cover:hover .initial-cover-icon {
-            border-color: var(--primary);
-            background: rgba(124,58,237,0.12);
-            transform: scale(1.05);
-        }
-
-        .initial-cover-icon svg {
-            width: 26px;
-            height: 26px;
-            color: var(--primary-light);
-        }
-
-        .initial-cover-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: rgba(255,255,255,0.55);
-            letter-spacing: 0.04em;
-        }
-
-        .initial-cover-subtext {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.18);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .dead-shield {
-            position: absolute;
-            inset: 0;
-            z-index: 68;
-            background: #000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .dead-shield.active {
-            display: flex;
-        }
-
-        .dead-shield-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .dead-shield-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.10);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .dead-shield-icon svg {
-            width: 22px;
-            height: 22px;
-            color: rgba(255,255,255,0.4);
-        }
-
-        .dead-shield-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            font-weight: 500;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 0.04em;
-        }
-
-        .dead-shield-subtext {
-            font-size: 0.68rem;
-            color: rgba(255,255,255,0.18);
-            letter-spacing: 0.06em;
-        }
-
-        .pause-shield {
-            position: absolute;
-            inset: 0;
-            z-index: 66;
-            background: #000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .pause-shield.active {
-            display: flex;
-        }
-
-        .pause-shield-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .pause-shield-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.10);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.15s;
-        }
-
-        .pause-shield:hover .pause-shield-icon {
-            border-color: var(--primary);
-            background: rgba(124,58,237,0.10);
-        }
-
-        .pause-shield-icon svg {
-            width: 22px;
-            height: 22px;
-            color: rgba(255,255,255,0.45);
-        }
-
-        .pause-shield-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            font-weight: 500;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 0.04em;
-        }
-
-        .pause-shield-subtext {
-            font-size: 0.68rem;
-            color: rgba(255,255,255,0.18);
-            letter-spacing: 0.06em;
-        }
-
-        .launch-shield {
-            position: absolute;
-            inset: 0;
-            z-index: 65;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.25s ease;
-        }
-
-        .launch-shield.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .launch-shield-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .launch-shield-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: rgba(124,58,237,0.10);
-            border: 2px solid var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulseShield 1.2s ease-in-out infinite;
-        }
-
-        @keyframes pulseShield {
-            0%,
-            100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(124,58,237,0.2);
-            }
-            50% {
-                transform: scale(1.05);
-                box-shadow: 0 0 0 18px rgba(124,58,237,0);
-            }
-        }
-
-        .launch-shield-icon svg {
-            width: 22px;
-            height: 22px;
-            color: var(--primary-light);
-        }
-
-        .launch-shield-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: rgba(255,255,255,0.6);
-            letter-spacing: 0.04em;
-        }
-
-        .launch-shield-subtext {
-            font-size: 0.68rem;
-            color: rgba(255,255,255,0.2);
-            letter-spacing: 0.08em;
-        }
-
-        .launch-shield-progress {
-            width: 100px;
-            height: 2px;
-            background: rgba(255,255,255,0.06);
-            border-radius: 1px;
-            overflow: hidden;
-            margin-top: 4px;
-        }
-
-        .launch-shield-progress-fill {
-            height: 100%;
-            background: var(--primary);
-            border-radius: 1px;
-            width: 0%;
-            transition: width 0.1s linear;
-        }
-
-        .top-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 56px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 100%);
-            backdrop-filter: blur(4px);
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            padding: 0 18px;
-            transition: opacity 0.25s ease;
-            pointer-events: none;
-        }
-
-        .top-bar.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .top-bar-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.72rem;
-            color: rgba(255,255,255,0.75);
-            letter-spacing: 0.05em;
-            font-weight: 500;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-
-        .top-bar-watermark {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.62rem;
-            color: rgba(255,255,255,0.3);
-            letter-spacing: 0.06em;
-            margin-left: auto;
-        }
-
-        .spinner-el {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            z-index: 8;
-            display: none;
-        }
-
-        @keyframes spin {
-            to {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        .ui-layer {
-            position: absolute;
-            inset: 0;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .player-box.show-ui .ui-layer {
-            opacity: 1;
-        }
-
-        .gesture-zone {
-            position: absolute;
-            inset: 0;
-            z-index: 20;
-            pointer-events: auto;
-            cursor: pointer;
-        }
-
-        .ctr-pause-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.85);
-            width: 62px;
-            height: 62px;
-            background: rgba(11,31,58,0.9);
-            border: 1.5px solid rgba(255,255,255,0.18);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 42;
-            transition: opacity 0.2s, transform 0.2s, background 0.15s;
-            cursor: pointer;
-        }
-
-        .player-box.show-ui .ctr-pause-btn.playing,
-        .player-box.show-ui .ctr-pause-btn.paused {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .ctr-pause-btn:hover {
-            background: rgba(124,58,237,0.3);
-            border-color: var(--primary);
-        }
-
-        .ctr-pause-btn svg {
-            width: 22px;
-            height: 22px;
-            color: #fff;
-        }
-
-        .ctr-pause-btn .icon-play {
-            display: none;
-        }
-        .ctr-pause-btn .icon-pause {
-            display: none;
-        }
-        .ctr-pause-btn.playing .icon-pause {
-            display: block;
-        }
-        .ctr-pause-btn.paused .icon-play {
-            display: block;
-        }
-
-        .skip-side {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 7px;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 45;
-            transition: opacity 0.15s;
-        }
-
-        .skip-side.left {
-            left: 13%;
-        }
-        .skip-side.right {
-            right: 13%;
-        }
-        .skip-side.on {
-            opacity: 1;
-        }
-
-        .skip-side-ring {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid var(--primary);
-            background: rgba(0,0,0,0.78);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .skip-side-ring svg {
-            width: 20px;
-            height: 20px;
-            color: var(--primary-light);
-        }
-
-        .skip-side-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: 0.02em;
-        }
-
-        .skip-side-ring::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            border: 2px solid var(--primary);
-            opacity: 0;
-        }
-
-        .skip-side.on .skip-side-ring::after {
-            animation: rippleArc 0.55s ease-out forwards;
-        }
-
-        @keyframes rippleArc {
-            0% {
-                transform: scale(1);
-                opacity: 0.7;
-            }
-            100% {
-                transform: scale(1.75);
-                opacity: 0;
-            }
-        }
-
-        .skip-fb {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            background: rgba(0,0,0,0.92);
-            padding: 10px 20px;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 45;
-            border: 1px solid var(--primary);
-            transition: all 0.12s;
-        }
-
-        .skip-fb.on {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .skip-fb svg {
-            width: 16px;
-            height: 16px;
-            color: var(--primary-light);
-        }
-
-        .skip-fb span {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .drag-preview {
-            position: absolute;
-            bottom: 85px;
-            width: 160px;
-            aspect-ratio: 16/9;
-            background: #000;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 6px;
-            overflow: hidden;
-            display: none;
-            pointer-events: none;
-            z-index: 35;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-            transform: translateX(-50%);
-        }
-
-        .drag-preview.on {
-            display: block;
-        }
-
-        .drag-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.7;
-        }
-
-        .drag-preview .drag-time {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 6px 8px;
-            background: rgba(0,0,0,0.85);
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: #fff;
-            text-align: center;
-        }
-
-        .ctrl-bar {
-            padding: 18px 18px 14px;
-            pointer-events: auto;
-            transition: opacity 0.25s ease;
-            position: relative;
-            z-index: 30;
-            margin-top: auto;
-            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 80%, transparent 100%);
-            backdrop-filter: blur(4px);
-        }
-
-        .ctrl-bar.fade {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .prog-wrap {
-            position: relative;
-            width: 100%;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-
-        .prog-track {
-            width: 100%;
-            height: 5px;
-            background: rgba(255,255,255,0.25);
-            border-radius: 3px;
-            cursor: pointer;
-            position: relative;
-            transition: height 0.15s;
-        }
-
-        .prog-wrap:hover .prog-track,
-        .prog-wrap.dragging .prog-track {
-            height: 7px;
-        }
-
-        .prog-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--primary);
-            border-radius: 3px;
-            position: relative;
-            box-shadow: 0 0 8px rgba(124,58,237,0.35);
-        }
-
-        .prog-fill::after {
-            content: '';
-            position: absolute;
-            right: -6px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 13px;
-            height: 13px;
-            background: var(--primary);
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.12s;
-            box-shadow: 0 0 6px rgba(124,58,237,0.5);
-        }
-
-        .prog-wrap:hover .prog-fill::after,
-        .prog-wrap.dragging .prog-fill::after {
-            opacity: 1;
-        }
-
-        .prog-buffered {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 0%;
-            background: rgba(255,255,255,0.28);
-            border-radius: 3px;
-            pointer-events: none;
-        }
-
-        .ctrl-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 30px;
-        }
-
-        .ctrl-left,
-        .ctrl-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .ctrl-ic {
-            background: transparent;
-            border: none;
-            color: #fff;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.12s;
-            padding: 0;
-        }
-
-        .ctrl-ic:hover {
-            background: rgba(255,255,255,0.1);
-            color: var(--primary-light);
-        }
-
-        .ctrl-ic svg {
-            width: 15px;
-            height: 15px;
-        }
-
-        .time-display {
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: #fff;
-            min-width: 78px;
-            font-variant-numeric: tabular-nums;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.5);
-        }
-
-        .vol-wrap {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        input[type=range] {
-            width: 48px;
-            height: 3px;
-            accent-color: var(--primary);
-            background: rgba(255,255,255,0.12);
-            border-radius: 2px;
-            cursor: pointer;
-        }
-
-        .speed-btn,
-        .quality-btn {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #fff;
-            font-size: 0.62rem;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 3px 8px;
-            border-radius: 4px;
-            transition: all 0.12s;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .speed-btn:hover {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-        }
-
-        .quality-btn:hover {
-            background: rgba(255,255,255,0.12);
-            border-color: rgba(255,255,255,0.25);
-        }
-
-        .popup-wrap {
-            position: relative;
-        }
-
-        .speed-popup,
-        .quality-popup {
-            position: absolute;
-            bottom: 38px;
-            right: 0;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 5px 0;
-            min-width: 86px;
-            z-index: 300;
-            box-shadow: 0 14px 44px rgba(0,0,0,0.75);
-            display: none;
-            flex-direction: column;
-        }
-
-        .speed-popup.open,
-        .quality-popup.open {
-            display: flex;
-        }
-
-        .speed-popup-item,
-        .quality-popup-item {
-            padding: 7px 16px;
-            font-size: 0.72rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.1s;
-            font-family: 'Inter', sans-serif;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        .speed-popup-item:hover,
-        .quality-popup-item:hover {
-            background: var(--surface-hover);
-            color: var(--text);
-        }
-
-        .speed-popup-item.active,
-        .quality-popup-item.active {
-            color: var(--primary-light);
-            font-weight: 700;
-        }
-
-        .nav-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 12px 20px;
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-            flex-shrink: 0;
-            transition: background var(--transition), border-color var(--transition);
-        }
-
-        .nav-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .nav-info h2 {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .nav-info p {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-        }
-
-        .nav-pdf-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--primary-gradient);
-            color: #fff;
-            border: none;
-            padding: 7px 14px;
-            border-radius: var(--radius);
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 0.72rem;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.15s;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        .nav-pdf-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(124,58,237,0.3);
-        }
-
-        .nav-pdf-btn svg {
-            width: 14px;
-            height: 14px;
-        }
-
-        .footer {
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-            padding: 10px 20px;
-            text-align: center;
-            flex-shrink: 0;
-            transition: background var(--transition), border-color var(--transition);
-        }
-
-        .footer p {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            opacity: 0.5;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 9999;
-            padding: 12px 20px;
-            border-radius: var(--radius);
-            background: var(--surface);
-            color: var(--text);
-            border: 1px solid var(--border);
-            box-shadow: 0 20px 48px rgba(0,0,0,0.5);
-            font-size: 0.8rem;
-            font-weight: 500;
-            font-family: 'Inter', sans-serif;
-            opacity: 0;
-            transform: translateY(8px);
-            transition: all 0.2s ease;
-            pointer-events: none;
-        }
-
-        .toast.on {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @media (max-width: 600px) {
-            .header-left .title {
-                font-size: 13px;
-            }
-            .ctrl-bar {
-                padding: 0 10px 8px;
-            }
-            .ctrl-left,
-            .ctrl-right {
-                gap: 6px;
-            }
-            .time-display {
-                font-size: 0.65rem;
-                min-width: 65px;
-            }
-            .skip-side.left {
-                left: 7%;
-            }
-            .skip-side.right {
-                right: 7%;
-            }
-            .nav-bar {
-                padding: 10px 14px;
-                flex-wrap: wrap;
-            }
-            .nav-info h2 {
-                font-size: 0.75rem;
-            }
-            .initial-cover-text {
-                font-size: 1rem;
-            }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+
+        :root{
+            --blue:#1a73e8;--blue-h:#1557b0;--red:#d93025;--red-bg:#fce8e6;
+            --green:#1e8e3e;--grn-bg:#e6f4ea;
+            --bg:#f8f9fa;--surf:#ffffff;--hov:#f1f3f4;--border:#dadce0;
+            --t1:#202124;--t2:#3c4043;--t3:#5f6368;--t4:#80868b;
+            --gs:'Google Sans','Roboto',system-ui,sans-serif;
+            --rb:'Roboto',system-ui,sans-serif;
+            --hh:64px;--r:4px;--rl:8px;--tr:.2s cubic-bezier(.4,0,.2,1);
+            --gold:#B8751A;--gold-2:#CF8B28;
+        }
+
+        body{
+            font-family:var(--rb);background:var(--bg);color:var(--t2);
+            -webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;
+            display:flex;flex-direction:column;
+        }
+
+        .app{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
+
+        .header{
+            background:var(--surf);border-bottom:1px solid var(--border);
+            padding:12px 24px;display:flex;align-items:center;justify-content:space-between;
+            position:sticky;top:0;z-index:100;flex-shrink:0;transition:background var(--tr),border-color var(--tr);
+        }
+        .header-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+        .back-btn{
+            width:40px;height:40px;border:none;background:none;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            cursor:pointer;color:var(--t3);transition:background var(--tr);flex-shrink:0;
+            text-decoration:none;
+        }
+        .back-btn:hover{background:var(--hov)}
+        .back-btn svg{width:22px;height:22px}
+        .logo-img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
+        .header-left .title{
+            font-family:var(--gs);font-size:.95rem;font-weight:500;color:var(--t1);
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+        }
+        .header-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+        .icon-btn{
+            width:34px;height:34px;border:none;background:none;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            cursor:pointer;color:var(--t3);transition:background var(--tr);flex-shrink:0;
+        }
+        .icon-btn:hover{background:var(--hov)}
+        .icon-btn svg{width:18px;height:18px}
+        .icon-btn.sign-out:hover{background:var(--red-bg);color:var(--red)}
+        .avatar{
+            width:34px;height:34px;border-radius:50%;background:var(--blue);
+            display:flex;align-items:center;justify-content:center;
+            font-family:var(--gs);font-weight:500;font-size:13px;
+            color:#fff;cursor:pointer;flex-shrink:0;
+        }
+
+        .btn-ghost{
+            background:transparent;border:1px solid var(--border);border-radius:var(--r);
+            color:var(--t3);font-family:var(--gs);font-size:.7rem;font-weight:500;
+            cursor:pointer;padding:4px 10px;transition:all var(--tr);
+        }
+        .btn-ghost:hover{background:var(--hov);color:var(--t1)}
+
+        .player-wrap{
+            flex:1;display:flex;align-items:center;justify-content:center;
+            background:#000;position:relative;
+        }
+        .player-box{
+            position:relative;width:100%;max-width:1200px;aspect-ratio:16/9;background:#000;overflow:hidden;
+        }
+        .player-box:fullscreen{max-width:none;aspect-ratio:unset}
+        #ytPlayer{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+        .anti-leak-overlay{position:absolute;inset:0;z-index:5;background:transparent;pointer-events:all;display:block}
+
+        .initial-cover{
+            position:absolute;inset:0;z-index:70;background:#000;display:flex;
+            align-items:center;justify-content:center;cursor:pointer;transition:opacity .4s ease;
+        }
+        .initial-cover.hidden{opacity:0;pointer-events:none}
+        .initial-cover-content{display:flex;flex-direction:column;align-items:center;gap:16px}
+        .initial-cover-icon{
+            width:64px;height:64px;border-radius:50%;border:2px solid rgba(255,255,255,.12);
+            display:flex;align-items:center;justify-content:center;transition:all .2s;
+        }
+        .initial-cover:hover .initial-cover-icon{border-color:var(--blue);background:rgba(26,115,232,.12);transform:scale(1.05)}
+        .initial-cover-icon svg{width:26px;height:26px;color:var(--blue)}
+        .initial-cover-text{font-family:var(--rb);font-size:1.2rem;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.04em}
+        .initial-cover-subtext{font-size:.7rem;color:rgba(255,255,255,.18);letter-spacing:.08em;text-transform:uppercase}
+
+        .dead-shield{
+            position:absolute;inset:0;z-index:68;background:#000;display:none;
+            align-items:center;justify-content:center;cursor:pointer;
+        }
+        .dead-shield.active{display:flex}
+        .dead-shield-content{display:flex;flex-direction:column;align-items:center;gap:14px}
+        .dead-shield-icon{
+            width:56px;height:56px;border-radius:50%;border:2px solid rgba(255,255,255,.1);
+            display:flex;align-items:center;justify-content:center;
+        }
+        .dead-shield-icon svg{width:22px;height:22px;color:rgba(255,255,255,.4)}
+        .dead-shield-text{font-family:var(--rb);font-size:1rem;font-weight:500;color:rgba(255,255,255,.4);letter-spacing:.04em}
+        .dead-shield-subtext{font-size:.68rem;color:rgba(255,255,255,.18);letter-spacing:.06em}
+
+        .pause-shield{
+            position:absolute;inset:0;z-index:66;background:#000;display:none;
+            align-items:center;justify-content:center;cursor:pointer;
+        }
+        .pause-shield.active{display:flex}
+        .pause-shield-content{display:flex;flex-direction:column;align-items:center;gap:14px}
+        .pause-shield-icon{
+            width:56px;height:56px;border-radius:50%;border:2px solid rgba(255,255,255,.1);
+            display:flex;align-items:center;justify-content:center;transition:all .15s;
+        }
+        .pause-shield:hover .pause-shield-icon{border-color:var(--blue);background:rgba(26,115,232,.1)}
+        .pause-shield-icon svg{width:22px;height:22px;color:rgba(255,255,255,.45)}
+        .pause-shield-text{font-family:var(--rb);font-size:1rem;font-weight:500;color:rgba(255,255,255,.4);letter-spacing:.04em}
+        .pause-shield-subtext{font-size:.68rem;color:rgba(255,255,255,.18);letter-spacing:.06em}
+
+        .launch-shield{
+            position:absolute;inset:0;z-index:65;background:#000;display:flex;
+            flex-direction:column;align-items:center;justify-content:center;
+            pointer-events:none;opacity:0;transition:opacity .25s ease;
+        }
+        .launch-shield.active{opacity:1;pointer-events:all}
+        .launch-shield-content{display:flex;flex-direction:column;align-items:center;gap:14px}
+        .launch-shield-icon{
+            width:56px;height:56px;border-radius:50%;background:rgba(26,115,232,.1);
+            border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;
+            animation:pulseShield 1.2s ease-in-out infinite;
+        }
+        @keyframes pulseShield{
+            0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(26,115,232,.2)}
+            50%{transform:scale(1.05);box-shadow:0 0 0 18px rgba(26,115,232,0)}
+        }
+        .launch-shield-icon svg{width:22px;height:22px;color:var(--blue)}
+        .launch-shield-text{font-family:var(--rb);font-size:1.1rem;font-weight:600;color:rgba(255,255,255,.6);letter-spacing:.04em}
+        .launch-shield-subtext{font-size:.68rem;color:rgba(255,255,255,.2);letter-spacing:.08em}
+        .launch-shield-progress{width:100px;height:2px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden;margin-top:4px}
+        .launch-shield-progress-fill{height:100%;background:var(--blue);border-radius:1px;width:0%;transition:width .1s linear}
+
+        .top-bar{
+            position:absolute;top:0;left:0;right:0;height:56px;
+            background:linear-gradient(to bottom,rgba(0,0,0,.75) 0%,rgba(0,0,0,.3) 100%);
+            backdrop-filter:blur(4px);z-index:50;display:flex;align-items:center;
+            padding:0 18px;transition:opacity .25s ease;pointer-events:none;
+        }
+        .top-bar.hidden{opacity:0;pointer-events:none}
+        .top-bar-text{font-family:var(--rb);font-size:.72rem;color:rgba(255,255,255,.75);letter-spacing:.05em;font-weight:500;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+        .top-bar-watermark{font-family:var(--rb);font-size:.62rem;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-left:auto}
+
+        .spinner-el{
+            position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+            width:36px;height:36px;border:3px solid rgba(255,255,255,.1);
+            border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;z-index:8;display:none;
+        }
+        @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+        .ui-layer{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;pointer-events:none;opacity:0;transition:opacity .2s}
+        .player-box.show-ui .ui-layer{opacity:1}
+        .gesture-zone{position:absolute;inset:0;z-index:20;pointer-events:auto;cursor:pointer}
+
+        .ctr-pause-btn{
+            position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.85);
+            width:62px;height:62px;background:rgba(11,31,58,.9);border:1.5px solid rgba(255,255,255,.18);
+            border-radius:50%;display:flex;align-items:center;justify-content:center;
+            opacity:0;pointer-events:none;z-index:42;transition:opacity .2s,transform .2s,background .15s;cursor:pointer;
+        }
+        .player-box.show-ui .ctr-pause-btn.playing,.player-box.show-ui .ctr-pause-btn.paused{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+        .ctr-pause-btn:hover{background:rgba(26,115,232,.3);border-color:var(--blue)}
+        .ctr-pause-btn svg{width:22px;height:22px;color:#fff}
+        .ctr-pause-btn .icon-play{display:none}
+        .ctr-pause-btn .icon-pause{display:none}
+        .ctr-pause-btn.playing .icon-pause{display:block}
+        .ctr-pause-btn.paused .icon-play{display:block}
+
+        .skip-side{
+            position:absolute;top:50%;transform:translateY(-50%);display:flex;
+            flex-direction:column;align-items:center;gap:7px;opacity:0;pointer-events:none;z-index:45;transition:opacity .15s;
+        }
+        .skip-side.left{left:13%}.skip-side.right{right:13%}
+        .skip-side.on{opacity:1}
+        .skip-side-ring{
+            width:56px;height:56px;border-radius:50%;border:2px solid var(--blue);
+            background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;position:relative;
+        }
+        .skip-side-ring svg{width:20px;height:20px;color:var(--blue)}
+        .skip-side-label{font-size:.72rem;font-weight:700;color:#fff;letter-spacing:.02em}
+        .skip-side-ring::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--blue);opacity:0}
+        .skip-side.on .skip-side-ring::after{animation:rippleArc .55s ease-out forwards}
+        @keyframes rippleArc{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.75);opacity:0}}
+
+        .skip-fb{
+            position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);
+            background:rgba(0,0,0,.92);padding:10px 20px;border-radius:30px;
+            display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;
+            z-index:45;border:1px solid var(--blue);transition:all .12s;
+        }
+        .skip-fb.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+        .skip-fb svg{width:16px;height:16px;color:var(--blue)}
+        .skip-fb span{font-size:.85rem;font-weight:600;color:#fff}
+
+        .drag-preview{
+            position:absolute;bottom:85px;width:160px;aspect-ratio:16/9;background:#000;
+            border:1px solid rgba(255,255,255,.15);border-radius:6px;overflow:hidden;
+            display:none;pointer-events:none;z-index:35;box-shadow:0 8px 32px rgba(0,0,0,.6);
+            transform:translateX(-50%);
+        }
+        .drag-preview.on{display:block}
+        .drag-preview img{width:100%;height:100%;object-fit:cover;opacity:.7}
+        .drag-preview .drag-time{
+            position:absolute;bottom:0;left:0;right:0;padding:6px 8px;
+            background:rgba(0,0,0,.85);font-size:.65rem;font-weight:600;color:#fff;text-align:center;
+        }
+
+        .ctrl-bar{
+            padding:18px 18px 14px;pointer-events:auto;transition:opacity .25s ease;
+            position:relative;z-index:30;margin-top:auto;
+            background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.5) 80%,transparent 100%);
+            backdrop-filter:blur(4px);
+        }
+        .ctrl-bar.fade{opacity:0;pointer-events:none}
+        .prog-wrap{position:relative;width:100%;height:28px;display:flex;align-items:center;margin-bottom:4px}
+        .prog-track{
+            width:100%;height:5px;background:rgba(255,255,255,.25);border-radius:3px;
+            cursor:pointer;position:relative;transition:height .15s;
+        }
+        .prog-wrap:hover .prog-track,.prog-wrap.dragging .prog-track{height:7px}
+        .prog-fill{height:100%;width:0%;background:var(--blue);border-radius:3px;position:relative;box-shadow:0 0 8px rgba(26,115,232,.35)}
+        .prog-fill::after{
+            content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);
+            width:13px;height:13px;background:var(--blue);border-radius:50%;
+            opacity:0;transition:opacity .12s;box-shadow:0 0 6px rgba(26,115,232,.5);
+        }
+        .prog-wrap:hover .prog-fill::after,.prog-wrap.dragging .prog-fill::after{opacity:1}
+        .prog-buffered{position:absolute;top:0;left:0;height:100%;width:0%;background:rgba(255,255,255,.28);border-radius:3px;pointer-events:none}
+        .ctrl-row{display:flex;align-items:center;justify-content:space-between;height:30px}
+        .ctrl-left,.ctrl-right{display:flex;align-items:center;gap:10px}
+        .ctrl-ic{
+            background:transparent;border:none;color:#fff;width:30px;height:30px;
+            border-radius:50%;display:flex;align-items:center;justify-content:center;
+            cursor:pointer;transition:all .12s;padding:0;
+        }
+        .ctrl-ic:hover{background:rgba(255,255,255,.1);color:var(--blue)}
+        .ctrl-ic svg{width:15px;height:15px}
+        .time-display{font-size:.7rem;font-weight:500;color:#fff;min-width:78px;font-variant-numeric:tabular-nums;text-shadow:0 1px 1px rgba(0,0,0,.5)}
+        .vol-wrap{display:flex;align-items:center;gap:4px}
+        input[type=range]{width:48px;height:3px;accent-color:var(--blue);background:rgba(255,255,255,.12);border-radius:2px;cursor:pointer}
+        .speed-btn,.quality-btn{
+            background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+            color:#fff;font-size:.62rem;font-weight:600;cursor:pointer;
+            padding:3px 8px;border-radius:4px;transition:all .12s;font-family:var(--rb);
+        }
+        .speed-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+        .quality-btn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)}
+        .popup-wrap{position:relative}
+        .speed-popup,.quality-popup{
+            position:absolute;bottom:38px;right:0;background:var(--surf);
+            border:1px solid var(--border);border-radius:var(--rl);padding:5px 0;
+            min-width:86px;z-index:300;box-shadow:0 14px 44px rgba(0,0,0,.75);
+            display:none;flex-direction:column;
+        }
+        .speed-popup.open,.quality-popup.open{display:flex}
+        .speed-popup-item,.quality-popup-item{
+            padding:7px 16px;font-size:.72rem;font-weight:500;color:var(--t3);
+            cursor:pointer;transition:all .1s;font-family:var(--rb);text-align:center;white-space:nowrap;
+        }
+        .speed-popup-item:hover,.quality-popup-item:hover{background:var(--hov);color:var(--t1)}
+        .speed-popup-item.active,.quality-popup-item.active{color:var(--blue);font-weight:700}
+
+        .nav-bar{
+            display:flex;align-items:center;justify-content:space-between;gap:10px;
+            padding:12px 24px;background:var(--surf);border-top:1px solid var(--border);
+            flex-shrink:0;transition:background var(--tr),border-color var(--tr);
+        }
+        .nav-info{flex:1;min-width:0}
+        .nav-info h2{font-family:var(--gs);font-size:.85rem;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .nav-info p{font-size:.65rem;color:var(--t4)}
+        .nav-pdf-btn{
+            display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;
+            border:none;padding:7px 14px;border-radius:var(--r);font-family:var(--gs);
+            font-weight:500;font-size:.72rem;cursor:pointer;text-decoration:none;
+            transition:all .15s;white-space:nowrap;flex-shrink:0;
+        }
+        .nav-pdf-btn:hover{background:var(--blue-h);box-shadow:0 1px 3px rgba(60,64,67,.3)}
+        .nav-pdf-btn svg{width:14px;height:14px}
+
+        .footer{background:var(--surf);border-top:1px solid var(--border);flex-shrink:0}
+        .footer-inner{
+            max-width:1080px;margin:0 auto;padding:40px 24px 24px;
+            display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
+        }
+        .fc h4{font-family:var(--gs);font-size:.875rem;font-weight:500;color:var(--t2);margin-bottom:12px}
+        .fc p{font-size:.8rem;color:var(--t3);line-height:1.7}
+        .fc a{display:block;font-size:.8rem;color:var(--t3);text-decoration:none;line-height:2}
+        .fc a:hover{color:var(--blue);text-decoration:underline}
+        .footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+        .footer-bottom{
+            max-width:1080px;margin:0 auto;padding:16px 24px;
+            border-top:1px solid var(--border);
+            display:flex;justify-content:space-between;align-items:center;
+            font-size:.75rem;color:var(--t4);flex-wrap:wrap;gap:8px;
+        }
+        .footer-links{display:flex;gap:20px}
+        .footer-links a{color:var(--t4);text-decoration:none;font-size:.75rem}
+        .footer-links a:hover{text-decoration:underline;color:var(--blue)}
+        .footer-social{display:flex;gap:12px}
+        .footer-social a{color:var(--t4);display:flex;align-items:center;transition:color var(--tr)}
+        .footer-social a:hover{color:var(--blue)}
+        .footer-social a svg{width:16px;height:16px}
+
+        .toast{
+            position:fixed;bottom:24px;left:24px;z-index:9999;
+            padding:14px 24px;border-radius:var(--r);background:#323232;
+            color:#f5f5f5;font-size:.875rem;
+            box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px rgba(0,0,0,.14),0 1px 18px rgba(0,0,0,.12);
+            transform:translateY(80px);opacity:0;transition:all .25s cubic-bezier(0,0,.2,1);pointer-events:none;
+        }
+        .toast.show{transform:translateY(0);opacity:1}
+
+        @media(max-width:768px){
+            .footer-inner{grid-template-columns:1fr 1fr;gap:28px}
+            .skip-side.left{left:7%}.skip-side.right{right:7%}
+            .nav-bar{padding:10px 14px;flex-wrap:wrap}
+        }
+        @media(max-width:600px){
+            .footer-inner{grid-template-columns:1fr;gap:20px}
+            .footer-bottom{flex-direction:column;text-align:center}
+            .ctrl-bar{padding:0 10px 8px}
+            .ctrl-left,.ctrl-right{gap:6px}
+            .time-display{font-size:.65rem;min-width:65px}
+            .header-left .title{font-size:.8rem}
         }
     </style>
 </head>
 <body>
 
-    <div class="app">
-
-        <header class="header">
-            <div class="header-left">
-                <a href="#" class="back" id="backLink">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="15 18 9 12 15 6" />
-                    </svg>
-                </a>
-                <div class="logo">
-                    <img src="/images/protected.png" alt="SciVerse" />
-                </div>
-                <span class="title" id="headerTitle">Loading...</span>
-            </div>
-            <div class="header-right">
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                    </svg>
-                </button>
-                <button class="btn btn-ghost" id="prevBtn" onclick="prevLecture()" style="display:none;font-size:0.7rem;padding:4px 10px;">Prev</button>
-                <button class="btn btn-ghost" id="nextBtn" onclick="nextLecture()" style="display:none;font-size:0.7rem;padding:4px 10px;">Next</button>
-                <div class="avatar" id="avatar">S</div>
-            </div>
-        </header>
-
-        <div class="player-wrap">
-            <div class="player-box" id="playerBox" tabindex="0">
-                <div id="ytPlayer"></div>
-                <div class="anti-leak-overlay" id="antiLeakOverlay"></div>
-
-                <div class="initial-cover" id="initialCover">
-                    <div class="initial-cover-content">
-                        <div class="initial-cover-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <polygon points="5 3 19 12 5 21 5 3" />
-                            </svg>
-                        </div>
-                        <div class="initial-cover-text">Click to Start</div>
-                        <div class="initial-cover-subtext">SciVerse Academy</div>
-                    </div>
-                </div>
-
-                <div class="dead-shield" id="deadShield">
-                    <div class="dead-shield-content">
-                        <div class="dead-shield-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <polygon points="5 3 19 12 5 21 5 3" />
-                            </svg>
-                        </div>
-                        <div class="dead-shield-text" id="deadShieldText">Click to Resume</div>
-                        <div class="dead-shield-subtext">SciVerse Academy</div>
-                    </div>
-                </div>
-
-                <div class="pause-shield" id="pauseShield">
-                    <div class="pause-shield-content">
-                        <div class="pause-shield-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <polygon points="5 3 19 12 5 21 5 3" />
-                            </svg>
-                        </div>
-                        <div class="pause-shield-text">Click to Resume</div>
-                        <div class="pause-shield-subtext">SciVerse Academy</div>
-                    </div>
-                </div>
-
-                <div class="launch-shield" id="launchShield">
-                    <div class="launch-shield-content">
-                        <div class="launch-shield-icon">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <polygon points="5 3 19 12 5 21 5 3" />
-                            </svg>
-                        </div>
-                        <div class="launch-shield-text" id="launchShieldText">Starting</div>
-                        <div class="launch-shield-subtext">SciVerse Academy</div>
-                        <div class="launch-shield-progress">
-                            <div class="launch-shield-progress-fill" id="launchShieldProgress"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="top-bar" id="topBar">
-                    <span class="top-bar-text">SciVerse Academy</span>
-                    <span class="top-bar-watermark">Protected Content</span>
-                </div>
-
-                <div class="spinner-el" id="spinner"></div>
-
-                <div class="drag-preview" id="dragPreview">
-                    <img src="" id="dragThumb" alt="" />
-                    <div class="drag-time" id="dragTime">00:00</div>
-                </div>
-
-                <div class="ui-layer" id="uiLayer">
-                    <div class="gesture-zone" id="gestureZone"></div>
-
-                    <div class="ctr-pause-btn" id="ctrPauseBtn">
-                        <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor">
-                            <polygon points="5 3 19 12 5 21 5 3" />
-                        </svg>
-                        <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor">
-                            <rect x="6" y="4" width="4" height="16" />
-                            <rect x="14" y="4" width="4" height="16" />
-                        </svg>
-                    </div>
-
-                    <div class="skip-side left" id="skipLeft">
-                        <div class="skip-side-ring">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <polygon points="11 19 2 12 11 5 11 19" />
-                                <polygon points="22 19 13 12 22 5 22 19" />
-                            </svg>
-                        </div>
-                        <span class="skip-side-label" id="skipLeftLabel">-10s</span>
-                    </div>
-
-                    <div class="skip-side right" id="skipRight">
-                        <div class="skip-side-ring">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <polygon points="13 19 22 12 13 5 13 19" />
-                                <polygon points="2 19 11 12 2 5 2 19" />
-                            </svg>
-                        </div>
-                        <span class="skip-side-label" id="skipRightLabel">+10s</span>
-                    </div>
-
-                    <div class="skip-fb" id="skipFb">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="skipIcon">
-                            <polygon points="13 19 22 12 13 5 13 19" />
-                            <polygon points="2 19 11 12 2 5 2 19" />
-                        </svg>
-                        <span id="skipText">+5s</span>
-                    </div>
-
-                    <div class="ctrl-bar" id="ctrlBar">
-                        <div class="prog-wrap" id="progWrap">
-                            <div class="prog-track" id="progTrack">
-                                <div class="prog-buffered" id="progBuffered"></div>
-                                <div class="prog-fill" id="progFill"></div>
-                            </div>
-                        </div>
-                        <div class="ctrl-row">
-                            <div class="ctrl-left">
-                                <button class="ctrl-ic" id="playPauseBtn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor" id="playIcon">
-                                        <polygon points="5 3 19 12 5 21 5 3" />
-                                    </svg>
-                                    <svg viewBox="0 0 24 24" fill="currentColor" id="pauseIcon" style="display:none;">
-                                        <rect x="6" y="4" width="4" height="16" />
-                                        <rect x="14" y="4" width="4" height="16" />
-                                    </svg>
-                                </button>
-                                <button class="ctrl-ic" id="rewindBtn">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polygon points="11 19 2 12 11 5 11 19" />
-                                        <polygon points="22 19 13 12 22 5 22 19" />
-                                    </svg>
-                                </button>
-                                <button class="ctrl-ic" id="forwardBtn">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polygon points="13 19 22 12 13 5 13 19" />
-                                        <polygon points="2 19 11 12 2 5 2 19" />
-                                    </svg>
-                                </button>
-                                <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
-                            </div>
-                            <div class="ctrl-right">
-                                <div class="vol-wrap">
-                                    <button class="ctrl-ic" id="muteToggle">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="volHigh">
-                                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                                        </svg>
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="volMute" style="display:none;">
-                                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                                            <line x1="23" y1="9" x2="17" y2="15" />
-                                            <line x1="17" y1="9" x2="23" y2="15" />
-                                        </svg>
-                                    </button>
-                                    <input type="range" id="volSlider" min="0" max="100" value="100" />
-                                </div>
-                                <div class="popup-wrap" id="qualityWrap">
-                                    <button class="quality-btn" id="qualityBtn">Auto</button>
-                                    <div class="quality-popup" id="qualityPopup"></div>
-                                </div>
-                                <div class="popup-wrap" id="speedWrap">
-                                    <button class="speed-btn" id="speedBtn">1x</button>
-                                    <div class="speed-popup" id="speedPopup"></div>
-                                </div>
-                                <button class="ctrl-ic" id="fullscreenBtn">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="15 3 21 3 21 9" />
-                                        <polyline points="9 21 3 21 3 15" />
-                                        <line x1="21" y1="3" x2="14" y2="10" />
-                                        <line x1="3" y1="21" x2="10" y2="14" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="nav-bar">
-            <div class="nav-info">
-                <h2 id="currentTitle">Loading...</h2>
-                <p id="currentMeta"></p>
-            </div>
-            <a href="#" class="nav-pdf-btn" id="pdfLink" target="_blank" style="display:none;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="16" y1="13" x2="8" y2="13" />
-                    <line x1="16" y1="17" x2="8" y2="17" />
-                </svg>
-                Lecture PDF
+<div class="app">
+    <header class="header">
+        <div class="header-left">
+            <a href="#" class="back-btn" id="backLink">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
             </a>
+            <img src="/images/protected.png" alt="SciVerse" class="logo-img" />
+            <span class="title" id="headerTitle">Loading...</span>
         </div>
-
-        <div class="footer">
-            <p>Protected Content &copy; 2026 SciVerse Academy</p>
+        <div class="header-right">
+            <button class="btn-ghost" id="prevBtn" onclick="prevLecture()" style="display:none">Prev</button>
+            <button class="btn-ghost" id="nextBtn" onclick="nextLecture()" style="display:none">Next</button>
+            <button class="icon-btn sign-out" id="soBtn" title="Sign out">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </button>
+            <div class="avatar" id="avatar">S</div>
         </div>
+    </header>
 
-        <div class="toast" id="toast"></div>
+    <div class="player-wrap">
+        <div class="player-box" id="playerBox" tabindex="0">
+            <div id="ytPlayer"></div>
+            <div class="anti-leak-overlay" id="antiLeakOverlay"></div>
+
+            <div class="initial-cover" id="initialCover">
+                <div class="initial-cover-content">
+                    <div class="initial-cover-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                    <div class="initial-cover-text">Click to Start</div>
+                    <div class="initial-cover-subtext">SciVerse Academy</div>
+                </div>
+            </div>
+
+            <div class="dead-shield" id="deadShield">
+                <div class="dead-shield-content">
+                    <div class="dead-shield-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                    <div class="dead-shield-text" id="deadShieldText">Click to Resume</div>
+                    <div class="dead-shield-subtext">SciVerse Academy</div>
+                </div>
+            </div>
+
+            <div class="pause-shield" id="pauseShield">
+                <div class="pause-shield-content">
+                    <div class="pause-shield-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                    <div class="pause-shield-text">Click to Resume</div>
+                    <div class="pause-shield-subtext">SciVerse Academy</div>
+                </div>
+            </div>
+
+            <div class="launch-shield" id="launchShield">
+                <div class="launch-shield-content">
+                    <div class="launch-shield-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                    <div class="launch-shield-text" id="launchShieldText">Starting</div>
+                    <div class="launch-shield-subtext">SciVerse Academy</div>
+                    <div class="launch-shield-progress"><div class="launch-shield-progress-fill" id="launchShieldProgress"></div></div>
+                </div>
+            </div>
+
+            <div class="top-bar" id="topBar">
+                <span class="top-bar-text">SciVerse Academy</span>
+                <span class="top-bar-watermark">Protected Content</span>
+            </div>
+
+            <div class="spinner-el" id="spinner"></div>
+
+            <div class="drag-preview" id="dragPreview">
+                <img src="" id="dragThumb" alt="" />
+                <div class="drag-time" id="dragTime">00:00</div>
+            </div>
+
+            <div class="ui-layer" id="uiLayer">
+                <div class="gesture-zone" id="gestureZone"></div>
+                <div class="ctr-pause-btn" id="ctrPauseBtn">
+                    <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                </div>
+                <div class="skip-side left" id="skipLeft">
+                    <div class="skip-side-ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/></svg></div>
+                    <span class="skip-side-label" id="skipLeftLabel">-10s</span>
+                </div>
+                <div class="skip-side right" id="skipRight">
+                    <div class="skip-side-ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg></div>
+                    <span class="skip-side-label" id="skipRightLabel">+10s</span>
+                </div>
+                <div class="skip-fb" id="skipFb">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="skipIcon"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg>
+                    <span id="skipText">+5s</span>
+                </div>
+                <div class="ctrl-bar" id="ctrlBar">
+                    <div class="prog-wrap" id="progWrap">
+                        <div class="prog-track" id="progTrack">
+                            <div class="prog-buffered" id="progBuffered"></div>
+                            <div class="prog-fill" id="progFill"></div>
+                        </div>
+                    </div>
+                    <div class="ctrl-row">
+                        <div class="ctrl-left">
+                            <button class="ctrl-ic" id="playPauseBtn">
+                                <svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                <svg viewBox="0 0 24 24" fill="currentColor" id="pauseIcon" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                            </button>
+                            <button class="ctrl-ic" id="rewindBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/></svg></button>
+                            <button class="ctrl-ic" id="forwardBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg></button>
+                            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+                        </div>
+                        <div class="ctrl-right">
+                            <div class="vol-wrap">
+                                <button class="ctrl-ic" id="muteToggle">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="volHigh"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="volMute" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                                </button>
+                                <input type="range" id="volSlider" min="0" max="100" value="100" />
+                            </div>
+                            <div class="popup-wrap" id="qualityWrap">
+                                <button class="quality-btn" id="qualityBtn">Auto</button>
+                                <div class="quality-popup" id="qualityPopup"></div>
+                            </div>
+                            <div class="popup-wrap" id="speedWrap">
+                                <button class="speed-btn" id="speedBtn">1x</button>
+                                <div class="speed-popup" id="speedPopup"></div>
+                            </div>
+                            <button class="ctrl-ic" id="fullscreenBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="/network-check.js"></script>
-    <script src="/api-fix.js"></script>
-    <script>
-        // ============================================================
-        // ALL EXISTING LOGIC - UNCHANGED
-        // ============================================================
+    <div class="nav-bar">
+        <div class="nav-info">
+            <h2 id="currentTitle">Loading...</h2>
+            <p id="currentMeta"></p>
+        </div>
+        <a href="#" class="nav-pdf-btn" id="pdfLink" target="_blank" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Lecture PDF
+        </a>
+    </div>
 
-        const API = 'https://sciverseacademy.pages.dev/api';
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="fc">
+                <div class="footer-brand">
+                    <img src="/images/protected.png" alt="SciVerse" height="24" style="border-radius:50%" />
+                    <span style="font-family:var(--gs);font-size:1rem;font-weight:500;color:var(--t2)">SciVerse Academy</span>
+                </div>
+                <p>Enabling comprehensive academic exploration through structured, accessible learning resources.</p>
+            </div>
+            <div class="fc">
+                <h4>Platform</h4>
+                <a href="/dashboard.html">Dashboard</a>
+                <a href="/index.html#features">Features</a>
+                <a href="/index.html#how-it-works">How It Works</a>
+            </div>
+            <div class="fc">
+                <h4>Support</h4>
+                <a href="mailto:text.me.md.alamin@gmail.com">Contact Admin</a>
+                <a href="#">Help Center</a>
+                <a href="#">Report Issue</a>
+            </div>
+            <div class="fc">
+                <h4>Legal</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 SciVerse Academy</span>
+            <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Settings</a></div>
+            <div class="footer-social">
+                <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg></a>
+            </div>
+        </div>
+    </footer>
 
-        function getToken() { return localStorage.getItem('site_token') || ''; }
+    <div class="toast" id="toast"></div>
+</div>
 
-        function getUser() { try { return JSON.parse(localStorage.getItem('site_user') || 'null'); } catch (e) { return null; } }
+<script src="/network-check.js"></script>
+<script src="/api-fix.js"></script>
+<script>
+    // ============================================================
+    // ALL EXISTING LOGIC - UNCHANGED
+    // ============================================================
 
-        if (!getUser()) { window.location.href = '/index.html'; }
+    const API = 'https://sciverseacademy.pages.dev/api';
 
-        // Theme
-        const themeToggle = document.getElementById('themeToggle');
-        const savedTheme = localStorage.getItem('sciverse-theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme);
+    function getToken() { return localStorage.getItem('site_token') || ''; }
+    function getUser() { try { return JSON.parse(localStorage.getItem('site_user') || 'null'); } catch (e) { return null; } }
+    if (!getUser()) { window.location.href = '/index.html'; }
 
-        themeToggle.addEventListener('click', function() {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('sciverse-theme', next);
+    const user = getUser();
+    const initial = (user.name || 'S')[0].toUpperCase();
+    document.getElementById('avatar').textContent = initial;
+
+    document.getElementById('soBtn').addEventListener('click', () => {
+        localStorage.removeItem('site_token');
+        localStorage.removeItem('site_user');
+        window.location.href = '/index.html';
+    });
+
+    var allLectures = [], currentIndex = 0, player = null, isDragging = false;
+    var hideTimer = null, topBarTimer = null;
+    var dragCurrentPct = 0;
+    var launchTimer = null, launchProgressInterval = null;
+    var currentPdfUrl = '';
+    var videoIsSafe = false;
+    var safeTimer = null;
+    var isFullscreen = false;
+    var currentPlayerState = -1;
+
+    var speeds = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5];
+    var speedIdx = 2;
+    var qualityLabels = { 'highres': '4K', 'hd2160': '2160p', 'hd1440': '1440p', 'hd1080': '1080p', 'hd720': '720p', 'large': '480p', 'medium': '360p', 'small': '240p', 'tiny': '144p', 'auto': 'Auto', 'default': 'Auto' };
+    var currentQuality = 'auto';
+    var availableQualities = [];
+
+    var playerBox = document.getElementById('playerBox');
+    var gestureZone = document.getElementById('gestureZone');
+    var ctrPauseBtn = document.getElementById('ctrPauseBtn');
+    var skipLeft = document.getElementById('skipLeft'), skipLeftLabel = document.getElementById('skipLeftLabel');
+    var skipRight = document.getElementById('skipRight'), skipRightLabel = document.getElementById('skipRightLabel');
+    var skipFb = document.getElementById('skipFb'), skipIcon = document.getElementById('skipIcon'), skipText = document.getElementById('skipText');
+    var ctrlBar = document.getElementById('ctrlBar');
+    var topBar = document.getElementById('topBar');
+    var playIcon = document.getElementById('playIcon'), pauseIcon = document.getElementById('pauseIcon');
+    var timeDisplay = document.getElementById('timeDisplay');
+    var progTrack = document.getElementById('progTrack'), progFill = document.getElementById('progFill'), progBuffered = document.getElementById('progBuffered'), progWrap = document.getElementById('progWrap');
+    var volSlider = document.getElementById('volSlider'), volHigh = document.getElementById('volHigh'), volMute = document.getElementById('volMute');
+    var speedBtn = document.getElementById('speedBtn'), speedPopup = document.getElementById('speedPopup');
+    var qualityBtn = document.getElementById('qualityBtn'), qualityPopup = document.getElementById('qualityPopup');
+    var initialCover = document.getElementById('initialCover');
+    var deadShield = document.getElementById('deadShield'), deadShieldText = document.getElementById('deadShieldText');
+    var pauseShield = document.getElementById('pauseShield');
+    var launchShield = document.getElementById('launchShield'), launchShieldText = document.getElementById('launchShieldText'), launchShieldProgress = document.getElementById('launchShieldProgress');
+    var currentTitle = document.getElementById('currentTitle'), currentMeta = document.getElementById('currentMeta');
+    var headerTitle = document.getElementById('headerTitle');
+    var prevBtn = document.getElementById('prevBtn'), nextBtn = document.getElementById('nextBtn');
+    var dragPreview = document.getElementById('dragPreview'), dragThumb = document.getElementById('dragThumb'), dragTime = document.getElementById('dragTime');
+    var spinner = document.getElementById('spinner');
+    var pdfLink = document.getElementById('pdfLink');
+
+    function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, 2200); }
+    function formatTime(sec) { if (!sec || sec < 0) return '00:00'; var m = Math.floor(sec / 60), s = Math.floor(sec % 60); return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s); }
+
+    function enforceBarsVisibility() {
+        const isPausedOrStopped = (currentPlayerState === 2 || currentPlayerState === 0 || currentPlayerState === -1);
+        if (isPausedOrStopped) { topBar.classList.remove('hidden'); ctrlBar.classList.remove('fade'); playerBox.classList.add('show-ui'); clearTimeout(hideTimer); clearTimeout(topBarTimer); videoIsSafe = false; }
+        else if (currentPlayerState === 1) { if (videoIsSafe) { scheduleAutoHide(); } else { topBar.classList.remove('hidden'); ctrlBar.classList.remove('fade'); playerBox.classList.add('show-ui'); } }
+        else { topBar.classList.remove('hidden'); ctrlBar.classList.remove('fade'); playerBox.classList.add('show-ui'); }
+    }
+
+    function scheduleAutoHide() { clearTimeout(hideTimer); clearTimeout(topBarTimer); if (!videoIsSafe) return; if (isDragging) return; if (currentPlayerState !== 1) return; hideTimer = setTimeout(function() { if (currentPlayerState !== 1) return; if (!videoIsSafe || isDragging) return; ctrlBar.classList.add('fade'); playerBox.classList.remove('show-ui'); }, 7000); topBarTimer = setTimeout(function() { if (currentPlayerState !== 1) return; if (!videoIsSafe || isDragging) return; topBar.classList.add('hidden'); }, 7000); }
+    function showControls() { topBar.classList.remove('hidden'); ctrlBar.classList.remove('fade'); playerBox.classList.add('show-ui'); if (currentPlayerState === 1 && videoIsSafe) { scheduleAutoHide(); } }
+    function markSafe() { videoIsSafe = true; clearTimeout(safeTimer); if (currentPlayerState === 1) scheduleAutoHide(); enforceBarsVisibility(); }
+    function markUnsafe() { videoIsSafe = false; clearTimeout(hideTimer); clearTimeout(topBarTimer); enforceBarsVisibility(); }
+    function hideAllShields() { initialCover.classList.add('hidden'); deadShield.classList.remove('active'); pauseShield.classList.remove('active'); launchShield.classList.remove('active'); clearTimeout(launchTimer); clearInterval(launchProgressInterval); clearTimeout(safeTimer); }
+    function showDeadShield(msg) { hideAllShields(); deadShieldText.textContent = msg || 'Click to Resume'; deadShield.classList.add('active'); markUnsafe(); }
+    function showPauseShield() { hideAllShields(); pauseShield.classList.add('active'); markUnsafe(); }
+    function showLaunchShield(msg) { hideAllShields(); launchShieldText.textContent = msg || 'Starting'; launchShieldProgress.style.width = '0%'; launchShield.classList.add('active'); markUnsafe(); var startTime = Date.now(); launchProgressInterval = setInterval(function() { var elapsed = Date.now() - startTime; var pct = Math.min(100, (elapsed / 3000) * 100); launchShieldProgress.style.width = pct + '%'; if (pct >= 100) clearInterval(launchProgressInterval); }, 50); launchTimer = setTimeout(function() { launchShield.classList.remove('active'); markSafe(); }, 3000); }
+    function setIcons(playing) { playIcon.style.display = playing ? 'none' : 'block'; pauseIcon.style.display = playing ? 'block' : 'none'; if (playing) { ctrPauseBtn.classList.add('playing'); ctrPauseBtn.classList.remove('paused'); } else { ctrPauseBtn.classList.remove('playing'); ctrPauseBtn.classList.add('paused'); } }
+    function updateNavButtons() { prevBtn.style.display = currentIndex > 0 ? 'inline-flex' : 'none'; nextBtn.style.display = currentIndex < allLectures.length - 1 ? 'inline-flex' : 'none'; }
+
+    function loadLecture(idx) {
+        if (!allLectures.length || idx < 0 || idx >= allLectures.length) return;
+        var lec = allLectures[idx]; currentIndex = idx;
+        currentTitle.textContent = lec.title; currentMeta.textContent = (lec.subject_name || '');
+        headerTitle.textContent = lec.title; updateNavButtons();
+        if (lec.pdf_url) { currentPdfUrl = lec.pdf_url; pdfLink.href = lec.pdf_url; pdfLink.style.display = 'inline-flex'; } else { pdfLink.style.display = 'none'; currentPdfUrl = ''; }
+        if (player && player.loadVideoById) player.loadVideoById(lec.youtube_id);
+        markUnsafe(); enforceBarsVisibility();
+    }
+
+    window.prevLecture = function() { hideAllShields(); markUnsafe(); loadLecture(currentIndex - 1); };
+    window.nextLecture = function() { hideAllShields(); markUnsafe(); loadLecture(currentIndex + 1); };
+
+    function updateProgress() {
+        if (!player || typeof player.getCurrentTime !== 'function') { requestAnimationFrame(updateProgress); return; }
+        if (!isDragging) { var c = player.getCurrentTime() || 0, d = player.getDuration() || 1; progFill.style.width = (c / d) * 100 + '%'; timeDisplay.textContent = formatTime(c) + ' / ' + formatTime(d); try { var b = player.getVideoLoadedFraction() || 0; progBuffered.style.width = (b * 100) + '%'; } catch (e) {} }
+        requestAnimationFrame(updateProgress);
+    }
+
+    function togglePlay() { if (!player) return; var state = player.getPlayerState(); if (state === 1) { player.pauseVideo(); } else { showLaunchShield('Resuming'); player.playVideo(); } }
+    function skip(s) { if (!player) return; player.seekTo((player.getCurrentTime() || 0) + s, true); if (s < 0) { skipLeftLabel.textContent = s + 's'; skipLeft.classList.remove('on'); void skipLeft.offsetWidth; skipLeft.classList.add('on'); clearTimeout(skipLTimer); skipLTimer = setTimeout(function() { skipLeft.classList.remove('on'); }, 750); } else { skipRightLabel.textContent = '+' + s + 's'; skipRight.classList.remove('on'); void skipRight.offsetWidth; skipRight.classList.add('on'); clearTimeout(skipRTimer); skipRTimer = setTimeout(function() { skipRight.classList.remove('on'); }, 750); } }
+    var skipLTimer = null, skipRTimer = null;
+
+    function skipKeyboard(s) { if (player) { player.seekTo((player.getCurrentTime() || 0) + s, true); skipFb.classList.add('on'); skipIcon.innerHTML = s < 0 ? '<polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/>' : '<polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/>'; skipText.textContent = (s < 0 ? '' : '+') + s + 's'; clearTimeout(window._st); window._st = setTimeout(function() { skipFb.classList.remove('on'); }, 700); } }
+    function getPctFromEvent(e) { var rect = progTrack.getBoundingClientRect(); var x = e.touches ? e.touches[0].clientX : e.clientX; return Math.max(0, Math.min(1, (x - rect.left) / rect.width)); }
+    function updateDragPreview(e) { if (!player || !allLectures[currentIndex]) return; var d = player.getDuration() || 1; dragTime.textContent = formatTime(dragCurrentPct * d); var x = e.touches ? e.touches[0].clientX : e.clientX; dragPreview.style.left = x + 'px'; dragThumb.src = 'https://img.youtube.com/vi/' + allLectures[currentIndex].youtube_id + '/maxresdefault.jpg'; }
+
+    progTrack.addEventListener('click', function(e) { if (!player) return; var rect = progTrack.getBoundingClientRect(); player.seekTo(((e.clientX - rect.left) / rect.width) * player.getDuration(), true); showControls(); });
+    progTrack.addEventListener('mousedown', function(e) { isDragging = true; progWrap.classList.add('dragging'); dragCurrentPct = getPctFromEvent(e); progFill.style.width = (dragCurrentPct * 100) + '%'; dragPreview.classList.add('on'); updateDragPreview(e); e.preventDefault(); });
+    progTrack.addEventListener('touchstart', function(e) { isDragging = true; progWrap.classList.add('dragging'); dragCurrentPct = getPctFromEvent(e); progFill.style.width = (dragCurrentPct * 100) + '%'; dragPreview.classList.add('on'); updateDragPreview(e); }, { passive: false });
+    document.addEventListener('mousemove', function(e) { if (!isDragging) return; dragCurrentPct = getPctFromEvent(e); progFill.style.width = (dragCurrentPct * 100) + '%'; if (player) { var d = player.getDuration() || 1; timeDisplay.textContent = formatTime(dragCurrentPct * d) + ' / ' + formatTime(d); } updateDragPreview(e); });
+    document.addEventListener('touchmove', function(e) { if (!isDragging) return; dragCurrentPct = getPctFromEvent(e); progFill.style.width = (dragCurrentPct * 100) + '%'; if (player) { var d = player.getDuration() || 1; timeDisplay.textContent = formatTime(dragCurrentPct * d) + ' / ' + formatTime(d); } updateDragPreview(e); }, { passive: false });
+    document.addEventListener('mouseup', function() { if (!isDragging) return; isDragging = false; progWrap.classList.remove('dragging'); dragPreview.classList.remove('on'); if (player) { player.seekTo(dragCurrentPct * player.getDuration(), true); showControls(); } });
+    document.addEventListener('touchend', function() { if (!isDragging) return; isDragging = false; progWrap.classList.remove('dragging'); dragPreview.classList.remove('on'); if (player) { player.seekTo(dragCurrentPct * player.getDuration(), true); showControls(); } });
+
+    function buildSpeedPopup() { speedPopup.innerHTML = ''; speeds.forEach(function(s, i) { var el = document.createElement('div'); el.className = 'speed-popup-item' + (i === speedIdx ? ' active' : ''); el.textContent = s + 'x'; el.addEventListener('click', function(e) { e.stopPropagation(); speedIdx = i; if (player) player.setPlaybackRate(s); speedBtn.innerHTML = s + 'x'; localStorage.setItem('sv_speed', s); buildSpeedPopup(); speedPopup.classList.remove('open'); }); speedPopup.appendChild(el); }); }
+    speedBtn.addEventListener('click', function(e) { e.stopPropagation(); qualityPopup.classList.remove('open'); speedPopup.classList.toggle('open'); });
+
+    function buildQualityPopup() { qualityPopup.innerHTML = ''; var list = availableQualities.length ? availableQualities : ['auto']; if (!list.includes('auto')) list = ['auto'].concat(list); list.forEach(function(q) { var el = document.createElement('div'); el.className = 'quality-popup-item' + (q === currentQuality ? ' active' : ''); el.textContent = qualityLabels[q] || q; el.addEventListener('click', function(e) { e.stopPropagation(); currentQuality = q; if (player) { player.setPlaybackQuality(q === 'auto' ? 'default' : q); } qualityBtn.textContent = qualityLabels[q] || q; buildQualityPopup(); qualityPopup.classList.remove('open'); }); qualityPopup.appendChild(el); }); }
+    qualityBtn.addEventListener('click', function(e) { e.stopPropagation(); speedPopup.classList.remove('open'); if (player && player.getAvailableQualityLevels) { var avail = player.getAvailableQualityLevels(); if (avail && avail.length) availableQualities = avail; } buildQualityPopup(); qualityPopup.classList.toggle('open'); });
+    document.addEventListener('click', function() { speedPopup.classList.remove('open'); qualityPopup.classList.remove('open'); });
+
+    async function init() {
+        var params = new URLSearchParams(location.search);
+        var lid = params.get('lecture_id'), cid = params.get('course_id');
+        if (!lid || !cid) { window.location.href = '/dashboard.html'; return; }
+        document.getElementById('backLink').href = '/course.html?id=' + cid;
+        var savedSpeed = parseFloat(localStorage.getItem('sv_speed') || '1');
+        var si = speeds.indexOf(savedSpeed); if (si >= 0) speedIdx = si;
+        speedBtn.innerHTML = speeds[speedIdx] + 'x'; buildSpeedPopup(); buildQualityPopup();
+        try {
+            var r = await fetch(API + '/courses/' + cid, { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            var d = await r.json();
+            if (!r.ok) { showToast('Failed to load course data.'); return; }
+            (d.subjects || []).forEach(function(s) { (s.lectures || []).forEach(function(l) { allLectures.push({ id: l.id, title: l.title, youtube_id: l.youtube_id, pdf_url: l.pdf_url, subject_name: s.title }); }); });
+            currentIndex = allLectures.findIndex(function(l) { return String(l.id) === String(lid); }); if (currentIndex < 0) currentIndex = 0;
+            if (!allLectures.length) { currentTitle.textContent = 'No lectures'; return; }
+            loadLecture(currentIndex); updateNavButtons();
+            initialCover.classList.remove('hidden'); markUnsafe();
+            createPlayer(allLectures[currentIndex].youtube_id);
+        } catch (e) { currentTitle.textContent = 'Error loading course'; }
+    }
+
+    function createPlayer(vid) {
+        if (player) { try { player.destroy(); } catch (e) {} player = null; }
+        document.getElementById('ytPlayer').innerHTML = '';
+        player = new YT.Player('ytPlayer', {
+            height: '100%', width: '100%', videoId: vid,
+            playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1, iv_load_policy: 3, fs: 0, disablekb: 1, playsinline: 1, origin: location.origin, showinfo: 0, cc_load_policy: 0, autohide: 1, wmode: 'opaque', enablejsapi: 1, widget_referrer: location.origin, hl: 'en', color: 'white', theme: 'dark' },
+            events: {
+                onReady: function() { requestAnimationFrame(updateProgress); player.setVolume(volSlider.value); player.setPlaybackRate(speeds[speedIdx]); },
+                onStateChange: function(e) { currentPlayerState = e.data; if (e.data === 1) { spinner.style.display = 'none'; setIcons(true); markSafe(); showControls(); enforceBarsVisibility(); } else if (e.data === 2) { setIcons(false); showPauseShield(); enforceBarsVisibility(); } else if (e.data === 3) { spinner.style.display = 'block'; markUnsafe(); enforceBarsVisibility(); } else if (e.data === 0) { setIcons(false); showDeadShield('Click to Replay'); if (currentIndex < allLectures.length - 1) setTimeout(nextLecture, 2500); enforceBarsVisibility(); } else if (e.data === -1) { if (initialCover.classList.contains('hidden')) { showDeadShield('Click to Start'); } enforceBarsVisibility(); } enforceBarsVisibility(); },
+                onError: function(e) { showDeadShield('Click to Retry'); markUnsafe(); showToast('Playback error'); enforceBarsVisibility(); }
+            }
         });
+    }
 
-        // Avatar
-        const user = getUser();
-        const initial = (user.name || 'S')[0].toUpperCase();
-        document.getElementById('avatar').textContent = initial;
+    initialCover.addEventListener('click', function() { showLaunchShield('Starting'); if (player && player.playVideo) player.playVideo(); });
+    deadShield.addEventListener('click', function() { showLaunchShield('Starting'); if (player && player.playVideo) player.playVideo(); });
+    pauseShield.addEventListener('click', function() { showLaunchShield('Resuming'); if (player) player.playVideo(); });
+    playerBox.addEventListener('mousemove', function() { showControls(); });
+    gestureZone.addEventListener('click', function(e) { if (e.target.closest('.ctrl-bar') || e.target.closest('.launch-shield') || e.target.closest('.pause-shield') || e.target.closest('.dead-shield') || e.target.closest('.initial-cover')) return; showControls(); var rect = playerBox.getBoundingClientRect(); var cx = e.clientX - rect.left, cy = e.clientY - rect.top; var inCenter = cx > rect.width * .33 && cx < rect.width * .66 && cy > rect.height * .25 && cy < rect.height * .75; if (inCenter && player && player.getPlayerState) { var state = player.getPlayerState(); if (state === 2 || state === 0 || state === -1 || state === 5) togglePlay(); } });
+    ctrPauseBtn.addEventListener('click', function(e) { e.stopPropagation(); togglePlay(); });
+    document.getElementById('playPauseBtn').addEventListener('click', function(e) { e.stopPropagation(); togglePlay(); });
+    document.getElementById('rewindBtn').addEventListener('click', function(e) { e.stopPropagation(); skip(-10); showControls(); });
+    document.getElementById('forwardBtn').addEventListener('click', function(e) { e.stopPropagation(); skip(10); showControls(); });
+    volSlider.addEventListener('input', function(e) { if (!player) return; var v = parseInt(e.target.value); player.setVolume(v); volHigh.style.display = v === 0 ? 'none' : 'block'; volMute.style.display = v === 0 ? 'block' : 'none'; });
+    document.getElementById('muteToggle').addEventListener('click', function(e) { e.stopPropagation(); if (!player) return; if (player.isMuted()) { player.unMute(); volSlider.value = player.getVolume(); volHigh.style.display = 'block'; volMute.style.display = 'none'; } else { player.mute(); volSlider.value = 0; volHigh.style.display = 'none'; volMute.style.display = 'block'; } });
+    document.getElementById('fullscreenBtn').addEventListener('click', function(e) { e.stopPropagation(); if (!document.fullscreenElement) { playerBox.requestFullscreen().catch(function() {}); } else { document.exitFullscreen(); } });
+    document.addEventListener('fullscreenchange', function() { isFullscreen = !!document.fullscreenElement; });
+    document.addEventListener('keydown', function(e) { if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return; switch (e.code) { case 'Space': e.preventDefault(); togglePlay(); break; case 'ArrowLeft': e.preventDefault(); skipKeyboard(-5); break; case 'ArrowRight': e.preventDefault(); skipKeyboard(5); break; case 'ArrowUp': e.preventDefault(); if (player) { var v = Math.min(player.getVolume() + 5, 100); player.setVolume(v); volSlider.value = v; } break; case 'ArrowDown': e.preventDefault(); if (player) { var v = Math.max(player.getVolume() - 5, 0); player.setVolume(v); volSlider.value = v; } break; case 'KeyF': document.getElementById('fullscreenBtn').click(); break; case 'KeyM': document.getElementById('muteToggle').click(); break; } });
+    var lastTapTime = 0;
+    gestureZone.addEventListener('touchend', function(e) { showControls(); var now = Date.now(), tapGap = now - lastTapTime; var x = e.changedTouches[0].clientX, w = window.innerWidth; if (tapGap < 300 && tapGap > 0) { if (x < w * .33) skip(-10); else if (x > w * .66) skip(10); } lastTapTime = now; });
 
-        var allLectures = [],
-            currentIndex = 0,
-            player = null,
-            isDragging = false;
-        var hideTimer = null,
-            topBarTimer = null;
-        var dragCurrentPct = 0;
-        var launchTimer = null,
-            launchProgressInterval = null;
-        var currentPdfUrl = '';
-        var videoIsSafe = false;
-        var safeTimer = null;
-        var isFullscreen = false;
-        var currentPlayerState = -1;
-
-        var speeds = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5];
-        var speedIdx = 2;
-        var qualityLabels = { 'highres': '4K', 'hd2160': '2160p', 'hd1440': '1440p', 'hd1080': '1080p', 'hd720': '720p', 'large': '480p', 'medium': '360p', 'small': '240p', 'tiny': '144p', 'auto': 'Auto', 'default': 'Auto' };
-        var currentQuality = 'auto';
-        var availableQualities = [];
-
-        var playerBox = document.getElementById('playerBox');
-        var gestureZone = document.getElementById('gestureZone');
-        var ctrPauseBtn = document.getElementById('ctrPauseBtn');
-        var skipLeft = document.getElementById('skipLeft'),
-            skipLeftLabel = document.getElementById('skipLeftLabel');
-        var skipRight = document.getElementById('skipRight'),
-            skipRightLabel = document.getElementById('skipRightLabel');
-        var skipFb = document.getElementById('skipFb'),
-            skipIcon = document.getElementById('skipIcon'),
-            skipText = document.getElementById('skipText');
-        var ctrlBar = document.getElementById('ctrlBar');
-        var topBar = document.getElementById('topBar');
-        var playIcon = document.getElementById('playIcon'),
-            pauseIcon = document.getElementById('pauseIcon');
-        var timeDisplay = document.getElementById('timeDisplay');
-        var progTrack = document.getElementById('progTrack'),
-            progFill = document.getElementById('progFill'),
-            progBuffered = document.getElementById('progBuffered'),
-            progWrap = document.getElementById('progWrap');
-        var volSlider = document.getElementById('volSlider'),
-            volHigh = document.getElementById('volHigh'),
-            volMute = document.getElementById('volMute');
-        var speedBtn = document.getElementById('speedBtn'),
-            speedPopup = document.getElementById('speedPopup');
-        var qualityBtn = document.getElementById('qualityBtn'),
-            qualityPopup = document.getElementById('qualityPopup');
-        var initialCover = document.getElementById('initialCover');
-        var deadShield = document.getElementById('deadShield');
-        var deadShieldText = document.getElementById('deadShieldText');
-        var pauseShield = document.getElementById('pauseShield');
-        var launchShield = document.getElementById('launchShield');
-        var launchShieldText = document.getElementById('launchShieldText');
-        var launchShieldProgress = document.getElementById('launchShieldProgress');
-        var currentTitle = document.getElementById('currentTitle'),
-            currentMeta = document.getElementById('currentMeta');
-        var headerTitle = document.getElementById('headerTitle');
-        var prevBtn = document.getElementById('prevBtn'),
-            nextBtn = document.getElementById('nextBtn');
-        var dragPreview = document.getElementById('dragPreview'),
-            dragThumb = document.getElementById('dragThumb'),
-            dragTime = document.getElementById('dragTime');
-        var spinner = document.getElementById('spinner');
-        var pdfLink = document.getElementById('pdfLink');
-
-        function showToast(msg) { var t = document.getElementById('toast');
-            t.textContent = msg;
-            t.classList.add('on');
-            setTimeout(function() { t.classList.remove('on'); }, 2200); }
-
-        function formatTime(sec) { if (!sec || sec < 0) return '00:00'; var m = Math.floor(sec / 60),
-                s = Math.floor(sec % 60); return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s); }
-
-        function enforceBarsVisibility() {
-            const isPausedOrStopped = (currentPlayerState === 2 || currentPlayerState === 0 || currentPlayerState === -1);
-            if (isPausedOrStopped) {
-                topBar.classList.remove('hidden');
-                ctrlBar.classList.remove('fade');
-                playerBox.classList.add('show-ui');
-                clearTimeout(hideTimer);
-                clearTimeout(topBarTimer);
-                videoIsSafe = false;
-            } else if (currentPlayerState === 1) {
-                if (videoIsSafe) {
-                    scheduleAutoHide();
-                } else {
-                    topBar.classList.remove('hidden');
-                    ctrlBar.classList.remove('fade');
-                    playerBox.classList.add('show-ui');
-                }
-            } else {
-                topBar.classList.remove('hidden');
-                ctrlBar.classList.remove('fade');
-                playerBox.classList.add('show-ui');
-            }
-        }
-
-        function scheduleAutoHide() {
-            clearTimeout(hideTimer);
-            clearTimeout(topBarTimer);
-            if (!videoIsSafe) return;
-            if (isDragging) return;
-            if (currentPlayerState !== 1) return;
-            hideTimer = setTimeout(function() {
-                if (currentPlayerState !== 1) return;
-                if (!videoIsSafe || isDragging) return;
-                ctrlBar.classList.add('fade');
-                playerBox.classList.remove('show-ui');
-            }, 7000);
-            topBarTimer = setTimeout(function() {
-                if (currentPlayerState !== 1) return;
-                if (!videoIsSafe || isDragging) return;
-                topBar.classList.add('hidden');
-            }, 7000);
-        }
-
-        function showControls() {
-            topBar.classList.remove('hidden');
-            ctrlBar.classList.remove('fade');
-            playerBox.classList.add('show-ui');
-            if (currentPlayerState === 1 && videoIsSafe) {
-                scheduleAutoHide();
-            }
-        }
-
-        function markSafe() {
-            videoIsSafe = true;
-            clearTimeout(safeTimer);
-            if (currentPlayerState === 1) scheduleAutoHide();
-            enforceBarsVisibility();
-        }
-
-        function markUnsafe() {
-            videoIsSafe = false;
-            clearTimeout(hideTimer);
-            clearTimeout(topBarTimer);
-            enforceBarsVisibility();
-        }
-
-        function hideAllShields() {
-            initialCover.classList.add('hidden');
-            deadShield.classList.remove('active');
-            pauseShield.classList.remove('active');
-            launchShield.classList.remove('active');
-            clearTimeout(launchTimer);
-            clearInterval(launchProgressInterval);
-            clearTimeout(safeTimer);
-        }
-
-        function showDeadShield(msg) { hideAllShields();
-            deadShieldText.textContent = msg || 'Click to Resume';
-            deadShield.classList.add('active');
-            markUnsafe(); }
-
-        function showPauseShield() { hideAllShields();
-            pauseShield.classList.add('active');
-            markUnsafe(); }
-
-        function showLaunchShield(msg) {
-            hideAllShields();
-            launchShieldText.textContent = msg || 'Starting';
-            launchShieldProgress.style.width = '0%';
-            launchShield.classList.add('active');
-            markUnsafe();
-            var startTime = Date.now();
-            launchProgressInterval = setInterval(function() {
-                var elapsed = Date.now() - startTime;
-                var pct = Math.min(100, (elapsed / 3000) * 100);
-                launchShieldProgress.style.width = pct + '%';
-                if (pct >= 100) clearInterval(launchProgressInterval);
-            }, 50);
-            launchTimer = setTimeout(function() { launchShield.classList.remove('active');
-                markSafe(); }, 3000);
-        }
-
-        function setIcons(playing) {
-            playIcon.style.display = playing ? 'none' : 'block';
-            pauseIcon.style.display = playing ? 'block' : 'none';
-            if (playing) { ctrPauseBtn.classList.add('playing');
-                ctrPauseBtn.classList.remove('paused'); } else { ctrPauseBtn.classList.remove('playing');
-                ctrPauseBtn.classList.add('paused'); }
-        }
-
-        function updateNavButtons() { prevBtn.style.display = currentIndex > 0 ? 'inline-flex' : 'none';
-            nextBtn.style.display = currentIndex < allLectures.length - 1 ? 'inline-flex' : 'none'; }
-
-        function loadLecture(idx) {
-            if (!allLectures.length || idx < 0 || idx >= allLectures.length) return;
-            var lec = allLectures[idx];
-            currentIndex = idx;
-            currentTitle.textContent = lec.title;
-            currentMeta.textContent = (lec.subject_name || '');
-            headerTitle.textContent = lec.title;
-            updateNavButtons();
-            if (lec.pdf_url) { currentPdfUrl = lec.pdf_url;
-                pdfLink.href = lec.pdf_url;
-                pdfLink.style.display = 'inline-flex'; } else { pdfLink.style.display = 'none';
-                currentPdfUrl = ''; }
-            if (player && player.loadVideoById) player.loadVideoById(lec.youtube_id);
-            markUnsafe();
-            enforceBarsVisibility();
-        }
-
-        window.prevLecture = function() { hideAllShields();
-            markUnsafe();
-            loadLecture(currentIndex - 1); };
-        window.nextLecture = function() { hideAllShields();
-            markUnsafe();
-            loadLecture(currentIndex + 1); };
-
-        function updateProgress() {
-            if (!player || typeof player.getCurrentTime !== 'function') { requestAnimationFrame(updateProgress); return; }
-            if (!isDragging) {
-                var c = player.getCurrentTime() || 0,
-                    d = player.getDuration() || 1;
-                progFill.style.width = (c / d) * 100 + '%';
-                timeDisplay.textContent = formatTime(c) + ' / ' + formatTime(d);
-                try { var b = player.getVideoLoadedFraction() || 0;
-                    progBuffered.style.width = (b * 100) + '%'; } catch (e) {}
-            }
-            requestAnimationFrame(updateProgress);
-        }
-
-        function togglePlay() {
-            if (!player) return;
-            var state = player.getPlayerState();
-            if (state === 1) { player.pauseVideo(); } else { showLaunchShield('Resuming');
-                player.playVideo(); }
-        }
-
-        function skip(s) {
-            if (!player) return;
-            player.seekTo((player.getCurrentTime() || 0) + s, true);
-            if (s < 0) { skipLeftLabel.textContent = s + 's';
-                skipLeft.classList.remove('on');
-                void skipLeft.offsetWidth;
-                skipLeft.classList.add('on');
-                clearTimeout(skipLTimer);
-                skipLTimer = setTimeout(function() { skipLeft.classList.remove('on'); }, 750); } else { skipRightLabel
-                    .textContent = '+' + s + 's';
-                skipRight.classList.remove('on');
-                void skipRight.offsetWidth;
-                skipRight.classList.add('on');
-                clearTimeout(skipRTimer);
-                skipRTimer = setTimeout(function() { skipRight.classList.remove('on'); }, 750); }
-        }
-        var skipLTimer = null,
-            skipRTimer = null;
-
-        function skipKeyboard(s) { if (player) { player.seekTo((player.getCurrentTime() || 0) + s, true);
-                skipFb.classList.add('on');
-                skipIcon.innerHTML = s < 0 ? '<polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/>' :
-                    '<polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/>';
-                skipText.textContent = (s < 0 ? '' : '+') + s + 's';
-                clearTimeout(window._st);
-                window._st = setTimeout(function() { skipFb.classList.remove('on'); }, 700); } }
-
-        function getPctFromEvent(e) { var rect = progTrack.getBoundingClientRect(); var x = e.touches ? e.touches[0]
-                .clientX : e.clientX; return Math.max(0, Math.min(1, (x - rect.left) / rect.width)); }
-
-        function updateDragPreview(e) { if (!player || !allLectures[currentIndex]) return; var d = player.getDuration() ||
-                1;
-            dragTime.textContent = formatTime(dragCurrentPct * d);
-            var x = e.touches ? e.touches[0].clientX : e.clientX;
-            dragPreview.style.left = x + 'px';
-            dragThumb.src = 'https://img.youtube.com/vi/' + allLectures[currentIndex].youtube_id + '/maxresdefault.jpg'; }
-
-        progTrack.addEventListener('click', function(e) { if (!player) return; var rect = progTrack.getBoundingClientRect();
-            player.seekTo(((e.clientX - rect.left) / rect.width) * player.getDuration(), true);
-            showControls(); });
-        progTrack.addEventListener('mousedown', function(e) { isDragging = true;
-            progWrap.classList.add('dragging');
-            dragCurrentPct = getPctFromEvent(e);
-            progFill.style.width = (dragCurrentPct * 100) + '%';
-            dragPreview.classList.add('on');
-            updateDragPreview(e);
-            e.preventDefault(); });
-        progTrack.addEventListener('touchstart', function(e) { isDragging = true;
-            progWrap.classList.add('dragging');
-            dragCurrentPct = getPctFromEvent(e);
-            progFill.style.width = (dragCurrentPct * 100) + '%';
-            dragPreview.classList.add('on');
-            updateDragPreview(e); }, { passive: false });
-        document.addEventListener('mousemove', function(e) { if (!isDragging) return;
-            dragCurrentPct = getPctFromEvent(e);
-            progFill.style.width = (dragCurrentPct * 100) + '%';
-            if (player) { var d = player.getDuration() || 1;
-                timeDisplay.textContent = formatTime(dragCurrentPct * d) + ' / ' + formatTime(d); }
-            updateDragPreview(e); });
-        document.addEventListener('touchmove', function(e) { if (!isDragging) return;
-            dragCurrentPct = getPctFromEvent(e);
-            progFill.style.width = (dragCurrentPct * 100) + '%';
-            if (player) { var d = player.getDuration() || 1;
-                timeDisplay.textContent = formatTime(dragCurrentPct * d) + ' / ' + formatTime(d); }
-            updateDragPreview(e); }, { passive: false });
-        document.addEventListener('mouseup', function() { if (!isDragging) return;
-            isDragging = false;
-            progWrap.classList.remove('dragging');
-            dragPreview.classList.remove('on');
-            if (player) { player.seekTo(dragCurrentPct * player.getDuration(), true);
-                showControls(); } });
-        document.addEventListener('touchend', function() { if (!isDragging) return;
-            isDragging = false;
-            progWrap.classList.remove('dragging');
-            dragPreview.classList.remove('on');
-            if (player) { player.seekTo(dragCurrentPct * player.getDuration(), true);
-                showControls(); } });
-
-        function buildSpeedPopup() { speedPopup.innerHTML = '';
-            speeds.forEach(function(s, i) { var el = document.createElement('div');
-                el.className = 'speed-popup-item' + (i === speedIdx ? ' active' : '');
-                el.textContent = s + 'x';
-                el.addEventListener('click', function(e) { e.stopPropagation();
-                    speedIdx = i; if (player) player.setPlaybackRate(s);
-                    speedBtn.innerHTML = s + 'x';
-                    localStorage.setItem('sv_speed', s);
-                    buildSpeedPopup();
-                    speedPopup.classList.remove('open'); });
-                speedPopup.appendChild(el); }); }
-        speedBtn.addEventListener('click', function(e) { e.stopPropagation();
-            qualityPopup.classList.remove('open');
-            speedPopup.classList.toggle('open'); });
-
-        function buildQualityPopup() { qualityPopup.innerHTML = '';
-            var list = availableQualities.length ? availableQualities : ['auto']; if (!list.includes('auto')) list = ['auto']
-                .concat(list);
-            list.forEach(function(q) { var el = document.createElement('div');
-                el.className = 'quality-popup-item' + (q === currentQuality ? ' active' : '');
-                el.textContent = qualityLabels[q] || q;
-                el.addEventListener('click', function(e) { e.stopPropagation();
-                    currentQuality = q; if (player) { player.setPlaybackQuality(q === 'auto' ? 'default' : q); }
-                    qualityBtn.textContent = qualityLabels[q] || q;
-                    buildQualityPopup();
-                    qualityPopup.classList.remove('open'); });
-                qualityPopup.appendChild(el); }); }
-        qualityBtn.addEventListener('click', function(e) { e.stopPropagation();
-            speedPopup.classList.remove('open'); if (player && player.getAvailableQualityLevels) { var avail = player
-                    .getAvailableQualityLevels(); if (avail && avail.length) availableQualities = avail; }
-            buildQualityPopup();
-            qualityPopup.classList.toggle('open'); });
-        document.addEventListener('click', function() { speedPopup.classList.remove('open');
-            qualityPopup.classList.remove('open'); });
-
-        async function init() {
-            var params = new URLSearchParams(location.search);
-            var lid = params.get('lecture_id'),
-                cid = params.get('course_id');
-            if (!lid || !cid) { window.location.href = '/dashboard.html'; return; }
-            document.getElementById('backLink').href = '/course.html?id=' + cid;
-            var savedSpeed = parseFloat(localStorage.getItem('sv_speed') || '1');
-            var si = speeds.indexOf(savedSpeed); if (si >= 0) speedIdx = si;
-            speedBtn.innerHTML = speeds[speedIdx] + 'x';
-            buildSpeedPopup();
-            buildQualityPopup();
-            try {
-                var r = await fetch(API + '/courses/' + cid, { headers: { 'Authorization': 'Bearer ' + getToken() } });
-                var d = await r.json();
-                if (!r.ok) { showToast('Failed to load course data.'); return; }
-                (d.subjects || []).forEach(function(s) { (s.lectures || []).forEach(function(l) { allLectures
-                        .push({ id: l.id, title: l.title, youtube_id: l.youtube_id, pdf_url: l.pdf_url,
-                            subject_name: s.title }); }); });
-                currentIndex = allLectures.findIndex(function(l) { return String(l.id) === String(lid); }); if (
-                    currentIndex < 0) currentIndex = 0;
-                if (!allLectures.length) { currentTitle.textContent = 'No lectures'; return; }
-                loadLecture(currentIndex);
-                updateNavButtons();
-                initialCover.classList.remove('hidden');
-                markUnsafe();
-                createPlayer(allLectures[currentIndex].youtube_id);
-            } catch (e) { currentTitle.textContent = 'Error loading course'; }
-        }
-
-        function createPlayer(vid) {
-            if (player) { try { player.destroy(); } catch (e) {} player = null; }
-            document.getElementById('ytPlayer').innerHTML = '';
-            player = new YT.Player('ytPlayer', {
-                height: '100%',
-                width: '100%',
-                videoId: vid,
-                playerVars: {
-                    autoplay: 0,
-                    controls: 0,
-                    rel: 0,
-                    modestbranding: 1,
-                    iv_load_policy: 3,
-                    fs: 0,
-                    disablekb: 1,
-                    playsinline: 1,
-                    origin: location.origin,
-                    showinfo: 0,
-                    cc_load_policy: 0,
-                    autohide: 1,
-                    wmode: 'opaque',
-                    enablejsapi: 1,
-                    widget_referrer: location.origin,
-                    hl: 'en',
-                    color: 'white',
-                    theme: 'dark'
-                },
-                events: {
-                    onReady: function() {
-                        requestAnimationFrame(updateProgress);
-                        player.setVolume(volSlider.value);
-                        player.setPlaybackRate(speeds[speedIdx]);
-                    },
-                    onStateChange: function(e) {
-                        currentPlayerState = e.data;
-                        if (e.data === 1) { spinner.style.display = 'none';
-                            setIcons(true);
-                            markSafe();
-                            showControls();
-                            enforceBarsVisibility(); } else if (e.data === 2) { setIcons(false);
-                            showPauseShield();
-                            enforceBarsVisibility(); } else if (e.data === 3) { spinner.style.display = 'block';
-                            markUnsafe();
-                            enforceBarsVisibility(); } else if (e.data === 0) { setIcons(false);
-                            showDeadShield('Click to Replay'); if (currentIndex < allLectures.length - 1)
-                                setTimeout(nextLecture, 2500);
-                            enforceBarsVisibility(); } else if (e.data === -1) { if (initialCover.classList
-                                .contains('hidden')) { showDeadShield('Click to Start'); }
-                            enforceBarsVisibility(); }
-                        enforceBarsVisibility();
-                    },
-                    onError: function(e) { showDeadShield('Click to Retry');
-                        markUnsafe();
-                        showToast('Playback error');
-                        enforceBarsVisibility(); }
-                }
-            });
-        }
-
-        initialCover.addEventListener('click', function() { showLaunchShield('Starting'); if (player && player
-                .playVideo) player.playVideo(); });
-        deadShield.addEventListener('click', function() { showLaunchShield('Starting'); if (player && player
-                .playVideo) player.playVideo(); });
-        pauseShield.addEventListener('click', function() { showLaunchShield('Resuming'); if (player) player
-            .playVideo(); });
-        playerBox.addEventListener('mousemove', function() { showControls(); });
-        gestureZone.addEventListener('click', function(e) { if (e.target.closest('.ctrl-bar') || e.target.closest(
-                '.launch-shield') || e.target.closest('.pause-shield') || e.target.closest('.dead-shield') || e
-                .target.closest('.initial-cover')) return;
-            showControls(); var rect = playerBox.getBoundingClientRect(); var cx = e.clientX - rect.left,
-                cy = e.clientY - rect.top; var inCenter = cx > rect.width * .33 && cx < rect.width * .66 && cy >
-                rect.height * .25 && cy < rect.height * .75; if (inCenter && player && player.getPlayerState) { var
-                    state = player.getPlayerState(); if (state === 2 || state === 0 || state === -1 || state === 5)
-                    togglePlay(); } });
-        ctrPauseBtn.addEventListener('click', function(e) { e.stopPropagation();
-            togglePlay(); });
-        document.getElementById('playPauseBtn').addEventListener('click', function(e) { e.stopPropagation();
-            togglePlay(); });
-        document.getElementById('rewindBtn').addEventListener('click', function(e) { e.stopPropagation();
-            skip(-10);
-            showControls(); });
-        document.getElementById('forwardBtn').addEventListener('click', function(e) { e.stopPropagation();
-            skip(10);
-            showControls(); });
-        volSlider.addEventListener('input', function(e) { if (!player) return; var v = parseInt(e.target.value);
-            player.setVolume(v);
-            volHigh.style.display = v === 0 ? 'none' : 'block';
-            volMute.style.display = v === 0 ? 'block' : 'none'; });
-        document.getElementById('muteToggle').addEventListener('click', function(e) { e.stopPropagation(); if (!player)
-                return; if (player.isMuted()) { player.unMute();
-                volSlider.value = player.getVolume();
-                volHigh.style.display = 'block';
-                volMute.style.display = 'none'; } else { player.mute();
-                volSlider.value = 0;
-                volHigh.style.display = 'none';
-                volMute.style.display = 'block'; } });
-        document.getElementById('fullscreenBtn').addEventListener('click', function(e) { e.stopPropagation(); if (!
-                document.fullscreenElement) { playerBox.requestFullscreen().catch(function() {}); } else { document
-                .exitFullscreen(); } });
-        document.addEventListener('fullscreenchange', function() { isFullscreen = !!document.fullscreenElement; });
-        document.addEventListener('keydown', function(e) { if (e.target.tagName === 'INPUT' || e.target.tagName ===
-                'TEXTAREA') return; switch (e.code) { case 'Space':
-                e.preventDefault();
-                togglePlay(); break; case 'ArrowLeft':
-                e.preventDefault();
-                skipKeyboard(-5); break; case 'ArrowRight':
-                e.preventDefault();
-                skipKeyboard(5); break; case 'ArrowUp':
-                e.preventDefault(); if (player) { var v = Math.min(player.getVolume() + 5, 100);
-                    player.setVolume(v);
-                    volSlider.value = v; } break; case 'ArrowDown':
-                e.preventDefault(); if (player) { var v = Math.max(player.getVolume() - 5, 0);
-                    player.setVolume(v);
-                    volSlider.value = v; } break; case 'KeyF':
-                document.getElementById('fullscreenBtn').click(); break; case 'KeyM':
-                document.getElementById('muteToggle').click(); break; } });
-        var lastTapTime = 0;
-        gestureZone.addEventListener('touchend', function(e) { showControls(); var now = Date.now(),
-                tapGap = now - lastTapTime; var x = e.changedTouches[0].clientX,
-                w = window.innerWidth; if (tapGap < 300 && tapGap > 0) { if (x < w * .33) skip(-10); else if (x > w *
-                    .66) skip(10); }
-            lastTapTime = now; });
-
-        window.onYouTubeIframeAPIReady = function() { init(); };
-        if (!document.querySelector('script[src*="iframe_api"]')) { var tag = document.createElement('script');
-            tag.src = 'https://www.youtube.com/iframe_api';
-            document.head.appendChild(tag); }
-        if (typeof YT !== 'undefined' && YT.Player) init();
-    </script>
-
+    window.onYouTubeIframeAPIReady = function() { init(); };
+    if (!document.querySelector('script[src*="iframe_api"]')) { var tag = document.createElement('script'); tag.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(tag); }
+    if (typeof YT !== 'undefined' && YT.Player) init();
+</script>
 </body>
 </html>
