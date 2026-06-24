@@ -218,7 +218,7 @@
     <div class="course-header">
         <div class="breadcrumb"><a href="/dashboard.html">Dashboard</a> &rsaquo; <span id="breadcrumbCourse">Course</span></div>
         <h1 id="courseTitle">Loading...</h1>
-        <p class="desc" id="courseDesc"></p>
+        <div class="desc" id="courseDesc"></div>
     </div>
 
     <div class="tabs">
@@ -303,50 +303,48 @@
 
     const header = document.getElementById('header');
     let lastY = 0, ticking = false;
-    window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', function() {
         if (!ticking) {
-            requestAnimationFrame(() => {
-                const y = window.scrollY;
-                header.classList.toggle('hidden', y > lastY && y > 80);
-                lastY = y; ticking = false;
+            requestAnimationFrame(function() {
+                var y = window.scrollY;
+                if (y > lastY && y > 80) {
+                    header.classList.add('hidden');
+                } else {
+                    header.classList.remove('hidden');
+                }
+                lastY = y;
+                ticking = false;
             });
             ticking = true;
         }
     }, { passive: true });
 
     function toast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg; t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
+        var t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(function() { t.classList.remove('show'); }, 3000);
     }
+
     function escapeHtml(str) {
-        const d = document.createElement('div');
+        var d = document.createElement('div');
         d.textContent = str || '';
         return d.innerHTML;
     }
 
-    const init = (user.name || 'U')[0].toUpperCase();
-    document.getElementById('headerRight').innerHTML = `
-        <button class="icon-btn sign-out" id="soBtn" title="Sign out">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-        </button>
-        <div class="avatar">${init}</div>
-    `;
-    document.getElementById('soBtn').addEventListener('click', () => {
+    var init = (user.name || 'U')[0].toUpperCase();
+    document.getElementById('headerRight').innerHTML = '<button class="icon-btn sign-out" id="soBtn" title="Sign out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button><div class="avatar">' + init + '</div>';
+    document.getElementById('soBtn').addEventListener('click', function() {
         localStorage.removeItem('site_token');
         localStorage.removeItem('site_user');
         window.location.href = '/index.html';
     });
 
     // Tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
             btn.classList.add('active');
             document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
         });
@@ -355,10 +353,10 @@
     // Load course
     async function loadCourse() {
         try {
-            const res = await fetch(API + '/user/course?id=' + courseId, {
+            var res = await fetch(API + '/user/course?id=' + courseId, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
-            const data = await res.json();
+            var data = await res.json();
             document.getElementById('subjectsSpinner').style.display = 'none';
 
             if (!res.ok) {
@@ -371,60 +369,53 @@
             document.getElementById('courseTitle').textContent = data.course.title;
             document.getElementById('headerTitle').textContent = data.course.title;
             document.getElementById('breadcrumbCourse').textContent = data.course.title;
-            document.getElementById('courseDesc').textContent = data.course.description || '';
+            document.getElementById('courseDesc').innerHTML = data.course.description || '';
             document.title = data.course.title + ' — SciVerse Academy';
 
             // Subjects
-            const subjectList = document.getElementById('subjectList');
+            var subjectList = document.getElementById('subjectList');
             if (!data.subjects || !data.subjects.length) {
                 document.getElementById('emptySubjects').style.display = 'block';
             } else {
                 subjectList.innerHTML = '';
-                data.subjects.forEach(sub => {
-                    const card = document.createElement('div');
+                data.subjects.forEach(function(sub) {
+                    var card = document.createElement('div');
                     card.className = 'subject-card';
-                    let lecturesHtml = '';
+                    var lecturesHtml = '';
                     if (sub.lectures && sub.lectures.length) {
-                        lecturesHtml = sub.lectures.map(lec =>
-                            `<a href="/lecture.html?lecture_id=${lec.id}&course_id=${courseId}" class="lecture-item">
-                                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                                ${escapeHtml(lec.title)}
-                            </a>`
-                        ).join('');
+                        lecturesHtml = sub.lectures.map(function(lec) {
+                            return '<a href="/lecture.html?lecture_id=' + lec.id + '&course_id=' + courseId + '" class="lecture-item"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>' + escapeHtml(lec.title) + '</a>';
+                        }).join('');
                     } else {
                         lecturesHtml = '<div class="lecture-item"><span class="empty-lecture">No lectures yet</span></div>';
                     }
-                    card.innerHTML = `
-                        <div class="subject-header" onclick="this.parentElement.classList.toggle('expanded')">
-                            <div class="left">
-                                <div class="title">${escapeHtml(sub.title)}</div>
-                                ${sub.description ? `<div class="subtitle">${escapeHtml(sub.description)}</div>` : ''}
-                            </div>
-                            <svg class="subject-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                        </div>
-                        <div class="lecture-list">${lecturesHtml}</div>
-                    `;
+                    var subtitleHtml = '';
+                    if (sub.description) {
+                        subtitleHtml = '<div class="subtitle">' + sub.description + '</div>';
+                    }
+                    card.innerHTML = '<div class="subject-header" onclick="this.parentElement.classList.toggle(\'expanded\')"><div class="left"><div class="title">' + escapeHtml(sub.title) + '</div>' + subtitleHtml + '</div><svg class="subject-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="lecture-list">' + lecturesHtml + '</div>';
                     subjectList.appendChild(card);
                 });
             }
 
             // Resources
-            const resourceList = document.getElementById('resourceList');
+            var resourceList = document.getElementById('resourceList');
             if (!data.resources || !data.resources.length) {
                 document.getElementById('emptyResources').style.display = 'block';
             } else {
                 resourceList.innerHTML = '';
-                data.resources.forEach(res => {
-                    const card = document.createElement('div');
+                data.resources.forEach(function(res) {
+                    var card = document.createElement('div');
                     card.className = 'resource-card';
-                    card.innerHTML = `
-                        <h3>${escapeHtml(res.title)}</h3>
-                        ${res.description ? `<p>${escapeHtml(res.description)}</p>` : ''}
-                        ${res.link_url ? `<a href="${escapeHtml(res.link_url)}" target="_blank" rel="noopener" class="resource-link">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                            Open resource
-                        </a>` : ''}
-                    `;
+                    var descHtml = '';
+                    if (res.description) {
+                        descHtml = '<p>' + res.description + '</p>';
+                    }
+                    var linkHtml = '';
+                    if (res.link_url) {
+                        linkHtml = '<a href="' + escapeHtml(res.link_url) + '" target="_blank" rel="noopener" class="resource-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open resource</a>';
+                    }
+                    card.innerHTML = '<h3>' + escapeHtml(res.title) + '</h3>' + descHtml + linkHtml;
                     resourceList.appendChild(card);
                 });
             }
