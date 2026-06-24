@@ -80,7 +80,6 @@
         }
         .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
-        /* ── SLIDER ── */
         .slider-wrap{
             position:relative;width:100%;max-width:1100px;margin:0 auto 60px;
             border-radius:var(--rl);overflow:hidden;background:var(--surf);
@@ -235,19 +234,18 @@
         <div class="hero-actions" id="heroActions"></div>
     </section>
 
-    <!-- IMAGE SLIDER -->
     <div class="slider-wrap" id="sliderWrap">
         <div class="slider-track" id="sliderTrack">
             <div class="slider-slide active">
-                <img src="https://www.magnific.com/premium-photo/asian-girl-student-online-learning-class-study-online-video-call-zoom-teacher-happy-asian-girl-learn_79531654.htm#fromView=keyword&page=1&position=6&uuid=3b8d84a6-6e2b-4ea0-aa44-b1c84c40970e&query=Online+class" alt="Student learning online" />
+                <img src="https://i.ibb.co.com/3YLRztMn/premium-photo-1664300813371-7e2e101f6f85.jpg" alt="Student learning online" />
                 <div class="slider-caption">Learn from anywhere, at your own pace</div>
             </div>
             <div class="slider-slide">
-                <img src="https://www.magnific.com/premium-photo/asian-female-student-study-online-class-study-online-wearing-headphones-watching-video-call-zooming-happy-asian-female-learning-language-online-with-computer-laptop_87718316.htm#from_element=cross_selling__photo" alt="Student with headphones" />
+                <img src="https://i.ibb.co.com/yFdHgyRz/premium-photo-1661903078140-b2f497f7bf02.jpg" alt="Student with headphones" />
                 <div class="slider-caption">Engaging video lessons with expert instructors</div>
             </div>
             <div class="slider-slide">
-                <img src="https://www.magnific.com/free-vector/online-tutorials-concept_7915189.htm#fromView=keyword&page=1&position=34&uuid=3b8d84a6-6e2b-4ea0-aa44-b1c84c40970e&query=Online+class" alt="Online tutorials concept" />
+                <img src="https://i.ibb.co.com/67kfZkfH/photo-1610484826967-09c5720778c7.jpg" alt="Online education" />
                 <div class="slider-caption">Structured courses designed for mastery</div>
             </div>
         </div>
@@ -350,7 +348,6 @@
     function modalAlert(msg) { const el = document.getElementById('modalAlert'); el.textContent = msg; el.className = 'alert alert-e'; }
     function clearModalAlert() { const el = document.getElementById('modalAlert'); el.className = 'alert'; el.textContent = ''; }
 
-    // Header + Hero
     function renderUI() {
         const hr = document.getElementById('headerRight');
         const heroActions = document.getElementById('heroActions');
