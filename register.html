@@ -3,450 +3,341 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Create Account | SciVerse Academy</title>
+    <title>Create Account — SciVerse Academy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+
+        :root{
+            --blue:#1a73e8;--blue-h:#1557b0;--red:#d93025;--red-bg:#fce8e6;
+            --green:#1e8e3e;--grn-bg:#e6f4ea;
+            --bg:#f8f9fa;--surf:#ffffff;--hov:#f1f3f4;--border:#dadce0;
+            --t1:#202124;--t2:#3c4043;--t3:#5f6368;--t4:#80868b;
+            --gs:'Google Sans','Roboto',system-ui,sans-serif;
+            --rb:'Roboto',system-ui,sans-serif;
+            --hh:64px;--r:4px;--rl:8px;--tr:.2s cubic-bezier(.4,0,.2,1);
         }
 
-        :root {
-            --primary: #7C3AED;
-            --primary-light: #8B5CF6;
-            --primary-dark: #6D28D9;
-            --primary-gradient: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
-            --bg: #0B0815;
-            --bg-light: #F4F2F9;
-            --surface: #15102A;
-            --surface-light: #FFFFFF;
-            --text: #FFFFFF;
-            --text-light: #1A1528;
-            --text-secondary: #A5B4CB;
-            --text-secondary-light: #6B7A99;
-            --text-muted: #6B7A99;
-            --text-muted-light: #94A3B8;
-            --border: rgba(255,255,255,0.06);
-            --border-light: rgba(0,0,0,0.08);
-            --shadow: 0 25px 60px rgba(0,0,0,0.6);
-            --shadow-light: 0 25px 60px rgba(0,0,0,0.08);
-            --radius: 12px;
-            --radius-lg: 20px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        body{
+            font-family:var(--rb);background:var(--bg);color:var(--t2);
+            -webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;
         }
 
-        [data-theme="light"] {
-            --bg: #F4F2F9;
-            --surface: #FFFFFF;
-            --text: #1A1528;
-            --text-secondary: #4A4658;
-            --text-muted: #94A3B8;
-            --border: rgba(0,0,0,0.08);
-            --shadow: 0 25px 60px rgba(0,0,0,0.08);
+        /* ── HEADER ── */
+        .header{
+            position:fixed;top:0;left:0;right:0;height:var(--hh);
+            background:var(--surf);border-bottom:1px solid var(--border);
+            z-index:1000;display:flex;align-items:center;
+            justify-content:space-between;padding:0 24px;
+            transition:transform .25s ease;
+        }
+        .header.hidden{transform:translateY(-100%)}
+        .header-left{display:flex;align-items:center}
+        .logo-wrap{display:flex;align-items:center;gap:10px;text-decoration:none}
+        .logo-img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
+        .logo-text{font-family:var(--gs);font-size:1.25rem;font-weight:500;color:var(--t1);letter-spacing:-0.2px}
+        .header-right{display:flex;align-items:center;gap:4px}
+        .btn-signin{
+            padding:8px 16px;border:1px solid var(--blue);border-radius:var(--r);
+            background:var(--surf);color:var(--blue);font-family:var(--gs);
+            font-size:.875rem;font-weight:500;cursor:pointer;white-space:nowrap;
+            letter-spacing:.25px;transition:background var(--tr),box-shadow var(--tr);
+            text-decoration:none;display:inline-flex;align-items:center;
+        }
+        .btn-signin:hover{background:#e8f0fe;box-shadow:0 1px 3px rgba(60,64,67,.2)}
+
+        /* ── MAIN ── */
+        .main{padding-top:var(--hh);display:flex;align-items:center;justify-content:center;min-height:100vh}
+        .register-wrap{width:100%;max-width:448px;padding:48px 24px 80px}
+
+        .card{
+            background:var(--surf);border:1px solid var(--border);
+            border-radius:var(--rl);padding:48px 40px 36px;
+        }
+        .card-icon{
+            width:48px;height:48px;margin:0 auto 20px;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .card-icon img{width:48px;height:48px;border-radius:50%;object-fit:cover}
+        .card h1{
+            font-family:var(--gs);font-size:1.5rem;font-weight:400;
+            text-align:center;color:var(--t1);margin-bottom:4px;
+        }
+        .card .subtitle{
+            font-family:var(--rb);font-size:.875rem;color:var(--t2);
+            text-align:center;margin-bottom:28px;
         }
 
-        html, body {
-            height: 100%;
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            -webkit-font-smoothing: antialiased;
-            transition: background var(--transition), color var(--transition);
+        .field{margin-bottom:20px}
+        .field-label{
+            display:block;font-size:.75rem;font-weight:500;color:var(--t3);
+            margin-bottom:4px;letter-spacing:.3px;
+        }
+        .field-input{
+            width:100%;padding:13px 15px;border:1px solid var(--border);
+            border-radius:var(--r);font-family:var(--rb);font-size:1rem;
+            color:var(--t1);background:var(--surf);outline:none;transition:border var(--tr);
+        }
+        .field-input:hover{border-color:var(--t3)}
+        .field-input:focus{border:2px solid var(--blue);padding:12px 14px}
+        .field-hint{font-size:.75rem;color:var(--t4);margin-top:4px}
+
+        .alert{padding:12px 16px;border-radius:var(--r);font-size:.85rem;margin-bottom:20px;display:none}
+        .alert-e{display:block;background:var(--red-bg);color:var(--red);border:1px solid rgba(217,48,37,.2)}
+        .alert-s{display:block;background:var(--grn-bg);color:var(--green);border:1px solid rgba(30,142,62,.2)}
+
+        .btn-submit{
+            width:100%;height:36px;background:var(--blue);color:#fff;
+            border:none;border-radius:var(--r);font-family:var(--gs);
+            font-size:.875rem;font-weight:500;cursor:pointer;letter-spacing:.25px;
+            transition:box-shadow var(--tr),background var(--tr);
+            display:flex;align-items:center;justify-content:center;gap:8px;
+            margin-top:8px;
+        }
+        .btn-submit:hover{background:var(--blue-h);box-shadow:0 1px 2px rgba(60,64,67,.3),0 2px 6px rgba(60,64,67,.15)}
+        .btn-submit:disabled{background:var(--hov);color:var(--t4);cursor:not-allowed;box-shadow:none}
+        .spinner{
+            width:16px;height:16px;border:2px solid rgba(255,255,255,.35);
+            border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;
+        }
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        .card-footer{
+            display:flex;justify-content:center;align-items:center;margin-top:28px;
+            font-size:.875rem;color:var(--t3);
+        }
+        .card-footer a{color:var(--blue);text-decoration:none;font-weight:500;margin-left:4px}
+        .card-footer a:hover{text-decoration:underline}
+
+        .note{
+            text-align:center;margin-top:32px;font-size:.8rem;color:var(--t4);
+            line-height:1.6;
         }
 
-        .container {
-            min-height: 100vh;
-            min-height: 100dvh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.06) 0%, transparent 70%);
+        /* ── FOOTER ── */
+        .footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
+        .footer-inner{
+            max-width:1080px;margin:0 auto;padding:40px 24px 24px;
+            display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
         }
-
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 48px 40px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: var(--shadow);
-            transition: all var(--transition);
+        .fc h4{
+            font-family:var(--gs);font-size:.875rem;font-weight:500;
+            color:var(--t2);margin-bottom:12px;
         }
-
-        .card-header {
-            text-align: center;
-            margin-bottom: 28px;
+        .fc p{font-size:.8rem;color:var(--t3);line-height:1.7}
+        .fc a{display:block;font-size:.8rem;color:var(--t3);text-decoration:none;line-height:2}
+        .fc a:hover{color:var(--blue);text-decoration:underline}
+        .footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+        .footer-bottom{
+            max-width:1080px;margin:0 auto;padding:16px 24px;
+            border-top:1px solid var(--border);
+            display:flex;justify-content:space-between;align-items:center;
+            font-size:.75rem;color:var(--t4);flex-wrap:wrap;gap:8px;
         }
+        .footer-links{display:flex;gap:20px}
+        .footer-links a{color:var(--t4);text-decoration:none;font-size:.75rem}
+        .footer-links a:hover{text-decoration:underline;color:var(--blue)}
+        .footer-social{display:flex;gap:12px}
+        .footer-social a{color:var(--t4);display:flex;align-items:center;transition:color var(--tr)}
+        .footer-social a:hover{color:var(--blue)}
+        .footer-social a svg{width:16px;height:16px}
 
-        .card-header .logo {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(124,58,237,0.3);
+        .toast{
+            position:fixed;bottom:24px;left:24px;z-index:9999;
+            padding:14px 24px;border-radius:var(--r);background:#323232;
+            color:#f5f5f5;font-size:.875rem;
+            box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px rgba(0,0,0,.14),0 1px 18px rgba(0,0,0,.12);
+            transform:translateY(80px);opacity:0;transition:all .25s cubic-bezier(0,0,.2,1);pointer-events:none;
         }
+        .toast.show{transform:translateY(0);opacity:1}
 
-        .card-header .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card-header h1 {
-            font-size: 22px;
-            font-weight: 800;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
-        }
-
-        .card-header p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(255,255,255,0.04);
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius);
-            color: var(--text);
-            font-size: 15px;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: all var(--transition);
-        }
-
-        [data-theme="light"] .form-input {
-            background: rgba(0,0,0,0.02);
-        }
-
-        .form-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .form-input:focus {
-            border-color: var(--primary);
-            background: rgba(124,58,237,0.05);
-            box-shadow: 0 0 0 4px rgba(124,58,237,0.1);
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 14px 24px;
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            border: none;
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: all var(--transition);
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--primary-gradient);
-            color: #fff;
-            box-shadow: 0 4px 16px rgba(124,58,237,0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(124,58,237,0.4);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-            display: none;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .alert {
-            padding: 12px 16px;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 18px;
-            display: none;
-        }
-
-        .alert-error {
-            display: block;
-            background: rgba(239,68,68,0.1);
-            color: #EF4444;
-            border: 1px solid rgba(239,68,68,0.2);
-        }
-
-        .alert-success {
-            display: block;
-            background: rgba(16,185,129,0.1);
-            color: #10B981;
-            border: 1px solid rgba(16,185,129,0.2);
-        }
-
-        .footer-links {
-            text-align: center;
-            margin-top: 24px;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .footer-links a {
-            color: var(--primary-light);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color var(--transition);
-        }
-
-        .footer-links a:hover {
-            color: var(--text);
-        }
-
-        .footer-text {
-            text-align: center;
-            margin-top: 32px;
-            font-size: 12px;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border);
-            padding-top: 20px;
-        }
-
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all var(--transition);
-            z-index: 1000;
-        }
-
-        .theme-toggle:hover {
-            border-color: var(--primary);
-            color: var(--text);
-        }
-
-        .theme-toggle svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        @media (max-width: 480px) {
-            .card {
-                padding: 32px 24px;
-            }
-            .card-header .logo {
-                width: 56px;
-                height: 56px;
-            }
-            .card-header h1 {
-                font-size: 20px;
-            }
+        @media(max-width:600px){
+            .card{padding:32px 24px 28px}
+            .footer-inner{grid-template-columns:1fr;gap:20px}
+            .footer-bottom{flex-direction:column;text-align:center}
+            .register-wrap{padding:24px 16px 60px}
         }
     </style>
 </head>
 <body>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-    </button>
 
-    <div class="container">
+<header class="header" id="header">
+    <div class="header-left">
+        <a href="/index.html" class="logo-wrap">
+            <img src="/images/protected.png" alt="SciVerse" height="32" class="logo-img" />
+            <span class="logo-text">SciVerse Academy</span>
+        </a>
+    </div>
+    <div class="header-right">
+        <a href="/index.html" class="btn-signin">Sign in</a>
+    </div>
+</header>
+
+<main class="main">
+    <div class="register-wrap">
         <div class="card">
-            <div class="card-header">
-                <div class="logo">
-                    <img src="/images/protected.png" alt="SciVerse Academy" />
-                </div>
-                <h1>SciVerse Academy</h1>
-                <p>Join the community. All accounts reviewed by admin.</p>
+            <div class="card-icon">
+                <img src="/images/protected.png" alt="SciVerse Academy" />
             </div>
+            <h1>Create your account</h1>
+            <p class="subtitle">All accounts are reviewed by admin before access is granted.</p>
 
             <div class="alert" id="alert"></div>
 
             <form id="registerForm" autocomplete="off">
-                <div class="form-group">
-                    <label class="form-label" for="name">Full Name</label>
-                    <input type="text" class="form-input" id="name" placeholder="John Doe" required autofocus />
+                <div class="field">
+                    <label class="field-label" for="name">Full name</label>
+                    <input type="text" class="field-input" id="name" placeholder="Enter your full name" required autofocus />
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="email">Email Address</label>
-                    <input type="email" class="form-input" id="email" placeholder="you@example.com" required />
+                <div class="field">
+                    <label class="field-label" for="email">Email address</label>
+                    <input type="email" class="field-input" id="email" placeholder="you@example.com" required />
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <input type="password" class="form-input" id="password" placeholder="Minimum 6 characters" required minlength="6" />
+                <div class="field">
+                    <label class="field-label" for="password">Password</label>
+                    <input type="password" class="field-input" id="password" placeholder="Minimum 6 characters" required minlength="6" />
+                    <div class="field-hint">Use 6 or more characters</div>
                 </div>
-
-                <button type="submit" class="btn btn-primary" id="submitBtn">
-                    <span id="btnText">Create Account</span>
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span id="btnText">Create account</span>
                     <span class="spinner" id="spinner"></span>
                 </button>
             </form>
 
-            <div class="footer-links">
-                Already have an account? <a href="/index.html">Sign In</a>
-            </div>
-
-            <div class="footer-text">
-                &copy; 2026 SciVerse Academy. All rights reserved.
+            <div class="card-footer">
+                Already have an account?<a href="/index.html">Sign in</a>
             </div>
         </div>
+
+        <p class="note">Your account will be reviewed by an administrator. You'll be notified once approved.</p>
     </div>
+</main>
 
-    <script src="/network-check.js"></script>
-    <script src="/api-fix.js"></script>
-    <script>
-        const API = 'https://sciverseacademy.pages.dev/api';
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="fc">
+            <div class="footer-brand">
+                <img src="/images/protected.png" alt="SciVerse" height="24" style="border-radius:50%" />
+                <span style="font-family:var(--gs);font-size:1rem;font-weight:500;color:var(--t2)">SciVerse Academy</span>
+            </div>
+            <p>Enabling comprehensive academic exploration through structured, accessible learning resources.</p>
+        </div>
+        <div class="fc">
+            <h4>Platform</h4>
+            <a href="/register.html">Get Started</a>
+            <a href="/index.html#features">Features</a>
+            <a href="/index.html#how-it-works">How It Works</a>
+        </div>
+        <div class="fc">
+            <h4>Support</h4>
+            <a href="mailto:text.me.md.alamin@gmail.com">Contact Admin</a>
+            <a href="#">Help Center</a>
+            <a href="#">Report Issue</a>
+        </div>
+        <div class="fc">
+            <h4>Legal</h4>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>&copy; 2026 SciVerse Academy</span>
+        <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Settings</a>
+        </div>
+        <div class="footer-social">
+            <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+            <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg></a>
+        </div>
+    </div>
+</footer>
 
-        const themeToggle = document.getElementById('themeToggle');
-        const savedTheme = localStorage.getItem('sciverse-theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme);
+<div class="toast" id="toast"></div>
 
-        themeToggle.addEventListener('click', function() {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('sciverse-theme', next);
-        });
+<script src="/network-check.js"></script>
+<script src="/api-fix.js"></script>
+<script>
+    const API = 'https://sciverseacademy.pages.dev/api';
 
-        function showAlert(msg, type) {
-            const el = document.getElementById('alert');
-            el.textContent = msg;
-            el.className = 'alert alert-' + type;
+    const header = document.getElementById('header');
+    let lastY = 0, ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const y = window.scrollY;
+                header.classList.toggle('hidden', y > lastY && y > 80);
+                lastY = y; ticking = false;
+            });
+            ticking = true;
         }
+    }, { passive: true });
 
-        function hideAlert() {
-            const el = document.getElementById('alert');
-            el.className = 'alert';
-            el.textContent = '';
+    const token = localStorage.getItem('site_token');
+    const user = JSON.parse(localStorage.getItem('site_user') || 'null');
+    if (token && user && navigator.onLine) {
+        window.location.href = user.role === 'admin' ? '/admin.html' : '/dashboard.html';
+    }
+
+    function toast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg; t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+    function alert_(msg, type) {
+        const el = document.getElementById('alert');
+        el.textContent = msg; el.className = 'alert alert-' + type;
+    }
+    function clearAlert() {
+        const el = document.getElementById('alert');
+        el.className = 'alert'; el.textContent = '';
+    }
+    function resetBtn() {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = false;
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('btnText').style.display = 'inline';
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        clearAlert();
+        if (!navigator.onLine) { alert_('No internet connection. Please check your network.', 'e'); return; }
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        if (!name || !email || !password) { alert_('Please fill in all fields.', 'e'); return; }
+        if (password.length < 6) { alert_('Password must be at least 6 characters.', 'e'); return; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert_('Please enter a valid email address.', 'e'); return; }
+
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        document.getElementById('spinner').style.display = 'inline-block';
+        document.getElementById('btnText').style.display = 'none';
+
+        try {
+            const res = await fetch(API + '/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
+            const data = await res.json();
+            if (!res.ok) { alert_(data.error || 'Registration failed.', 'e'); resetBtn(); return; }
+            alert_('Account created successfully. Awaiting admin approval.', 's');
+            document.getElementById('registerForm').style.display = 'none';
+            document.querySelector('.card-footer').style.display = 'none';
+            btn.style.display = 'none';
+        } catch (err) {
+            alert_('Network error. Please try again.', 'e');
+            resetBtn();
         }
-
-        function setLoading(loading) {
-            document.getElementById('submitBtn').disabled = loading;
-            document.getElementById('spinner').style.display = loading ? 'inline-block' : 'none';
-            document.getElementById('btnText').style.display = loading ? 'none' : 'inline';
-        }
-
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            hideAlert();
-
-            if (!navigator.onLine) {
-                showAlert('No internet connection. Please check your network.', 'error');
-                return;
-            }
-
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-
-            if (!name || !email || !password) {
-                showAlert('Please fill in all fields.', 'error');
-                return;
-            }
-
-            if (password.length < 6) {
-                showAlert('Password must be at least 6 characters.', 'error');
-                return;
-            }
-
-            setLoading(true);
-
-            try {
-                const res = await fetch(API + '/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, password })
-                });
-
-                const data = await res.json();
-
-                if (!res.ok) {
-                    showAlert(data.error || 'Registration failed.', 'error');
-                    setLoading(false);
-                    return;
-                }
-
-                showAlert('Account created successfully. Awaiting admin approval.', 'success');
-                document.getElementById('registerForm').style.display = 'none';
-                setLoading(false);
-
-            } catch (err) {
-                if (!navigator.onLine) {
-                    showAlert('No internet connection. Please check your network.', 'error');
-                } else {
-                    showAlert('Network error. Please try again.', 'error');
-                }
-                setLoading(false);
-            }
-        });
-
-        const token = localStorage.getItem('site_token');
-        const user = JSON.parse(localStorage.getItem('site_user') || 'null');
-        if (token && user && navigator.onLine) {
-            window.location.href = user.role === 'admin' ? '/admin.html' : '/dashboard.html';
-        }
-    </script>
+    });
+</script>
 </body>
 </html>
