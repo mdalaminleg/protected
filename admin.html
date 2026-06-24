@@ -2,1988 +2,833 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Admin Panel | SciVerse Academy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Admin Panel — SciVerse Academy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        :root {
-            --primary: #7C3AED;
-            --primary-light: #8B5CF6;
-            --primary-dark: #6D28D9;
-            --primary-gradient: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
-            --bg: #0B0815;
-            --bg-light: #F4F2F9;
-            --surface: #15102A;
-            --surface-light: #FFFFFF;
-            --surface-hover: #1E1836;
-            --surface-hover-light: #F0EEF8;
-            --text: #FFFFFF;
-            --text-light: #1A1528;
-            --text-secondary: #A5B4CB;
-            --text-secondary-light: #6B7A99;
-            --text-muted: #6B7A99;
-            --text-muted-light: #94A3B8;
-            --border: rgba(255,255,255,0.06);
-            --border-light: rgba(0,0,0,0.08);
-            --shadow: 0 4px 20px rgba(0,0,0,0.3);
-            --shadow-light: 0 4px 20px rgba(0,0,0,0.06);
-            --radius: 12px;
-            --radius-lg: 16px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --red: #EF4444;
-            --red-dim: rgba(239,68,68,0.1);
-            --green: #10B981;
-            --green-dim: rgba(16,185,129,0.1);
-            --orange: #F59E0B;
-            --orange-dim: rgba(245,158,11,0.1);
-        }
-
-        [data-theme="light"] {
-            --bg: #F4F2F9;
-            --surface: #FFFFFF;
-            --surface-hover: #F0EEF8;
-            --text: #1A1528;
-            --text-secondary: #4A4658;
-            --text-muted: #94A3B8;
-            --border: rgba(0,0,0,0.08);
-            --shadow: 0 4px 20px rgba(0,0,0,0.06);
-        }
-
-        html, body {
-            height: 100%;
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            -webkit-font-smoothing: antialiased;
-            transition: background var(--transition), color var(--transition);
-        }
-
-        .app {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            min-height: 100dvh;
-        }
-
-        .header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-left .logo {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .header-left .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .header-left .brand {
-            font-size: 18px;
-            font-weight: 800;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header-left .badge {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            background: rgba(239,68,68,0.15);
-            color: #EF4444;
-            padding: 2px 10px;
-            border-radius: 20px;
-            letter-spacing: 0.5px;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-right .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-            color: #fff;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .theme-toggle {
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all var(--transition);
-        }
-
-        .theme-toggle:hover {
-            border-color: var(--primary);
-            color: var(--text);
-        }
-
-        .theme-toggle svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .sign-out-btn {
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 8px 16px;
-            color: var(--text-secondary);
-            font-size: 13px;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            transition: all var(--transition);
-        }
-
-        .sign-out-btn:hover {
-            border-color: var(--red);
-            color: var(--red);
-            background: var(--red-dim);
-        }
-
-        .main {
-            flex: 1;
-            padding: 24px 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .page-header {
-            margin-bottom: 28px;
-        }
-
-        .page-header h1 {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .page-header p {
-            font-size: 15px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 14px;
-            margin-bottom: 28px;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 18px 20px;
-            transition: background var(--transition);
-        }
-
-        .stat-card .number {
-            font-size: 28px;
-            font-weight: 800;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-card .label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 2px;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 0;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 24px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .tabs::-webkit-scrollbar {
-            display: none;
-        }
-
-        .tab-btn {
-            padding: 12px 20px;
-            background: none;
-            border: none;
-            border-bottom: 2px solid transparent;
-            color: var(--text-secondary);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: all var(--transition);
-            white-space: nowrap;
-        }
-
-        .tab-btn:hover {
-            color: var(--text);
-        }
-
-        .tab-btn.active {
-            color: var(--primary-light);
-            border-bottom-color: var(--primary);
-        }
-
-        .tab-panel {
-            display: none;
-            padding-bottom: 40px;
-        }
-
-        .tab-panel.active {
-            display: block;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-        }
-
-        .form-group {
-            flex: 1;
-            min-width: 180px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .form-input,
-        .form-select,
-        .form-textarea {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(255,255,255,0.04);
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius);
-            color: var(--text);
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: all var(--transition);
-        }
-
-        [data-theme="light"] .form-input,
-        [data-theme="light"] .form-select,
-        [data-theme="light"] .form-textarea {
-            background: rgba(0,0,0,0.02);
-        }
-
-        .form-input::placeholder,
-        .form-textarea::placeholder {
-            color: var(--text-muted);
-        }
-
-        .form-input:focus,
-        .form-select:focus,
-        .form-textarea:focus {
-            border-color: var(--primary);
-            background: rgba(124,58,237,0.05);
-            box-shadow: 0 0 0 4px rgba(124,58,237,0.1);
-        }
-
-        .form-textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        .form-select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%236B7A99'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 10px 20px;
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            border: none;
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: all var(--transition);
-            white-space: nowrap;
-        }
-
-        .btn-primary {
-            background: var(--primary-gradient);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(124,58,237,0.25);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(124,58,237,0.35);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1.5px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--text-secondary);
-            color: var(--text);
-        }
-
-        .btn-danger {
-            background: transparent;
-            color: var(--red);
-            border: 1.5px solid rgba(239,68,68,0.3);
-        }
-
-        .btn-danger:hover {
-            background: var(--red-dim);
-            border-color: var(--red);
-        }
-
-        .btn-success {
-            background: transparent;
-            color: var(--green);
-            border: 1.5px solid rgba(16,185,129,0.3);
-        }
-
-        .btn-success:hover {
-            background: var(--green-dim);
-            border-color: var(--green);
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-
-        .btn-xs {
-            padding: 4px 8px;
-            font-size: 11px;
-        }
-
-        .table-wrap {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            margin-top: 12px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        th {
-            text-align: left;
-            padding: 10px 14px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            background: var(--bg);
-        }
-
-        td {
-            padding: 10px 14px;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-secondary);
-        }
-
-        tr:hover td {
-            background: var(--surface-hover);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-approved {
-            background: var(--green-dim);
-            color: var(--green);
-        }
-
-        .badge-pending {
-            background: var(--orange-dim);
-            color: var(--orange);
-        }
-
-        .badge-blocked {
-            background: var(--red-dim);
-            color: var(--red);
-        }
-
-        .badge-admin {
-            background: rgba(124,58,237,0.15);
-            color: var(--primary-light);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .empty-state svg {
-            width: 48px;
-            height: 48px;
-            color: var(--text-muted);
-            opacity: 0.4;
-            margin-bottom: 16px;
-        }
-
-        .empty-state h3 {
-            font-size: 18px;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-
-        .empty-state p {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 40px auto;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            z-index: 300;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-overlay.open {
-            display: flex;
-        }
-
-        .modal {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            width: 100%;
-            max-width: 480px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-        }
-
-        .modal h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .modal p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .modal .form-group {
-            margin-bottom: 14px;
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .alert {
-            padding: 12px 16px;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 16px;
-            display: none;
-        }
-
-        .alert-error {
-            display: block;
-            background: var(--red-dim);
-            color: var(--red);
-            border: 1px solid rgba(239,68,68,0.2);
-        }
-
-        .alert-success {
-            display: block;
-            background: var(--green-dim);
-            color: var(--green);
-            border: 1px solid rgba(16,185,129,0.2);
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-            }
-            .form-group {
-                min-width: 100%;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .page-header h1 {
-                font-size: 22px;
-            }
-            .tab-btn {
-                padding: 10px 14px;
-                font-size: 12px;
-            }
-            .modal {
-                padding: 24px;
-            }
-            .header-left .brand {
-                font-size: 16px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            .stat-card {
-                padding: 14px 16px;
-            }
-            .stat-card .number {
-                font-size: 22px;
-            }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+
+        :root{
+            --blue:#1a73e8;--blue-h:#1557b0;--red:#d93025;--red-bg:#fce8e6;
+            --green:#1e8e3e;--grn-bg:#e6f4ea;--yellow:#f9ab00;--ylw-bg:#fef7e0;
+            --bg:#f8f9fa;--surf:#ffffff;--hov:#f1f3f4;--border:#dadce0;
+            --t1:#202124;--t2:#3c4043;--t3:#5f6368;--t4:#80868b;
+            --gs:'Google Sans','Roboto',system-ui,sans-serif;
+            --rb:'Roboto',system-ui,sans-serif;
+            --mono:'JetBrains Mono',monospace;
+            --hh:64px;--r:4px;--rl:8px;--tr:.2s cubic-bezier(.4,0,.2,1);
+        }
+
+        body{
+            font-family:var(--rb);background:var(--bg);color:var(--t2);
+            -webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;
+            display:flex;flex-direction:column;
+        }
+
+        .header{
+            position:fixed;top:0;left:0;right:0;height:var(--hh);
+            background:var(--surf);border-bottom:1px solid var(--border);
+            z-index:1000;display:flex;align-items:center;
+            justify-content:space-between;padding:0 24px;
+            transition:transform .25s ease;
+        }
+        .header.hidden{transform:translateY(-100%)}
+        .header-left{display:flex;align-items:center;gap:10px}
+        .logo-wrap{display:flex;align-items:center;gap:10px;text-decoration:none}
+        .logo-img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
+        .logo-text{font-family:var(--gs);font-size:1.1rem;font-weight:500;color:var(--t1);letter-spacing:-0.2px}
+        .badge-admin{
+            font-size:.65rem;font-weight:500;background:var(--red-bg);color:var(--red);
+            padding:2px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.5px;
+        }
+        .header-right{display:flex;align-items:center;gap:4px}
+        .icon-btn{
+            width:40px;height:40px;border:none;background:none;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            cursor:pointer;color:var(--t3);transition:background var(--tr);flex-shrink:0;
+        }
+        .icon-btn:hover{background:var(--hov)}
+        .icon-btn svg{width:20px;height:20px}
+        .icon-btn.sign-out:hover{background:var(--red-bg);color:var(--red)}
+        .avatar{
+            width:32px;height:32px;border-radius:50%;background:var(--blue);
+            display:flex;align-items:center;justify-content:center;
+            font-family:var(--gs);font-weight:500;font-size:13px;
+            color:#fff;cursor:pointer;flex-shrink:0;margin-left:4px;
+            border:2px solid transparent;
+        }
+        .avatar:hover{border-color:var(--border)}
+
+        .main{
+            flex:1;padding-top:calc(var(--hh) + 32px);padding:calc(var(--hh) + 32px) 24px 40px;
+            max-width:1400px;margin:0 auto;width:100%;
+        }
+
+        .page-header{margin-bottom:28px}
+        .page-header h1{font-family:var(--gs);font-size:2rem;font-weight:500;color:var(--t1);letter-spacing:-0.3px}
+        .page-header p{font-size:.9rem;color:var(--t3);margin-top:4px}
+
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
+        .stat-card{
+            background:var(--surf);border:1px solid var(--border);
+            border-radius:var(--rl);padding:20px 24px;transition:box-shadow var(--tr);
+        }
+        .stat-card:hover{box-shadow:0 1px 3px rgba(60,64,67,.3)}
+        .stat-card .number{font-family:var(--gs);font-size:2rem;font-weight:500;color:var(--blue)}
+        .stat-card .label{font-size:.75rem;color:var(--t4);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+        .tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+        .tabs::-webkit-scrollbar{display:none}
+        .tab-btn{
+            padding:12px 20px;background:none;border:none;border-bottom:2px solid transparent;
+            color:var(--t3);font-family:var(--gs);font-size:.85rem;font-weight:500;
+            cursor:pointer;transition:all var(--tr);white-space:nowrap;
+        }
+        .tab-btn:hover{color:var(--t1)}
+        .tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+        .tab-panel{display:none;padding-bottom:40px}
+        .tab-panel.active{display:block}
+
+        .form-row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end}
+        .form-group{flex:1;min-width:160px}
+        .form-label{display:block;font-size:.7rem;font-weight:500;color:var(--t3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+        .form-input,.form-select,.form-textarea{
+            width:100%;padding:10px 14px;background:var(--surf);border:1px solid var(--border);
+            border-radius:var(--r);color:var(--t1);font-size:.9rem;
+            font-family:var(--rb);outline:none;transition:all var(--tr);
+        }
+        .form-input:hover,.form-select:hover,.form-textarea:hover{border-color:var(--t3)}
+        .form-input:focus,.form-select:focus,.form-textarea:focus{border:2px solid var(--blue);padding:9px 13px}
+        .form-textarea{min-height:70px;resize:vertical}
+        .form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%235f6368'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+
+        .btn{
+            display:inline-flex;align-items:center;justify-content:center;gap:6px;
+            padding:8px 18px;font-family:var(--gs);font-size:.8rem;font-weight:500;
+            border:none;border-radius:var(--r);cursor:pointer;
+            transition:all var(--tr);white-space:nowrap;text-decoration:none;
+        }
+        .btn-primary{background:var(--blue);color:#fff}
+        .btn-primary:hover{background:var(--blue-h);box-shadow:0 1px 2px rgba(60,64,67,.3),0 2px 6px rgba(60,64,67,.15)}
+        .btn-outline{background:transparent;color:var(--blue);border:1px solid var(--border)}
+        .btn-outline:hover{background:#e8f0fe;border-color:var(--blue)}
+        .btn-danger{background:transparent;color:var(--red);border:1px solid rgba(217,48,37,.2)}
+        .btn-danger:hover{background:var(--red-bg);border-color:var(--red)}
+        .btn-success{background:transparent;color:var(--green);border:1px solid rgba(30,142,62,.2)}
+        .btn-success:hover{background:var(--grn-bg);border-color:var(--green)}
+        .btn-xs{padding:4px 10px;font-size:.68rem}
+        .btn-sm{padding:6px 14px;font-size:.75rem}
+
+        .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px}
+        table{width:100%;border-collapse:collapse;font-size:.82rem}
+        th{
+            text-align:left;padding:10px 14px;font-size:.68rem;font-weight:500;
+            color:var(--t4);text-transform:uppercase;letter-spacing:.5px;
+            border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;
+        }
+        td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--t2)}
+        tr:hover td{background:var(--hov)}
+
+        .badge{
+            display:inline-block;padding:2px 10px;border-radius:12px;font-size:.68rem;font-weight:500;
+        }
+        .badge-approved{background:var(--grn-bg);color:var(--green)}
+        .badge-pending{background:var(--ylw-bg);color:var(--yellow)}
+        .badge-blocked{background:var(--red-bg);color:var(--red)}
+        .badge-admin{background:#e8f0fe;color:var(--blue)}
+
+        .empty-state{
+            text-align:center;padding:60px 20px;
+        }
+        .empty-icon{
+            width:56px;height:56px;border-radius:50%;background:var(--hov);
+            display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--t4);
+        }
+        .empty-icon svg{width:24px;height:24px}
+        .empty-state h3{font-family:var(--gs);font-size:1.1rem;font-weight:500;color:var(--t2);margin-bottom:6px}
+        .empty-state p{font-size:.85rem;color:var(--t3)}
+
+        .spinner-el{
+            width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--blue);
+            border-radius:50%;animation:spin .8s linear infinite;margin:40px auto;
+        }
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        .modal-overlay{
+            position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;
+            display:none;align-items:center;justify-content:center;padding:20px;
+        }
+        .modal-overlay.open{display:flex}
+        .modal{
+            background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
+            padding:32px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;
+            box-shadow:0 24px 50px rgba(0,0,0,.3);
+        }
+        .modal h2{font-family:var(--gs);font-size:1.3rem;font-weight:500;color:var(--t1);margin-bottom:12px}
+        .modal p{font-size:.9rem;color:var(--t3);line-height:1.6;margin-bottom:20px}
+        .modal .form-group{margin-bottom:14px}
+        .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+        .alert{
+            padding:12px 16px;border-radius:var(--r);font-size:.8rem;font-weight:400;margin-bottom:16px;display:none;
+        }
+        .alert-e{display:block;background:var(--red-bg);color:var(--red);border:1px solid rgba(217,48,37,.2)}
+        .alert-s{display:block;background:var(--grn-bg);color:var(--green);border:1px solid rgba(30,142,62,.2)}
+
+        .footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
+        .footer-inner{
+            max-width:1080px;margin:0 auto;padding:40px 24px 24px;
+            display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
+        }
+        .fc h4{font-family:var(--gs);font-size:.875rem;font-weight:500;color:var(--t2);margin-bottom:12px}
+        .fc p{font-size:.8rem;color:var(--t3);line-height:1.7}
+        .fc a{display:block;font-size:.8rem;color:var(--t3);text-decoration:none;line-height:2}
+        .fc a:hover{color:var(--blue);text-decoration:underline}
+        .footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+        .footer-bottom{
+            max-width:1080px;margin:0 auto;padding:16px 24px;
+            border-top:1px solid var(--border);
+            display:flex;justify-content:space-between;align-items:center;
+            font-size:.75rem;color:var(--t4);flex-wrap:wrap;gap:8px;
+        }
+        .footer-links{display:flex;gap:20px}
+        .footer-links a{color:var(--t4);text-decoration:none;font-size:.75rem}
+        .footer-links a:hover{text-decoration:underline;color:var(--blue)}
+        .footer-social{display:flex;gap:12px}
+        .footer-social a{color:var(--t4);display:flex;align-items:center;transition:color var(--tr)}
+        .footer-social a:hover{color:var(--blue)}
+        .footer-social a svg{width:16px;height:16px}
+
+        .toast{
+            position:fixed;bottom:24px;left:24px;z-index:9999;
+            padding:14px 24px;border-radius:var(--r);background:#323232;
+            color:#f5f5f5;font-size:.875rem;
+            box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px rgba(0,0,0,.14),0 1px 18px rgba(0,0,0,.12);
+            transform:translateY(80px);opacity:0;transition:all .25s cubic-bezier(0,0,.2,1);pointer-events:none;
+        }
+        .toast.show{transform:translateY(0);opacity:1}
+
+        @media(max-width:900px){
+            .form-row{flex-direction:column}
+            .form-group{min-width:100%}
+            .footer-inner{grid-template-columns:1fr 1fr;gap:28px}
+        }
+        @media(max-width:600px){
+            .main{padding:calc(var(--hh) + 20px) 16px 32px}
+            .footer-inner{grid-template-columns:1fr;gap:20px}
+            .footer-bottom{flex-direction:column;text-align:center}
+            .stats-grid{grid-template-columns:1fr 1fr}
+            .tab-btn{padding:10px 14px;font-size:.75rem}
+            .modal{padding:24px}
         }
     </style>
 </head>
 <body>
-    <div class="app">
-        <header class="header">
-            <div class="header-left">
-                <div class="logo">
-                    <img src="/images/protected.png" alt="SciVerse" />
-                </div>
-                <span class="brand">SciVerse</span>
-                <span class="badge">Admin</span>
-            </div>
-            <div class="header-right">
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                    </svg>
-                </button>
-                <button class="sign-out-btn" id="signOutBtn">Sign Out</button>
-                <div class="avatar" id="avatar">A</div>
-            </div>
-        </header>
 
-        <main class="main">
-            <div class="page-header">
-                <h1>Admin Dashboard</h1>
-                <p>Manage users, courses, and content.</p>
-            </div>
+<header class="header" id="header">
+    <div class="header-left">
+        <a href="/dashboard.html" class="logo-wrap">
+            <img src="/images/protected.png" alt="SciVerse" height="32" class="logo-img" />
+            <span class="logo-text">SciVerse Academy</span>
+        </a>
+        <span class="badge-admin">Admin</span>
+    </div>
+    <div class="header-right" id="headerRight"></div>
+</header>
 
-            <div class="stats-grid" id="statsGrid">
-                <div class="stat-card">
-                    <div class="number" id="statUsers">-</div>
-                    <div class="label">Total Users</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number" id="statCourses">-</div>
-                    <div class="label">Courses</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number" id="statPending">-</div>
-                    <div class="label">Pending Approval</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number" id="statBlocked">-</div>
-                    <div class="label">Blocked Users</div>
-                </div>
-            </div>
-
-            <div class="tabs" id="tabs">
-                <button class="tab-btn active" data-tab="users">Users</button>
-                <button class="tab-btn" data-tab="courses">Courses</button>
-                <button class="tab-btn" data-tab="subjects">Subjects</button>
-                <button class="tab-btn" data-tab="lectures">Lectures</button>
-                <button class="tab-btn" data-tab="resources">Resources</button>
-                <button class="tab-btn" data-tab="enrollments">Enrollments</button>
-                <button class="tab-btn" data-tab="audit">Audit Log</button>
-            </div>
-
-            <!-- USERS -->
-            <div class="tab-panel active" id="panel-users">
-                <div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-                    <button class="btn btn-primary btn-sm" onclick="loadUsers()">Refresh</button>
-                    <span style="font-size:12px;color:var(--text-muted);" id="usersCount"></span>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th style="min-width:180px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersBody"></tbody>
-                    </table>
-                </div>
-                <div class="spinner" id="usersSpinner"></div>
-            </div>
-
-            <!-- COURSES -->
-            <div class="tab-panel" id="panel-courses">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Title</label>
-                        <input class="form-input" id="courseTitle" placeholder="Course title" />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Description</label>
-                        <textarea class="form-textarea" id="courseDesc" placeholder="Course description"></textarea>
-                    </div>
-                    <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;">
-                        <button class="btn btn-primary" onclick="createCourse()">Create Course</button>
-                    </div>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th style="min-width:120px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="coursesBody"></tbody>
-                    </table>
-                </div>
-                <div class="spinner" id="coursesSpinner"></div>
-            </div>
-
-            <!-- SUBJECTS -->
-            <div class="tab-panel" id="panel-subjects">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Course</label>
-                        <select class="form-select" id="subjectCourse">
-                            <option value="">Select course...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Title</label>
-                        <input class="form-input" id="subjectTitle" placeholder="Subject title" />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Description</label>
-                        <textarea class="form-textarea" id="subjectDesc" placeholder="Subject description"></textarea>
-                    </div>
-                    <div class="form-group" style="flex:0;min-width:80px;">
-                        <label class="form-label">Order</label>
-                        <input class="form-input" id="subjectOrder" type="number" value="0" />
-                    </div>
-                    <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;">
-                        <button class="btn btn-primary" onclick="createSubject()">Create</button>
-                    </div>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Course</th>
-                                <th>Title</th>
-                                <th>Order</th>
-                                <th style="min-width:120px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="subjectsBody"></tbody>
-                    </table>
-                </div>
-                <div class="spinner" id="subjectsSpinner"></div>
-            </div>
-
-            <!-- LECTURES -->
-            <div class="tab-panel" id="panel-lectures">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Course</label>
-                        <select class="form-select" id="lectureCourse" onchange="loadSubjectsForLecture()">
-                            <option value="">Select course...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Subject</label>
-                        <select class="form-select" id="lectureSubject">
-                            <option value="">Select subject...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Title</label>
-                        <input class="form-input" id="lectureTitle" placeholder="Lecture title" />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">YouTube ID</label>
-                        <input class="form-input" id="lectureYoutubeId" placeholder="dQw4w9WgXcQ" />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">PDF URL</label>
-                        <input class="form-input" id="lecturePdf" placeholder="https://..." />
-                    </div>
-                    <div class="form-group" style="flex:0;min-width:80px;">
-                        <label class="form-label">Order</label>
-                        <input class="form-input" id="lectureOrder" type="number" value="0" />
-                    </div>
-                    <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;">
-                        <button class="btn btn-primary" onclick="createLecture()">Create</button>
-                    </div>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Subject</th>
-                                <th>Title</th>
-                                <th>YouTube</th>
-                                <th style="min-width:120px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lecturesBody"></tbody>
-                    </table>
-                </div>
-                <div class="spinner" id="lecturesSpinner"></div>
-            </div>
-
-            <!-- RESOURCES -->
-            <div class="tab-panel" id="panel-resources">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Course</label>
-                        <select class="form-select" id="resourceCourse">
-                            <option value="">Select course...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Title</label>
-                        <input class="form-input" id="resourceTitle" placeholder="Resource title" />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Description</label>
-                        <textarea class="form-textarea" id="resourceDesc" placeholder="Resource description"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Link URL</label>
-                        <input class="form-input" id="resourceLink" placeholder="https://..." />
-                    </div>
-                    <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;">
-                        <button class="btn btn-primary" onclick="createResource()">Create</button>
-                    </div>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Course</th>
-                                <th>Title</th>
-                                <th>Link</th>
-                                <th style="min-width:120px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="resourcesBody"></tbody>
-                    </table>
-                </div>
-                <div class="spinner" id="resourcesSpinner"></div>
-            </div>
-
-            <!-- ENROLLMENTS -->
-            <div class="tab-panel" id="panel-enrollments">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">User</label>
-                        <select class="form-select" id="enrollUser">
-                            <option value="">Select user...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Course</label>
-                        <select class="form-select" id="enrollCourse">
-                            <option value="">Select course...</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;">
-                        <button class="btn btn-primary" onclick="enrollUser()">Enroll</button>
-                    </div>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Course</th>
-                                <th>Enrolled Date</th>
-                                <th style="min-width:100px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="enrollmentsBody"></tbody>
-                    </table>
-                </div>
-                <div class="spinner" id="enrollmentsSpinner"></div>
-            </div>
-
-            <!-- AUDIT LOG -->
-            <div class="tab-panel" id="panel-audit">
-                <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
-                    <button class="btn btn-primary btn-sm" onclick="loadAuditLogs()">Refresh</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteAllAuditLogs()">Delete All</button>
-                    <span style="font-size:12px;color:var(--text-muted);" id="auditCount"></span>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>User</th>
-                                <th>Action</th>
-                                <th style="min-width:80px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="auditBody"></tbody>
-                    </table>
-                </div>
-                <div class="spinner" id="auditSpinner"></div>
-            </div>
-        </main>
+<main class="main">
+    <div class="page-header">
+        <h1>Admin Dashboard</h1>
+        <p>Manage users, courses, and content.</p>
     </div>
 
-    <!-- MODAL -->
-    <div class="modal-overlay" id="modal">
-        <div class="modal">
-            <h2 id="modalTitle">Confirm</h2>
-            <div id="modalBody"></div>
-            <div class="modal-footer" id="modalFooter"></div>
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="number" id="statUsers">-</div><div class="label">Total Users</div></div>
+        <div class="stat-card"><div class="number" id="statCourses">-</div><div class="label">Courses</div></div>
+        <div class="stat-card"><div class="number" id="statPending">-</div><div class="label">Pending</div></div>
+        <div class="stat-card"><div class="number" id="statBlocked">-</div><div class="label">Blocked</div></div>
+        <div class="stat-card"><div class="number" id="statEnrollments">-</div><div class="label">Enrollments</div></div>
+    </div>
+
+    <div class="tabs" id="tabs">
+        <button class="tab-btn active" data-tab="users">Users</button>
+        <button class="tab-btn" data-tab="courses">Courses</button>
+        <button class="tab-btn" data-tab="subjects">Subjects</button>
+        <button class="tab-btn" data-tab="lectures">Lectures</button>
+        <button class="tab-btn" data-tab="resources">Resources</button>
+        <button class="tab-btn" data-tab="enrollments">Enrollments</button>
+        <button class="tab-btn" data-tab="audit">Audit Log</button>
+    </div>
+
+    <!-- USERS -->
+    <div class="tab-panel active" id="panel-users">
+        <div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button class="btn btn-primary btn-sm" onclick="loadUsers()">Refresh</button>
+            <span style="font-size:.78rem;color:var(--t4)" id="usersCount"></span>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th style="min-width:200px">Actions</th></tr></thead><tbody id="usersBody"></tbody></table></div>
+        <div class="spinner-el" id="usersSpinner"></div>
+    </div>
+
+    <!-- COURSES -->
+    <div class="tab-panel" id="panel-courses">
+        <div class="form-row">
+            <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="courseTitle" placeholder="Course title" /></div>
+            <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="courseDesc" placeholder="Course description"></textarea></div>
+            <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end"><button class="btn btn-primary" onclick="createCourse()">Create</button></div>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Title</th><th>Description</th><th style="min-width:120px">Actions</th></tr></thead><tbody id="coursesBody"></tbody></table></div>
+        <div class="spinner-el" id="coursesSpinner"></div>
+    </div>
+
+    <!-- SUBJECTS -->
+    <div class="tab-panel" id="panel-subjects">
+        <div class="form-row">
+            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="subjectCourse"><option value="">Select course...</option></select></div>
+            <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="subjectTitle" placeholder="Subject title" /></div>
+            <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="subjectDesc" placeholder="Subject description"></textarea></div>
+            <div class="form-group" style="flex:0;min-width:70px"><label class="form-label">Order</label><input class="form-input" id="subjectOrder" type="number" value="0" /></div>
+            <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end"><button class="btn btn-primary" onclick="createSubject()">Create</button></div>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Course</th><th>Title</th><th>Order</th><th style="min-width:120px">Actions</th></tr></thead><tbody id="subjectsBody"></tbody></table></div>
+        <div class="spinner-el" id="subjectsSpinner"></div>
+    </div>
+
+    <!-- LECTURES -->
+    <div class="tab-panel" id="panel-lectures">
+        <div class="form-row">
+            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="lectureCourse" onchange="loadSubjectsForLecture()"><option value="">Select course...</option></select></div>
+            <div class="form-group"><label class="form-label">Subject</label><select class="form-select" id="lectureSubject"><option value="">Select subject...</option></select></div>
+            <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="lectureTitle" placeholder="Lecture title" /></div>
+            <div class="form-group"><label class="form-label">YouTube ID</label><input class="form-input" id="lectureYoutubeId" placeholder="dQw4w9WgXcQ" /></div>
+            <div class="form-group"><label class="form-label">PDF URL</label><input class="form-input" id="lecturePdf" placeholder="https://..." /></div>
+            <div class="form-group" style="flex:0;min-width:70px"><label class="form-label">Order</label><input class="form-input" id="lectureOrder" type="number" value="0" /></div>
+            <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end"><button class="btn btn-primary" onclick="createLecture()">Create</button></div>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Subject</th><th>Title</th><th>YouTube</th><th style="min-width:120px">Actions</th></tr></thead><tbody id="lecturesBody"></tbody></table></div>
+        <div class="spinner-el" id="lecturesSpinner"></div>
+    </div>
+
+    <!-- RESOURCES -->
+    <div class="tab-panel" id="panel-resources">
+        <div class="form-row">
+            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="resourceCourse"><option value="">Select course...</option></select></div>
+            <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="resourceTitle" placeholder="Resource title" /></div>
+            <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="resourceDesc" placeholder="Resource description"></textarea></div>
+            <div class="form-group"><label class="form-label">Link URL</label><input class="form-input" id="resourceLink" placeholder="https://..." /></div>
+            <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end"><button class="btn btn-primary" onclick="createResource()">Create</button></div>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Course</th><th>Title</th><th>Link</th><th style="min-width:120px">Actions</th></tr></thead><tbody id="resourcesBody"></tbody></table></div>
+        <div class="spinner-el" id="resourcesSpinner"></div>
+    </div>
+
+    <!-- ENROLLMENTS -->
+    <div class="tab-panel" id="panel-enrollments">
+        <div class="form-row">
+            <div class="form-group"><label class="form-label">User</label><select class="form-select" id="enrollUser"><option value="">Select user...</option></select></div>
+            <div class="form-group"><label class="form-label">Course</label><select class="form-select" id="enrollCourse"><option value="">Select course...</option></select></div>
+            <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end"><button class="btn btn-primary" onclick="enrollUser()">Enroll</button></div>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>User</th><th>Course</th><th>Date</th><th style="min-width:80px">Actions</th></tr></thead><tbody id="enrollmentsBody"></tbody></table></div>
+        <div class="spinner-el" id="enrollmentsSpinner"></div>
+    </div>
+
+    <!-- AUDIT LOG -->
+    <div class="tab-panel" id="panel-audit">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
+            <button class="btn btn-primary btn-sm" onclick="loadAuditLogs()">Refresh</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteAllAuditLogs()">Delete All</button>
+            <span style="font-size:.78rem;color:var(--t4)" id="auditCount"></span>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Time</th><th>User</th><th>Action</th><th style="min-width:60px">Actions</th></tr></thead><tbody id="auditBody"></tbody></table></div>
+        <div class="spinner-el" id="auditSpinner"></div>
+    </div>
+</main>
+
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <h2 id="modalTitle">Confirm</h2>
+        <div class="alert" id="modalAlert"></div>
+        <div id="modalBody"></div>
+        <div class="modal-footer" id="modalFooter"></div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="fc">
+            <div class="footer-brand">
+                <img src="/images/protected.png" alt="SciVerse" height="24" style="border-radius:50%" />
+                <span style="font-family:var(--gs);font-size:1rem;font-weight:500;color:var(--t2)">SciVerse Academy</span>
+            </div>
+            <p>Enabling comprehensive academic exploration through structured, accessible learning resources.</p>
+        </div>
+        <div class="fc"><h4>Platform</h4><a href="/dashboard.html">Dashboard</a><a href="/index.html#features">Features</a><a href="/index.html#how-it-works">How It Works</a></div>
+        <div class="fc"><h4>Support</h4><a href="mailto:text.me.md.alamin@gmail.com">Contact Admin</a><a href="#">Help Center</a><a href="#">Report Issue</a></div>
+        <div class="fc"><h4>Legal</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+    </div>
+    <div class="footer-bottom">
+        <span>&copy; 2026 SciVerse Academy</span>
+        <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Settings</a></div>
+        <div class="footer-social">
+            <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+            <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg></a>
         </div>
     </div>
+</footer>
 
-    <script src="/network-check.js"></script>
-    <script src="/api-fix.js"></script>
-    <script>
-        const API = 'https://sciverseacademy.pages.dev/api';
+<div class="toast" id="toast"></div>
 
-        const token = localStorage.getItem('site_token');
-        const user = JSON.parse(localStorage.getItem('site_user') || 'null');
+<script src="/network-check.js"></script>
+<script src="/api-fix.js"></script>
+<script>
+    const API = 'https://sciverseacademy.pages.dev/api';
+    const token = localStorage.getItem('site_token');
+    const user = JSON.parse(localStorage.getItem('site_user') || 'null');
 
-        if (!token || !user || user.role !== 'admin') {
-            window.location.href = '/index.html';
-        }
+    if (!token || !user || user.role !== 'admin') { window.location.href = '/index.html'; }
 
-        // Theme
-        const themeToggle = document.getElementById('themeToggle');
-        const savedTheme = localStorage.getItem('sciverse-theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-
-        themeToggle.addEventListener('click', function() {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('sciverse-theme', next);
-        });
-
-        // Avatar
-        const initial = (user.name || 'A')[0].toUpperCase();
-        document.getElementById('avatar').textContent = initial;
-
-        // Sign Out
-        document.getElementById('signOutBtn').addEventListener('click', function() {
-            localStorage.removeItem('site_token');
-            localStorage.removeItem('site_user');
-            window.location.href = '/index.html';
-        });
-
-        // Tabs
-        document.querySelectorAll('.tab-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.tab-btn').forEach(function(b) {
-                    b.classList.remove('active');
-                });
-                document.querySelectorAll('.tab-panel').forEach(function(p) {
-                    p.classList.remove('active');
-                });
-                btn.classList.add('active');
-                document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
-
-                // Load data based on tab
-                const tab = btn.dataset.tab;
-                if (tab === 'users') loadUsers();
-                else if (tab === 'courses') loadCourses();
-                else if (tab === 'subjects') { loadSubjects(); loadCourseDropdowns(); }
-                else if (tab === 'lectures') { loadLectures(); loadCourseDropdowns(); }
-                else if (tab === 'resources') { loadResources(); loadCourseDropdowns(); }
-                else if (tab === 'enrollments') { loadEnrollments(); loadEnrollmentDropdowns(); }
-                else if (tab === 'audit') loadAuditLogs();
+    const header = document.getElementById('header');
+    let lastY = 0, ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const y = window.scrollY;
+                header.classList.toggle('hidden', y > lastY && y > 80);
+                lastY = y; ticking = false;
             });
+            ticking = true;
+        }
+    }, { passive: true });
+
+    const init = (user.name || 'A')[0].toUpperCase();
+    document.getElementById('headerRight').innerHTML = `
+        <button class="icon-btn sign-out" id="soBtn" title="Sign out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+        <div class="avatar">${init}</div>
+    `;
+    document.getElementById('soBtn').addEventListener('click', () => {
+        localStorage.removeItem('site_token');
+        localStorage.removeItem('site_user');
+        window.location.href = '/index.html';
+    });
+
+    function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+    function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+            const tab = btn.dataset.tab;
+            if (tab === 'users') loadUsers();
+            else if (tab === 'courses') loadCourses();
+            else if (tab === 'subjects') { loadSubjects(); loadCourseDropdowns(); }
+            else if (tab === 'lectures') { loadLectures(); loadCourseDropdowns(); }
+            else if (tab === 'resources') { loadResources(); loadCourseDropdowns(); }
+            else if (tab === 'enrollments') { loadEnrollments(); loadEnrollmentDropdowns(); }
+            else if (tab === 'audit') loadAuditLogs();
         });
+    });
 
-        // Modal
-        function openModal(title, bodyHtml, footerHtml) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalBody').innerHTML = bodyHtml;
-            document.getElementById('modalFooter').innerHTML = footerHtml || '';
-            document.getElementById('modal').classList.add('open');
+    // Modal
+    function openModal(title, bodyHtml, footerHtml) {
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalBody').innerHTML = bodyHtml;
+        document.getElementById('modalFooter').innerHTML = footerHtml || '';
+        document.getElementById('modal').classList.add('open');
+    }
+    function closeModal() { document.getElementById('modal').classList.remove('open'); }
+    function modalAlert(msg, type) {
+        const el = document.getElementById('modalAlert');
+        el.textContent = msg; el.className = 'alert alert-' + type;
+    }
+    function clearModalAlert() { const el = document.getElementById('modalAlert'); el.className = 'alert'; el.textContent = ''; }
+    document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+    // API
+    async function api(method, path, body) {
+        if (!navigator.onLine) { toast('No internet connection.'); return { ok: false, data: { error: 'No internet' }, status: 0 }; }
+        try {
+            const opts = { method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token } };
+            if (body) opts.body = JSON.stringify(body);
+            const res = await fetch(API + path, opts);
+            const data = await res.json();
+            return { ok: res.ok, data, status: res.status };
+        } catch (e) { return { ok: false, data: { error: e.message }, status: 0 }; }
+    }
+
+    // Stats
+    async function loadStats() {
+        const result = await api('GET', '/admin/stats');
+        if (result.ok && result.data.stats) {
+            const s = result.data.stats;
+            document.getElementById('statUsers').textContent = s.total_users || 0;
+            document.getElementById('statCourses').textContent = s.total_courses || 0;
+            document.getElementById('statPending').textContent = s.pending_users || 0;
+            document.getElementById('statBlocked').textContent = s.blocked_users || 0;
+            document.getElementById('statEnrollments').textContent = s.total_enrollments || 0;
         }
+    }
 
-        function closeModal() {
-            document.getElementById('modal').classList.remove('open');
+    // Users
+    async function loadUsers() {
+        document.getElementById('usersSpinner').style.display = 'block';
+        const result = await api('GET', '/admin/users');
+        document.getElementById('usersSpinner').style.display = 'none';
+        const tbody = document.getElementById('usersBody'); tbody.innerHTML = '';
+        if (!result.ok || !result.data.users || !result.data.users.length) {
+            tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><h3>No users found</h3></div></td></tr>';
+            document.getElementById('usersCount').textContent = '';
+            return;
         }
-
-        document.getElementById('modal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
+        document.getElementById('usersCount').textContent = result.data.users.length + ' users';
+        result.data.users.forEach(u => {
+            let statusBadge = u.is_blocked ? '<span class="badge badge-blocked">Blocked</span>' : u.is_approved ? '<span class="badge badge-approved">Approved</span>' : '<span class="badge badge-pending">Pending</span>';
+            let roleBadge = u.role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : '';
+            let actions = '';
+            if (!u.is_approved && !u.is_blocked) actions += '<button class="btn btn-success btn-xs" onclick="approveUser(' + u.id + ')">Approve</button> ';
+            if (u.is_blocked) actions += '<button class="btn btn-outline btn-xs" onclick="unblockUser(' + u.id + ')">Unblock</button> ';
+            else if (u.is_approved && u.role !== 'admin') actions += '<button class="btn btn-danger btn-xs" onclick="blockUser(' + u.id + ')">Block</button> ';
+            if (u.role !== 'admin') actions += '<button class="btn btn-danger btn-xs" onclick="deleteUser(' + u.id + ')">Delete</button> ';
+            if (u.device_fingerprint) actions += '<button class="btn btn-outline btn-xs" onclick="resetDevice(' + u.id + ')">Reset Device</button>';
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${roleBadge}</td><td>${statusBadge}</td><td>${actions}</td>`;
+            tbody.appendChild(row);
         });
+    }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+    window.approveUser = async (id) => { const r = await api('PUT', '/admin/users/' + id + '/approve'); if (r.ok) { toast('User approved.'); loadUsers(); loadStats(); } else toast('Failed.'); };
+    window.blockUser = async (id) => { const r = await api('PUT', '/admin/users/' + id + '/block'); if (r.ok) { toast('User blocked.'); loadUsers(); loadStats(); } else toast('Failed.'); };
+    window.unblockUser = async (id) => { const r = await api('PUT', '/admin/users/' + id + '/unblock'); if (r.ok) { toast('User unblocked.'); loadUsers(); loadStats(); } else toast('Failed.'); };
+    window.resetDevice = async (id) => { const r = await api('PUT', '/admin/users/' + id + '/reset-device'); if (r.ok) { toast('Device reset.'); loadUsers(); } else toast('Failed.'); };
+    window.deleteUser = function(id) { openModal('Delete User', '<p>Permanently delete this user and all their data?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteUser(' + id + ')">Delete</button>'); };
+    window.confirmDeleteUser = async (id) => { closeModal(); const r = await api('DELETE', '/admin/users/' + id); if (r.ok) { toast('User deleted.'); loadUsers(); loadStats(); } else toast('Failed.'); };
+
+    // Courses
+    async function loadCourses() {
+        document.getElementById('coursesSpinner').style.display = 'block';
+        const result = await api('GET', '/admin/courses');
+        document.getElementById('coursesSpinner').style.display = 'none';
+        const tbody = document.getElementById('coursesBody'); tbody.innerHTML = '';
+        if (!result.ok || !result.data.courses || !result.data.courses.length) {
+            tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state"><h3>No courses</h3></div></td></tr>'; return;
         }
+        result.data.courses.forEach(c => {
+            const desc = (c.description || '').substring(0, 80);
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${escapeHtml(c.title)}</td><td>${escapeHtml(desc)}</td><td><button class="btn btn-outline btn-xs" onclick="editCourse(${c.id})">Edit</button> <button class="btn btn-danger btn-xs" onclick="deleteCourse(${c.id})">Delete</button></td>`;
+            tbody.appendChild(row);
+        });
+    }
 
-        function showToast(msg) {
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 24px;
-                right: 24px;
-                z-index: 9999;
-                padding: 12px 20px;
-                border-radius: 12px;
-                background: var(--surface);
-                color: var(--text);
-                border: 1px solid var(--border);
-                box-shadow: 0 20px 48px rgba(0,0,0,0.5);
-                font-size: 14px;
-                font-weight: 500;
-                font-family: 'Inter', sans-serif;
-                animation: fadeUp 0.3s ease;
-                max-width: 400px;
-            `;
-            toast.textContent = msg;
-            document.body.appendChild(toast);
-            setTimeout(function() {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(10px)';
-                toast.style.transition = 'all 0.3s ease';
-                setTimeout(function() {
-                    toast.remove();
-                }, 300);
-            }, 3000);
-        }
+    window.createCourse = async () => {
+        const title = document.getElementById('courseTitle').value.trim();
+        const desc = document.getElementById('courseDesc').value.trim();
+        if (!title) { toast('Title required.'); return; }
+        const r = await api('POST', '/admin/courses', { title, description: desc });
+        if (r.ok) { toast('Course created.'); document.getElementById('courseTitle').value = ''; document.getElementById('courseDesc').value = ''; loadCourses(); loadStats(); loadCourseDropdowns(); } else toast('Failed.');
+    };
+    window.editCourse = async (id) => {
+        const result = await api('GET', '/admin/courses');
+        if (!result.ok) return;
+        const course = result.data.courses.find(c => c.id === id);
+        if (!course) return;
+        openModal('Edit Course',
+            '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editCourseTitle" value="' + escapeHtml(course.title) + '" /></div>' +
+            '<div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="editCourseDesc">' + escapeHtml(course.description || '') + '</textarea></div>',
+            '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveCourse(' + id + ')">Save</button>');
+    };
+    window.saveCourse = async (id) => {
+        const title = document.getElementById('editCourseTitle').value.trim();
+        const desc = document.getElementById('editCourseDesc').value.trim();
+        if (!title) { toast('Title required.'); return; }
+        const r = await api('PUT', '/admin/courses/' + id, { title, description: desc });
+        if (r.ok) { closeModal(); toast('Course updated.'); loadCourses(); loadCourseDropdowns(); } else toast('Failed.');
+    };
+    window.deleteCourse = function(id) { openModal('Delete Course', '<p>Delete this course and ALL its subjects, lectures, resources, and enrollments?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteCourse(' + id + ')">Delete</button>'); };
+    window.confirmDeleteCourse = async (id) => { closeModal(); const r = await api('DELETE', '/admin/courses/' + id); if (r.ok) { toast('Course deleted.'); loadCourses(); loadStats(); loadCourseDropdowns(); loadSubjects(); loadLectures(); loadResources(); loadEnrollments(); } else toast('Failed.'); };
 
-        // ============================================================
-        // API HELPER
-        // ============================================================
-        async function api(method, path, body) {
-            if (!navigator.onLine) {
-                showToast('No internet connection.');
-                return { ok: false, data: { error: 'No internet' }, status: 0 };
-            }
-            try {
-                const opts = {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    }
-                };
-                if (body) opts.body = JSON.stringify(body);
-                const res = await fetch(API + path, opts);
-                const data = await res.json();
-                return { ok: res.ok, data: data, status: res.status };
-            } catch (e) {
-                return { ok: false, data: { error: e.message }, status: 0 };
-            }
-        }
-
-        // ============================================================
-        // STATS
-        // ============================================================
-        async function loadStats() {
-            const result = await api('GET', '/admin/stats');
-            if (result.ok && result.data.stats) {
-                const s = result.data.stats;
-                document.getElementById('statUsers').textContent = s.total_users || 0;
-                document.getElementById('statCourses').textContent = s.total_courses || 0;
-                document.getElementById('statPending').textContent = s.pending_users || 0;
-                document.getElementById('statBlocked').textContent = s.blocked_users || 0;
-            }
-        }
-
-        // ============================================================
-        // USERS
-        // ============================================================
-        async function loadUsers() {
-            document.getElementById('usersSpinner').style.display = 'block';
-            const result = await api('GET', '/admin/users');
-            document.getElementById('usersSpinner').style.display = 'none';
-            const tbody = document.getElementById('usersBody');
-            tbody.innerHTML = '';
-
-            if (!result.ok || !result.data.users || !result.data.users.length) {
-                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No users found</td></tr>';
-                document.getElementById('usersCount').textContent = '';
-                return;
-            }
-
-            document.getElementById('usersCount').textContent = result.data.users.length + ' users';
-
-            result.data.users.forEach(function(u) {
-                let statusBadge = '';
-                if (u.is_blocked) {
-                    statusBadge = '<span class="badge badge-blocked">Blocked</span>';
-                } else if (u.is_approved) {
-                    statusBadge = '<span class="badge badge-approved">Approved</span>';
-                } else {
-                    statusBadge = '<span class="badge badge-pending">Pending</span>';
-                }
-
-                let roleBadge = '';
-                if (u.role === 'admin') {
-                    roleBadge = '<span class="badge badge-admin">Admin</span>';
-                }
-
-                let actions = '';
-                if (!u.is_approved && !u.is_blocked) {
-                    actions += '<button class="btn btn-success btn-xs" onclick="approveUser(' + u.id + ')">Approve</button> ';
-                }
-                if (u.is_blocked) {
-                    actions += '<button class="btn btn-secondary btn-xs" onclick="unblockUser(' + u.id + ')">Unblock</button> ';
-                } else if (u.is_approved) {
-                    actions += '<button class="btn btn-danger btn-xs" onclick="blockUser(' + u.id + ')">Block</button> ';
-                }
-                if (u.role !== 'admin') {
-                    actions += '<button class="btn btn-danger btn-xs" onclick="deleteUser(' + u.id + ')">Delete</button>';
-                }
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${escapeHtml(u.name)}</td>
-                    <td>${escapeHtml(u.email)}</td>
-                    <td>${roleBadge}</td>
-                    <td>${statusBadge}</td>
-                    <td>${actions}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        window.approveUser = async function(id) {
-            const result = await api('PUT', '/admin/users/' + id + '/approve');
-            if (result.ok) { showToast('User approved.'); loadUsers(); loadStats(); }
-            else showToast('Failed to approve user.');
-        };
-
-        window.blockUser = async function(id) {
-            const result = await api('PUT', '/admin/users/' + id + '/block');
-            if (result.ok) { showToast('User blocked.'); loadUsers(); loadStats(); }
-            else showToast('Failed to block user.');
-        };
-
-        window.unblockUser = async function(id) {
-            const result = await api('PUT', '/admin/users/' + id + '/unblock');
-            if (result.ok) { showToast('User unblocked.'); loadUsers(); loadStats(); }
-            else showToast('Failed to unblock user.');
-        };
-
-        window.deleteUser = function(id) {
-            openModal(
-                'Delete User',
-                '<p>Are you sure you want to permanently delete this user and all their data?</p>',
-                '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteUser(' + id + ')">Delete</button>'
-            );
-        };
-
-        window.confirmDeleteUser = async function(id) {
-            closeModal();
-            const result = await api('DELETE', '/admin/users/' + id);
-            if (result.ok) { showToast('User deleted.'); loadUsers(); loadStats(); }
-            else showToast('Failed to delete user.');
-        };
-
-        // ============================================================
-        // COURSES
-        // ============================================================
-        async function loadCourses() {
-            document.getElementById('coursesSpinner').style.display = 'block';
-            const result = await api('GET', '/admin/courses');
-            document.getElementById('coursesSpinner').style.display = 'none';
-            const tbody = document.getElementById('coursesBody');
-            tbody.innerHTML = '';
-
-            if (!result.ok || !result.data.courses || !result.data.courses.length) {
-                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No courses yet</td></tr>';
-                return;
-            }
-
-            result.data.courses.forEach(function(c) {
-                const desc = (c.description || '').replace(/<[^>]*>/g, '').substring(0, 80);
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${escapeHtml(c.title)}</td>
-                    <td>${escapeHtml(desc)}</td>
-                    <td>
-                        <button class="btn btn-secondary btn-xs" onclick="editCourse(${c.id})">Edit</button>
-                        <button class="btn btn-danger btn-xs" onclick="deleteCourse(${c.id})">Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        window.createCourse = async function() {
-            const title = document.getElementById('courseTitle').value.trim();
-            const desc = document.getElementById('courseDesc').value.trim();
-
-            if (!title) {
-                showToast('Title is required.');
-                return;
-            }
-
-            const result = await api('POST', '/admin/courses', { title: title, description: desc });
-            if (result.ok) {
-                showToast('Course created.');
-                document.getElementById('courseTitle').value = '';
-                document.getElementById('courseDesc').value = '';
-                loadCourses();
-                loadStats();
-                loadCourseDropdowns();
-            } else {
-                showToast('Failed to create course.');
-            }
-        };
-
-        window.editCourse = async function(id) {
-            const result = await api('GET', '/admin/courses');
-            if (!result.ok) return;
-
-            const course = result.data.courses.find(function(c) { return c.id === id; });
-            if (!course) return;
-
-            openModal(
-                'Edit Course',
-                '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editCourseTitle" value="' + escapeHtml(course.title) + '" /></div>' +
-                '<div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="editCourseDesc">' + escapeHtml(course.description || '') + '</textarea></div>',
-                '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveCourse(' + id + ')">Save</button>'
-            );
-        };
-
-        window.saveCourse = async function(id) {
-            const title = document.getElementById('editCourseTitle').value.trim();
-            const desc = document.getElementById('editCourseDesc').value.trim();
-
-            if (!title) {
-                showToast('Title is required.');
-                return;
-            }
-
-            const result = await api('PUT', '/admin/courses/' + id, { title: title, description: desc });
-            if (result.ok) {
-                closeModal();
-                showToast('Course updated.');
-                loadCourses();
-                loadCourseDropdowns();
-            } else {
-                showToast('Failed to update course.');
-            }
-        };
-
-        window.deleteCourse = function(id) {
-            openModal(
-                'Delete Course',
-                '<p>Delete this course and ALL its subjects, lectures, resources, and enrollments?</p>',
-                '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteCourse(' + id + ')">Delete</button>'
-            );
-        };
-
-        window.confirmDeleteCourse = async function(id) {
-            closeModal();
-            const result = await api('DELETE', '/admin/courses/' + id);
-            if (result.ok) {
-                showToast('Course deleted.');
-                loadCourses();
-                loadStats();
-                loadCourseDropdowns();
-                loadSubjects();
-                loadLectures();
-                loadResources();
-                loadEnrollments();
-            } else {
-                showToast('Failed to delete course.');
-            }
-        };
-
-        // ============================================================
-        // SUBJECTS
-        // ============================================================
-        async function loadSubjects() {
-            document.getElementById('subjectsSpinner').style.display = 'block';
-            const tbody = document.getElementById('subjectsBody');
-            tbody.innerHTML = '';
-
-            const coursesResult = await api('GET', '/admin/courses');
-            if (!coursesResult.ok || !coursesResult.data.courses || !coursesResult.data.courses.length) {
-                document.getElementById('subjectsSpinner').style.display = 'none';
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Create a course first.</td></tr>';
-                return;
-            }
-
-            let allRows = [];
-            for (let i = 0; i < coursesResult.data.courses.length; i++) {
-                const course = coursesResult.data.courses[i];
-                const result = await api('GET', '/user/course?id=' + course.id);
-                if (result.ok && result.data.subjects) {
-                    result.data.subjects.forEach(function(s) {
-                        allRows.push({ subject: s, courseTitle: course.title, courseId: course.id });
-                    });
-                }
-            }
-
+    // Subjects
+    async function loadSubjects() {
+        document.getElementById('subjectsSpinner').style.display = 'block';
+        const tbody = document.getElementById('subjectsBody'); tbody.innerHTML = '';
+        const coursesResult = await api('GET', '/admin/courses');
+        if (!coursesResult.ok || !coursesResult.data.courses || !coursesResult.data.courses.length) {
             document.getElementById('subjectsSpinner').style.display = 'none';
-
-            if (!allRows.length) {
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No subjects yet</td></tr>';
-                return;
-            }
-
-            allRows.sort(function(a, b) {
-                if (a.courseTitle < b.courseTitle) return -1;
-                if (a.courseTitle > b.courseTitle) return 1;
-                return (a.subject.sort_order || 0) - (b.subject.sort_order || 0);
-            });
-
-            allRows.forEach(function(row) {
-                const s = row.subject;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${escapeHtml(row.courseTitle)}</td>
-                    <td>${escapeHtml(s.title)}</td>
-                    <td>${s.sort_order || 0}</td>
-                    <td>
-                        <button class="btn btn-secondary btn-xs" onclick="editSubject(${s.id})">Edit</button>
-                        <button class="btn btn-danger btn-xs" onclick="deleteSubject(${s.id})">Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+            tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><h3>Create a course first</h3></div></td></tr>'; return;
         }
-
-        window.createSubject = async function() {
-            const courseId = document.getElementById('subjectCourse').value;
-            const title = document.getElementById('subjectTitle').value.trim();
-            const desc = document.getElementById('subjectDesc').value.trim();
-            const order = parseInt(document.getElementById('subjectOrder').value) || 0;
-
-            if (!courseId) { showToast('Select a course.'); return; }
-            if (!title) { showToast('Title is required.'); return; }
-
-            const result = await api('POST', '/admin/subjects', {
-                course_id: parseInt(courseId),
-                title: title,
-                description: desc,
-                sort_order: order
-            });
-
-            if (result.ok) {
-                showToast('Subject created.');
-                document.getElementById('subjectTitle').value = '';
-                document.getElementById('subjectDesc').value = '';
-                document.getElementById('subjectOrder').value = '0';
-                loadSubjects();
-                loadCourseDropdowns();
-            } else {
-                showToast('Failed to create subject.');
+        let allRows = [];
+        for (const course of coursesResult.data.courses) {
+            const result = await api('GET', '/user/course?id=' + course.id);
+            if (result.ok && result.data.subjects) {
+                result.data.subjects.forEach(s => allRows.push({ subject: s, courseTitle: course.title }));
             }
-        };
-
-        window.editSubject = function(id) {
-            // We need to fetch the subject data
-            openModal(
-                'Edit Subject',
-                '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editSubjectTitle" /></div>' +
-                '<div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="editSubjectDesc"></textarea></div>' +
-                '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editSubjectOrder" type="number" value="0" /></div>',
-                '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveSubject(' + id + ')">Save</button>'
-            );
-
-            // Fetch and populate
-            (async function() {
-                const coursesResult = await api('GET', '/admin/courses');
-                if (!coursesResult.ok) return;
-                for (let i = 0; i < coursesResult.data.courses.length; i++) {
-                    const result = await api('GET', '/user/course?id=' + coursesResult.data.courses[i].id);
-                    if (result.ok && result.data.subjects) {
-                        const found = result.data.subjects.find(function(s) { return s.id === id; });
-                        if (found) {
-                            document.getElementById('editSubjectTitle').value = found.title;
-                            document.getElementById('editSubjectDesc').value = found.description || '';
-                            document.getElementById('editSubjectOrder').value = found.sort_order || 0;
-                            return;
-                        }
-                    }
-                }
-            })();
-        };
-
-        window.saveSubject = async function(id) {
-            const title = document.getElementById('editSubjectTitle').value.trim();
-            const desc = document.getElementById('editSubjectDesc').value.trim();
-            const order = parseInt(document.getElementById('editSubjectOrder').value) || 0;
-
-            if (!title) { showToast('Title is required.'); return; }
-
-            const result = await api('PUT', '/admin/subjects/' + id, {
-                title: title,
-                description: desc,
-                sort_order: order
-            });
-
-            if (result.ok) {
-                closeModal();
-                showToast('Subject updated.');
-                loadSubjects();
-            } else {
-                showToast('Failed to update subject.');
-            }
-        };
-
-        window.deleteSubject = function(id) {
-            openModal(
-                'Delete Subject',
-                '<p>Delete this subject and ALL its lectures?</p>',
-                '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteSubject(' + id + ')">Delete</button>'
-            );
-        };
-
-        window.confirmDeleteSubject = async function(id) {
-            closeModal();
-            const result = await api('DELETE', '/admin/subjects/' + id);
-            if (result.ok) {
-                showToast('Subject deleted.');
-                loadSubjects();
-                loadLectures();
-            } else {
-                showToast('Failed to delete subject.');
-            }
-        };
-
-        // ============================================================
-        // LECTURES
-        // ============================================================
-        async function loadLectures() {
-            document.getElementById('lecturesSpinner').style.display = 'block';
-            const tbody = document.getElementById('lecturesBody');
-            tbody.innerHTML = '';
-
+        }
+        document.getElementById('subjectsSpinner').style.display = 'none';
+        if (!allRows.length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><h3>No subjects</h3></div></td></tr>'; return; }
+        allRows.sort((a, b) => a.courseTitle.localeCompare(b.courseTitle) || (a.subject.sort_order || 0) - (b.subject.sort_order || 0));
+        allRows.forEach(row => {
+            const s = row.subject;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${escapeHtml(row.courseTitle)}</td><td>${escapeHtml(s.title)}</td><td>${s.sort_order || 0}</td><td><button class="btn btn-outline btn-xs" onclick="editSubject(${s.id})">Edit</button> <button class="btn btn-danger btn-xs" onclick="deleteSubject(${s.id})">Delete</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+    window.createSubject = async () => {
+        const courseId = document.getElementById('subjectCourse').value;
+        const title = document.getElementById('subjectTitle').value.trim();
+        const desc = document.getElementById('subjectDesc').value.trim();
+        const order = parseInt(document.getElementById('subjectOrder').value) || 0;
+        if (!courseId || !title) { toast('Course and title required.'); return; }
+        const r = await api('POST', '/admin/subjects', { course_id: parseInt(courseId), title, description: desc, sort_order: order });
+        if (r.ok) { toast('Subject created.'); document.getElementById('subjectTitle').value = ''; document.getElementById('subjectDesc').value = ''; loadSubjects(); } else toast('Failed.');
+    };
+    window.editSubject = function(id) {
+        openModal('Edit Subject',
+            '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editSubjectTitle" /></div>' +
+            '<div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="editSubjectDesc"></textarea></div>' +
+            '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editSubjectOrder" type="number" value="0" /></div>',
+            '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveSubject(' + id + ')">Save</button>');
+        (async () => {
             const coursesResult = await api('GET', '/admin/courses');
-            if (!coursesResult.ok || !coursesResult.data.courses || !coursesResult.data.courses.length) {
-                document.getElementById('lecturesSpinner').style.display = 'none';
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Create a course first.</td></tr>';
-                return;
-            }
-
-            let allRows = [];
-            for (let i = 0; i < coursesResult.data.courses.length; i++) {
-                const course = coursesResult.data.courses[i];
+            if (!coursesResult.ok) return;
+            for (const course of coursesResult.data.courses) {
                 const result = await api('GET', '/user/course?id=' + course.id);
                 if (result.ok && result.data.subjects) {
-                    result.data.subjects.forEach(function(sub) {
-                        if (sub.lectures) {
-                            sub.lectures.forEach(function(l) {
-                                allRows.push({ lecture: l, subjectTitle: sub.title, subjectId: sub.id });
-                            });
-                        }
-                    });
+                    const found = result.data.subjects.find(s => s.id === id);
+                    if (found) { document.getElementById('editSubjectTitle').value = found.title; document.getElementById('editSubjectDesc').value = found.description || ''; document.getElementById('editSubjectOrder').value = found.sort_order || 0; return; }
                 }
             }
+        })();
+    };
+    window.saveSubject = async (id) => {
+        const title = document.getElementById('editSubjectTitle').value.trim();
+        const desc = document.getElementById('editSubjectDesc').value.trim();
+        const order = parseInt(document.getElementById('editSubjectOrder').value) || 0;
+        if (!title) { toast('Title required.'); return; }
+        const r = await api('PUT', '/admin/subjects/' + id, { title, description: desc, sort_order: order });
+        if (r.ok) { closeModal(); toast('Subject updated.'); loadSubjects(); } else toast('Failed.');
+    };
+    window.deleteSubject = function(id) { openModal('Delete Subject', '<p>Delete this subject and ALL its lectures?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteSubject(' + id + ')">Delete</button>'); };
+    window.confirmDeleteSubject = async (id) => { closeModal(); const r = await api('DELETE', '/admin/subjects/' + id); if (r.ok) { toast('Subject deleted.'); loadSubjects(); loadLectures(); } else toast('Failed.'); };
 
+    // Lectures
+    async function loadLectures() {
+        document.getElementById('lecturesSpinner').style.display = 'block';
+        const tbody = document.getElementById('lecturesBody'); tbody.innerHTML = '';
+        const coursesResult = await api('GET', '/admin/courses');
+        if (!coursesResult.ok || !coursesResult.data.courses || !coursesResult.data.courses.length) {
             document.getElementById('lecturesSpinner').style.display = 'none';
-
-            if (!allRows.length) {
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No lectures yet</td></tr>';
-                return;
-            }
-
-            allRows.forEach(function(row) {
-                const l = row.lecture;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${escapeHtml(row.subjectTitle)}</td>
-                    <td>${escapeHtml(l.title)}</td>
-                    <td style="font-family:monospace;font-size:12px;">${escapeHtml(l.youtube_id || '-')}</td>
-                    <td>
-                        <button class="btn btn-secondary btn-xs" onclick="editLecture(${l.id})">Edit</button>
-                        <button class="btn btn-danger btn-xs" onclick="deleteLecture(${l.id})">Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+            tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><h3>Create a course first</h3></div></td></tr>'; return;
         }
-
-        window.loadSubjectsForLecture = async function() {
-            const courseId = document.getElementById('lectureCourse').value;
-            const sel = document.getElementById('lectureSubject');
-            sel.innerHTML = '<option value="">Select subject...</option>';
-
-            if (!courseId) return;
-
-            const result = await api('GET', '/user/course?id=' + courseId);
+        let allRows = [];
+        for (const course of coursesResult.data.courses) {
+            const result = await api('GET', '/user/course?id=' + course.id);
             if (result.ok && result.data.subjects) {
-                result.data.subjects.forEach(function(sub) {
-                    const opt = document.createElement('option');
-                    opt.value = sub.id;
-                    opt.textContent = sub.title;
-                    sel.appendChild(opt);
+                result.data.subjects.forEach(sub => {
+                    if (sub.lectures) sub.lectures.forEach(l => allRows.push({ lecture: l, subjectTitle: sub.title }));
                 });
             }
-        };
-
-        window.createLecture = async function() {
-            const subjectId = document.getElementById('lectureSubject').value;
-            const title = document.getElementById('lectureTitle').value.trim();
-            const ytId = document.getElementById('lectureYoutubeId').value.trim();
-            const pdf = document.getElementById('lecturePdf').value.trim();
-            const order = parseInt(document.getElementById('lectureOrder').value) || 0;
-
-            if (!subjectId) { showToast('Select a subject.'); return; }
-            if (!title) { showToast('Title is required.'); return; }
-
-            const result = await api('POST', '/admin/lectures', {
-                subject_id: parseInt(subjectId),
-                title: title,
-                youtube_id: ytId,
-                pdf_url: pdf,
-                sort_order: order
-            });
-
-            if (result.ok) {
-                showToast('Lecture created.');
-                document.getElementById('lectureTitle').value = '';
-                document.getElementById('lectureYoutubeId').value = '';
-                document.getElementById('lecturePdf').value = '';
-                document.getElementById('lectureOrder').value = '0';
-                loadLectures();
-            } else {
-                showToast('Failed to create lecture.');
-            }
-        };
-
-        window.editLecture = function(id) {
-            openModal(
-                'Edit Lecture',
-                '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editLectureTitle" /></div>' +
-                '<div class="form-group"><label class="form-label">YouTube ID</label><input class="form-input" id="editLectureYt" /></div>' +
-                '<div class="form-group"><label class="form-label">PDF URL</label><input class="form-input" id="editLecturePdf" /></div>' +
-                '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editLectureOrder" type="number" value="0" /></div>',
-                '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveLecture(' + id + ')">Save</button>'
-            );
-
-            (async function() {
-                const coursesResult = await api('GET', '/admin/courses');
-                if (!coursesResult.ok) return;
-                for (let i = 0; i < coursesResult.data.courses.length; i++) {
-                    const result = await api('GET', '/user/course?id=' + coursesResult.data.courses[i].id);
-                    if (result.ok && result.data.subjects) {
-                        for (let j = 0; j < result.data.subjects.length; j++) {
-                            const sub = result.data.subjects[j];
-                            if (sub.lectures) {
-                                const found = sub.lectures.find(function(l) { return l.id === id; });
-                                if (found) {
-                                    document.getElementById('editLectureTitle').value = found.title;
-                                    document.getElementById('editLectureYt').value = found.youtube_id || '';
-                                    document.getElementById('editLecturePdf').value = found.pdf_url || '';
-                                    document.getElementById('editLectureOrder').value = found.sort_order || 0;
-                                    return;
-                                }
-                            }
+        }
+        document.getElementById('lecturesSpinner').style.display = 'none';
+        if (!allRows.length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><h3>No lectures</h3></div></td></tr>'; return; }
+        allRows.forEach(row => {
+            const l = row.lecture;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${escapeHtml(row.subjectTitle)}</td><td>${escapeHtml(l.title)}</td><td style="font-family:var(--mono);font-size:.7rem">${escapeHtml(l.youtube_id || '-')}</td><td><button class="btn btn-outline btn-xs" onclick="editLecture(${l.id})">Edit</button> <button class="btn btn-danger btn-xs" onclick="deleteLecture(${l.id})">Delete</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+    window.loadSubjectsForLecture = async () => {
+        const courseId = document.getElementById('lectureCourse').value;
+        const sel = document.getElementById('lectureSubject'); sel.innerHTML = '<option value="">Select subject...</option>';
+        if (!courseId) return;
+        const result = await api('GET', '/user/course?id=' + courseId);
+        if (result.ok && result.data.subjects) result.data.subjects.forEach(sub => { const opt = document.createElement('option'); opt.value = sub.id; opt.textContent = sub.title; sel.appendChild(opt); });
+    };
+    window.createLecture = async () => {
+        const subjectId = document.getElementById('lectureSubject').value;
+        const title = document.getElementById('lectureTitle').value.trim();
+        const yt = document.getElementById('lectureYoutubeId').value.trim();
+        const pdf = document.getElementById('lecturePdf').value.trim();
+        const order = parseInt(document.getElementById('lectureOrder').value) || 0;
+        if (!subjectId || !title) { toast('Subject and title required.'); return; }
+        const r = await api('POST', '/admin/lectures', { subject_id: parseInt(subjectId), title, youtube_id: yt, pdf_url: pdf, sort_order: order });
+        if (r.ok) { toast('Lecture created.'); document.getElementById('lectureTitle').value = ''; document.getElementById('lectureYoutubeId').value = ''; document.getElementById('lecturePdf').value = ''; loadLectures(); } else toast('Failed.');
+    };
+    window.editLecture = function(id) {
+        openModal('Edit Lecture',
+            '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editLectureTitle" /></div>' +
+            '<div class="form-group"><label class="form-label">YouTube ID</label><input class="form-input" id="editLectureYt" /></div>' +
+            '<div class="form-group"><label class="form-label">PDF URL</label><input class="form-input" id="editLecturePdf" /></div>' +
+            '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editLectureOrder" type="number" value="0" /></div>',
+            '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveLecture(' + id + ')">Save</button>');
+        (async () => {
+            const coursesResult = await api('GET', '/admin/courses');
+            if (!coursesResult.ok) return;
+            for (const course of coursesResult.data.courses) {
+                const result = await api('GET', '/user/course?id=' + course.id);
+                if (result.ok && result.data.subjects) {
+                    for (const sub of result.data.subjects) {
+                        if (sub.lectures) {
+                            const found = sub.lectures.find(l => l.id === id);
+                            if (found) { document.getElementById('editLectureTitle').value = found.title; document.getElementById('editLectureYt').value = found.youtube_id || ''; document.getElementById('editLecturePdf').value = found.pdf_url || ''; document.getElementById('editLectureOrder').value = found.sort_order || 0; return; }
                         }
                     }
                 }
-            })();
-        };
-
-        window.saveLecture = async function(id) {
-            const title = document.getElementById('editLectureTitle').value.trim();
-            const yt = document.getElementById('editLectureYt').value.trim();
-            const pdf = document.getElementById('editLecturePdf').value.trim();
-            const order = parseInt(document.getElementById('editLectureOrder').value) || 0;
-
-            if (!title) { showToast('Title is required.'); return; }
-
-            const result = await api('PUT', '/admin/lectures/' + id, {
-                title: title,
-                youtube_id: yt,
-                pdf_url: pdf,
-                sort_order: order
-            });
-
-            if (result.ok) {
-                closeModal();
-                showToast('Lecture updated.');
-                loadLectures();
-            } else {
-                showToast('Failed to update lecture.');
             }
-        };
+        })();
+    };
+    window.saveLecture = async (id) => {
+        const title = document.getElementById('editLectureTitle').value.trim();
+        const yt = document.getElementById('editLectureYt').value.trim();
+        const pdf = document.getElementById('editLecturePdf').value.trim();
+        const order = parseInt(document.getElementById('editLectureOrder').value) || 0;
+        if (!title) { toast('Title required.'); return; }
+        const r = await api('PUT', '/admin/lectures/' + id, { title, youtube_id: yt, pdf_url: pdf, sort_order: order });
+        if (r.ok) { closeModal(); toast('Lecture updated.'); loadLectures(); } else toast('Failed.');
+    };
+    window.deleteLecture = function(id) { openModal('Delete Lecture', '<p>Delete this lecture?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteLecture(' + id + ')">Delete</button>'); };
+    window.confirmDeleteLecture = async (id) => { closeModal(); const r = await api('DELETE', '/admin/lectures/' + id); if (r.ok) { toast('Lecture deleted.'); loadLectures(); } else toast('Failed.'); };
 
-        window.deleteLecture = function(id) {
-            openModal(
-                'Delete Lecture',
-                '<p>Delete this lecture?</p>',
-                '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteLecture(' + id + ')">Delete</button>'
-            );
-        };
-
-        window.confirmDeleteLecture = async function(id) {
-            closeModal();
-            const result = await api('DELETE', '/admin/lectures/' + id);
-            if (result.ok) {
-                showToast('Lecture deleted.');
-                loadLectures();
-            } else {
-                showToast('Failed to delete lecture.');
-            }
-        };
-
-        // ============================================================
-        // RESOURCES
-        // ============================================================
-        async function loadResources() {
-            document.getElementById('resourcesSpinner').style.display = 'block';
-            const tbody = document.getElementById('resourcesBody');
-            tbody.innerHTML = '';
-
+    // Resources
+    async function loadResources() {
+        document.getElementById('resourcesSpinner').style.display = 'block';
+        const tbody = document.getElementById('resourcesBody'); tbody.innerHTML = '';
+        const coursesResult = await api('GET', '/admin/courses');
+        if (!coursesResult.ok || !coursesResult.data.courses || !coursesResult.data.courses.length) {
+            document.getElementById('resourcesSpinner').style.display = 'none';
+            tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><h3>Create a course first</h3></div></td></tr>'; return;
+        }
+        let allRows = [];
+        for (const course of coursesResult.data.courses) {
+            const result = await api('GET', '/user/course?id=' + course.id);
+            if (result.ok && result.data.resources) result.data.resources.forEach(r => allRows.push({ resource: r, courseTitle: course.title }));
+        }
+        document.getElementById('resourcesSpinner').style.display = 'none';
+        if (!allRows.length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><h3>No resources</h3></div></td></tr>'; return; }
+        allRows.forEach(row => {
+            const r = row.resource;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${escapeHtml(row.courseTitle)}</td><td>${escapeHtml(r.title)}</td><td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(r.link_url || '-')}</td><td><button class="btn btn-outline btn-xs" onclick="editResource(${r.id})">Edit</button> <button class="btn btn-danger btn-xs" onclick="deleteResource(${r.id})">Delete</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+    window.createResource = async () => {
+        const courseId = document.getElementById('resourceCourse').value;
+        const title = document.getElementById('resourceTitle').value.trim();
+        const desc = document.getElementById('resourceDesc').value.trim();
+        const link = document.getElementById('resourceLink').value.trim();
+        if (!courseId || !title) { toast('Course and title required.'); return; }
+        const r = await api('POST', '/admin/resources', { course_id: parseInt(courseId), title, description: desc, link_url: link, sort_order: 0 });
+        if (r.ok) { toast('Resource created.'); document.getElementById('resourceTitle').value = ''; document.getElementById('resourceDesc').value = ''; document.getElementById('resourceLink').value = ''; loadResources(); } else toast('Failed.');
+    };
+    window.editResource = function(id) {
+        openModal('Edit Resource',
+            '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editResourceTitle" /></div>' +
+            '<div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="editResourceDesc"></textarea></div>' +
+            '<div class="form-group"><label class="form-label">Link URL</label><input class="form-input" id="editResourceLink" /></div>',
+            '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveResource(' + id + ')">Save</button>');
+        (async () => {
             const coursesResult = await api('GET', '/admin/courses');
-            if (!coursesResult.ok || !coursesResult.data.courses || !coursesResult.data.courses.length) {
-                document.getElementById('resourcesSpinner').style.display = 'none';
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Create a course first.</td></tr>';
-                return;
-            }
-
-            let allRows = [];
-            for (let i = 0; i < coursesResult.data.courses.length; i++) {
-                const course = coursesResult.data.courses[i];
+            if (!coursesResult.ok) return;
+            for (const course of coursesResult.data.courses) {
                 const result = await api('GET', '/user/course?id=' + course.id);
                 if (result.ok && result.data.resources) {
-                    result.data.resources.forEach(function(r) {
-                        allRows.push({ resource: r, courseTitle: course.title, courseId: course.id });
-                    });
+                    const found = result.data.resources.find(r => r.id === id);
+                    if (found) { document.getElementById('editResourceTitle').value = found.title; document.getElementById('editResourceDesc').value = found.description || ''; document.getElementById('editResourceLink').value = found.link_url || ''; return; }
                 }
             }
+        })();
+    };
+    window.saveResource = async (id) => {
+        const title = document.getElementById('editResourceTitle').value.trim();
+        const desc = document.getElementById('editResourceDesc').value.trim();
+        const link = document.getElementById('editResourceLink').value.trim();
+        if (!title) { toast('Title required.'); return; }
+        const r = await api('PUT', '/admin/resources/' + id, { title, description: desc, link_url: link, sort_order: 0 });
+        if (r.ok) { closeModal(); toast('Resource updated.'); loadResources(); } else toast('Failed.');
+    };
+    window.deleteResource = function(id) { openModal('Delete Resource', '<p>Delete this resource?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteResource(' + id + ')">Delete</button>'); };
+    window.confirmDeleteResource = async (id) => { closeModal(); const r = await api('DELETE', '/admin/resources/' + id); if (r.ok) { toast('Resource deleted.'); loadResources(); } else toast('Failed.'); };
 
-            document.getElementById('resourcesSpinner').style.display = 'none';
+    // Enrollments
+    async function loadEnrollmentDropdowns() {
+        const usersR = await api('GET', '/admin/users');
+        const coursesR = await api('GET', '/admin/courses');
+        const userSel = document.getElementById('enrollUser'); userSel.innerHTML = '<option value="">Select user...</option>';
+        if (usersR.ok && usersR.data.users) usersR.data.users.forEach(u => { if (u.role !== 'admin') { const opt = document.createElement('option'); opt.value = u.id; opt.textContent = u.name + ' (' + u.email + ')'; userSel.appendChild(opt); } });
+        const courseSel = document.getElementById('enrollCourse'); courseSel.innerHTML = '<option value="">Select course...</option>';
+        if (coursesR.ok && coursesR.data.courses) coursesR.data.courses.forEach(c => { const opt = document.createElement('option'); opt.value = c.id; opt.textContent = c.title; courseSel.appendChild(opt); });
+    }
+    async function loadEnrollments() {
+        document.getElementById('enrollmentsSpinner').style.display = 'block';
+        const result = await api('GET', '/admin/enrollments');
+        document.getElementById('enrollmentsSpinner').style.display = 'none';
+        const tbody = document.getElementById('enrollmentsBody'); tbody.innerHTML = '';
+        if (!result.ok || !result.data.enrollments || !result.data.enrollments.length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><h3>No enrollments</h3></div></td></tr>'; return; }
+        result.data.enrollments.forEach(e => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${escapeHtml(e.user_name || '')} (${escapeHtml(e.user_email || '')})</td><td>${escapeHtml(e.course_title || '')}</td><td>${e.enrolled_at ? e.enrolled_at.split('T')[0] : ''}</td><td><button class="btn btn-danger btn-xs" onclick="unenrollUser(${e.user_id},${e.course_id})">Remove</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+    window.enrollUser = async () => {
+        const uid = document.getElementById('enrollUser').value;
+        const cid = document.getElementById('enrollCourse').value;
+        if (!uid || !cid) { toast('Select user and course.'); return; }
+        const r = await api('POST', '/admin/enrollments', { user_id: parseInt(uid), course_id: parseInt(cid) });
+        if (r.ok) { toast('User enrolled.'); loadEnrollments(); loadStats(); } else toast('Failed.');
+    };
+    window.unenrollUser = async (uid, cid) => {
+        const r = await api('DELETE', '/admin/enrollments/' + uid + '/' + cid);
+        if (r.ok) { toast('User unenrolled.'); loadEnrollments(); loadStats(); } else toast('Failed.');
+    };
 
-            if (!allRows.length) {
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No resources yet</td></tr>';
-                return;
-            }
+    // Audit Logs
+    async function loadAuditLogs() {
+        document.getElementById('auditSpinner').style.display = 'block';
+        const result = await api('GET', '/admin/audit-logs');
+        document.getElementById('auditSpinner').style.display = 'none';
+        const tbody = document.getElementById('auditBody'); tbody.innerHTML = '';
+        if (!result.ok || !result.data.logs || !result.data.logs.length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><h3>No audit logs</h3></div></td></tr>'; document.getElementById('auditCount').textContent = ''; return; }
+        document.getElementById('auditCount').textContent = result.data.logs.length + ' entries';
+        result.data.logs.forEach(l => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td style="font-family:var(--mono);font-size:.7rem">${l.created_at ? l.created_at.replace('T',' ').substring(0,19) : ''}</td><td>${escapeHtml(l.user_name || l.user_email || 'System')}</td><td>${escapeHtml(l.action)}</td><td><button class="btn btn-danger btn-xs" onclick="deleteAuditLog(${l.id})">Del</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+    window.deleteAuditLog = function(id) { openModal('Delete Log', '<p>Delete this audit log entry?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteAuditLog(' + id + ')">Delete</button>'); };
+    window.confirmDeleteAuditLog = async (id) => { closeModal(); const r = await api('DELETE', '/admin/audit-logs/' + id); if (r.ok) { toast('Log deleted.'); loadAuditLogs(); } else toast('Failed.'); };
+    window.deleteAllAuditLogs = function() { openModal('Delete All Logs', '<p style="color:var(--red)">Permanently delete ALL audit logs?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteAllAudit()">Delete All</button>'); };
+    window.confirmDeleteAllAudit = async () => { closeModal(); const r = await api('DELETE', '/admin/audit-logs/all'); if (r.ok) { toast('All logs deleted.'); loadAuditLogs(); } else toast('Failed.'); };
 
-            allRows.forEach(function(row) {
-                const r = row.resource;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${escapeHtml(row.courseTitle)}</td>
-                    <td>${escapeHtml(r.title)}</td>
-                    <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(r.link_url || '-')}</td>
-                    <td>
-                        <button class="btn btn-secondary btn-xs" onclick="editResource(${r.id})">Edit</button>
-                        <button class="btn btn-danger btn-xs" onclick="deleteResource(${r.id})">Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
+    // Course dropdowns
+    async function loadCourseDropdowns() {
+        const result = await api('GET', '/admin/courses');
+        if (!result.ok || !result.data.courses) return;
+        ['subjectCourse', 'lectureCourse', 'resourceCourse'].forEach(id => {
+            const sel = document.getElementById(id); if (!sel) return;
+            const val = sel.value; sel.innerHTML = '<option value="">Select course...</option>';
+            result.data.courses.forEach(c => { const opt = document.createElement('option'); opt.value = c.id; opt.textContent = c.title; sel.appendChild(opt); });
+            if (val) sel.value = val;
+        });
+    }
 
-        window.createResource = async function() {
-            const courseId = document.getElementById('resourceCourse').value;
-            const title = document.getElementById('resourceTitle').value.trim();
-            const desc = document.getElementById('resourceDesc').value.trim();
-            const link = document.getElementById('resourceLink').value.trim();
-
-            if (!courseId) { showToast('Select a course.'); return; }
-            if (!title) { showToast('Title is required.'); return; }
-
-            const result = await api('POST', '/admin/resources', {
-                course_id: parseInt(courseId),
-                title: title,
-                description: desc,
-                link_url: link,
-                sort_order: 0
-            });
-
-            if (result.ok) {
-                showToast('Resource created.');
-                document.getElementById('resourceTitle').value = '';
-                document.getElementById('resourceDesc').value = '';
-                document.getElementById('resourceLink').value = '';
-                loadResources();
-            } else {
-                showToast('Failed to create resource.');
-            }
-        };
-
-        window.editResource = function(id) {
-            openModal(
-                'Edit Resource',
-                '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editResourceTitle" /></div>' +
-                '<div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="editResourceDesc"></textarea></div>' +
-                '<div class="form-group"><label class="form-label">Link URL</label><input class="form-input" id="editResourceLink" /></div>',
-                '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveResource(' + id + ')">Save</button>'
-            );
-
-            (async function() {
-                const coursesResult = await api('GET', '/admin/courses');
-                if (!coursesResult.ok) return;
-                for (let i = 0; i < coursesResult.data.courses.length; i++) {
-                    const result = await api('GET', '/user/course?id=' + coursesResult.data.courses[i].id);
-                    if (result.ok && result.data.resources) {
-                        const found = result.data.resources.find(function(r) { return r.id === id; });
-                        if (found) {
-                            document.getElementById('editResourceTitle').value = found.title;
-                            document.getElementById('editResourceDesc').value = found.description || '';
-                            document.getElementById('editResourceLink').value = found.link_url || '';
-                            return;
-                        }
-                    }
-                }
-            })();
-        };
-
-        window.saveResource = async function(id) {
-            const title = document.getElementById('editResourceTitle').value.trim();
-            const desc = document.getElementById('editResourceDesc').value.trim();
-            const link = document.getElementById('editResourceLink').value.trim();
-
-            if (!title) { showToast('Title is required.'); return; }
-
-            const result = await api('PUT', '/admin/resources/' + id, {
-                title: title,
-                description: desc,
-                link_url: link,
-                sort_order: 0
-            });
-
-            if (result.ok) {
-                closeModal();
-                showToast('Resource updated.');
-                loadResources();
-            } else {
-                showToast('Failed to update resource.');
-            }
-        };
-
-        window.deleteResource = function(id) {
-            openModal(
-                'Delete Resource',
-                '<p>Delete this resource?</p>',
-                '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteResource(' + id + ')">Delete</button>'
-            );
-        };
-
-        window.confirmDeleteResource = async function(id) {
-            closeModal();
-            const result = await api('DELETE', '/admin/resources/' + id);
-            if (result.ok) {
-                showToast('Resource deleted.');
-                loadResources();
-            } else {
-                showToast('Failed to delete resource.');
-            }
-        };
-
-        // ============================================================
-        // ENROLLMENTS
-        // ============================================================
-        async function loadEnrollmentDropdowns() {
-            const usersResult = await api('GET', '/admin/users');
-            const coursesResult = await api('GET', '/admin/courses');
-
-            const userSel = document.getElementById('enrollUser');
-            userSel.innerHTML = '<option value="">Select user...</option>';
-            if (usersResult.ok && usersResult.data.users) {
-                usersResult.data.users.forEach(function(u) {
-                    if (u.role === 'student') {
-                        const opt = document.createElement('option');
-                        opt.value = u.id;
-                        opt.textContent = u.name + ' (' + u.email + ')';
-                        userSel.appendChild(opt);
-                    }
-                });
-            }
-
-            const courseSel = document.getElementById('enrollCourse');
-            courseSel.innerHTML = '<option value="">Select course...</option>';
-            if (coursesResult.ok && coursesResult.data.courses) {
-                coursesResult.data.courses.forEach(function(c) {
-                    const opt = document.createElement('option');
-                    opt.value = c.id;
-                    opt.textContent = c.title;
-                    courseSel.appendChild(opt);
-                });
-            }
-        }
-
-        async function loadEnrollments() {
-            document.getElementById('enrollmentsSpinner').style.display = 'block';
-            const result = await api('GET', '/admin/enrollments');
-            document.getElementById('enrollmentsSpinner').style.display = 'none';
-
-            const tbody = document.getElementById('enrollmentsBody');
-            tbody.innerHTML = '';
-
-            if (!result.ok || !result.data.enrollments || !result.data.enrollments.length) {
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No enrollments yet</td></tr>';
-                return;
-            }
-
-            result.data.enrollments.forEach(function(e) {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${escapeHtml(e.user_name || '')} (${escapeHtml(e.user_email || '')})</td>
-                    <td>${escapeHtml(e.course_title || '')}</td>
-                    <td>${e.enrolled_at ? e.enrolled_at.split('T')[0] : ''}</td>
-                    <td><button class="btn btn-danger btn-xs" onclick="unenrollUser(${e.user_id},${e.course_id})">Unenroll</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        window.enrollUser = async function() {
-            const uid = document.getElementById('enrollUser').value;
-            const cid = document.getElementById('enrollCourse').value;
-
-            if (!uid || !cid) { showToast('Select user and course.'); return; }
-
-            const result = await api('POST', '/admin/enrollments', {
-                user_id: parseInt(uid),
-                course_id: parseInt(cid)
-            });
-
-            if (result.ok) {
-                showToast('User enrolled.');
-                loadEnrollments();
-                loadStats();
-            } else {
-                showToast('Failed to enroll user.');
-            }
-        };
-
-        window.unenrollUser = async function(uid, cid) {
-            const result = await api('DELETE', '/admin/enrollments/' + uid + '/' + cid);
-            if (result.ok) {
-                showToast('User unenrolled.');
-                loadEnrollments();
-                loadStats();
-            } else {
-                showToast('Failed to unenroll user.');
-            }
-        };
-
-        // ============================================================
-        // AUDIT LOGS
-        // ============================================================
-        async function loadAuditLogs() {
-            document.getElementById('auditSpinner').style.display = 'block';
-            const result = await api('GET', '/admin/audit-logs');
-            document.getElementById('auditSpinner').style.display = 'none';
-
-            const tbody = document.getElementById('auditBody');
-            tbody.innerHTML = '';
-
-            if (!result.ok || !result.data.logs || !result.data.logs.length) {
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No audit logs yet</td></tr>';
-                document.getElementById('auditCount').textContent = '';
-                return;
-            }
-
-            document.getElementById('auditCount').textContent = result.data.logs.length + ' entries';
-
-            result.data.logs.forEach(function(l) {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${l.created_at ? l.created_at.replace('T', ' ').substring(0, 19) : ''}</td>
-                    <td>${escapeHtml(l.user_name || l.user_email || 'System')}</td>
-                    <td>${escapeHtml(l.action)}</td>
-                    <td><button class="btn btn-danger btn-xs" onclick="deleteAuditLog(${l.id})">Delete</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        window.deleteAuditLog = function(id) {
-            openModal(
-                'Delete Log',
-                '<p>Delete this audit log entry?</p>',
-                '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteAuditLog(' + id + ')">Delete</button>'
-            );
-        };
-
-        window.confirmDeleteAuditLog = async function(id) {
-            closeModal();
-            const result = await api('DELETE', '/admin/audit-logs/' + id);
-            if (result.ok) {
-                showToast('Log deleted.');
-                loadAuditLogs();
-            } else {
-                showToast('Failed to delete log.');
-            }
-        };
-
-        window.deleteAllAuditLogs = function() {
-            openModal(
-                'Delete All Logs',
-                '<p style="color:var(--red);">Are you sure you want to permanently delete ALL audit logs? This cannot be undone.</p>',
-                '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteAllAudit()">Delete All</button>'
-            );
-        };
-
-        window.confirmDeleteAllAudit = async function() {
-            closeModal();
-            const result = await api('DELETE', '/admin/audit-logs/all');
-            if (result.ok) {
-                showToast('All audit logs deleted.');
-                loadAuditLogs();
-            } else {
-                showToast('Failed to delete logs.');
-            }
-        };
-
-        // ============================================================
-        // COURSE DROPDOWNS (shared)
-        // ============================================================
-        async function loadCourseDropdowns() {
-            const result = await api('GET', '/admin/courses');
-            if (!result.ok || !result.data.courses) return;
-
-            const selects = ['subjectCourse', 'lectureCourse', 'resourceCourse'];
-            selects.forEach(function(id) {
-                const sel = document.getElementById(id);
-                if (!sel) return;
-                const currentVal = sel.value;
-                sel.innerHTML = '<option value="">Select course...</option>';
-                result.data.courses.forEach(function(c) {
-                    const opt = document.createElement('option');
-                    opt.value = c.id;
-                    opt.textContent = c.title;
-                    sel.appendChild(opt);
-                });
-                if (currentVal) sel.value = currentVal;
-            });
-        }
-
-        // ============================================================
-        // INIT
-        // ============================================================
-        loadStats();
-        loadUsers();
-        loadCourseDropdowns();
-        loadEnrollmentDropdowns();
-    </script>
+    // Init
+    loadStats();
+    loadUsers();
+    loadCourseDropdowns();
+    loadEnrollmentDropdowns();
+</script>
 </body>
 </html>
