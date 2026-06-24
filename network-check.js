@@ -11,14 +11,14 @@
             position: fixed;
             inset: 0;
             z-index: 999999;
-            background: #0B0815;
+            background: #f8f9fa;
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 40px 24px;
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
-            color: #FFFFFF;
+            font-family: 'Google Sans', 'Roboto', system-ui, sans-serif;
+            color: #202124;
             text-align: center;
         `;
 
@@ -27,66 +27,69 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.06);
+            background: #f1f3f4;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 24px;
         `;
         icon.innerHTML = `
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.5">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5">
                 <path d="M22 2L2 22" />
                 <path d="M8.5 6.5C10.5 5 13 4.5 16 5.5" />
                 <path d="M12 12C13.5 12.5 15 13 16 14" />
                 <path d="M3 3C5 5 7 7 9 9" />
                 <path d="M14 14C16 16 18 18 21 21" />
-                <circle cx="12" cy="16" r="1.5" fill="#7C3AED" />
+                <circle cx="12" cy="16" r="1.5" fill="#1a73e8" />
             </svg>
         `;
 
         const title = document.createElement('h2');
-        title.textContent = 'No Internet Connection';
+        title.textContent = 'No internet connection';
         title.style.cssText = `
-            font-size: 22px;
-            font-weight: 700;
+            font-family: 'Google Sans', 'Roboto', system-ui, sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
             margin-bottom: 8px;
             letter-spacing: -0.3px;
+            color: #202124;
         `;
 
         const subtitle = document.createElement('p');
         subtitle.textContent = 'Please check your network settings and try again.';
         subtitle.style.cssText = `
-            font-size: 14px;
-            color: #A5B4CB;
+            font-family: 'Roboto', system-ui, sans-serif;
+            font-size: 0.9rem;
+            color: #5f6368;
             margin-bottom: 28px;
             max-width: 320px;
             line-height: 1.6;
         `;
 
         const button = document.createElement('button');
-        button.textContent = 'Retry Connection';
+        button.textContent = 'Retry';
         button.style.cssText = `
-            padding: 14px 40px;
-            background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+            padding: 10px 24px;
+            background: #1a73e8;
             border: none;
-            border-radius: 12px;
-            color: #FFFFFF;
-            font-size: 15px;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: 'Google Sans', 'Roboto', system-ui, sans-serif;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+            transition: background 0.2s ease, box-shadow 0.2s ease;
+            letter-spacing: 0.25px;
         `;
 
         button.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-            this.style.boxShadow = '0 8px 24px rgba(124,58,237,0.4)';
+            this.style.background = '#1557b0';
+            this.style.boxShadow = '0 1px 2px rgba(60,64,67,.3), 0 2px 6px 2px rgba(60,64,67,.15)';
         });
 
         button.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = '0 4px 16px rgba(124,58,237,0.3)';
+            this.style.background = '#1a73e8';
+            this.style.boxShadow = 'none';
         });
 
         button.addEventListener('click', function() {
