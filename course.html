@@ -208,7 +208,7 @@
         </a>
         <a href="/dashboard.html" class="logo-wrap">
             <img src="/images/protected.png" alt="SciVerse" height="32" class="logo-img" />
-            <span class="logo-text" id="headerTitle">Loading...</span>
+            <span class="logo-text">SciVerse Academy</span>
         </a>
     </div>
     <div class="header-right" id="headerRight"></div>
@@ -367,7 +367,7 @@
             }
 
             document.getElementById('courseTitle').textContent = data.course.title;
-            document.getElementById('headerTitle').textContent = data.course.title;
+            
             document.getElementById('breadcrumbCourse').textContent = data.course.title;
             document.getElementById('courseDesc').innerHTML = data.course.description || '';
             document.title = data.course.title + ' — SciVerse Academy';
