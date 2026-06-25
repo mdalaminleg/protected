@@ -200,18 +200,16 @@
 
 <header class="header" id="header">
     <div class="header-left">
-        <a href="#" class="back-btn" id="backLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></a>
+        <a href="#" class="back-btn" id="backLink">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
         <img src="/images/protected.png" alt="SciVerse" class="logo-img" />
-        <span class="header-title" id="headerTitle">Loading...</span>
+        <span class="logo-text">SciVerse Academy</span>
     </div>
     <div class="header-right">
-        <button class="nav-btn" id="prevBtn" onclick="prevLecture()" style="display:none">Prev</button>
-        <button class="nav-btn" id="nextBtn" onclick="nextLecture()" style="display:none">Next</button>
-        <button class="icon-btn sign-out" id="soBtn" title="Sign out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
-        <div class="avatar" id="avatar">S</div>
+        ...
     </div>
 </header>
-
 <main class="main">
     <!-- VIDEO PLAYER -->
     <div class="player-wrap">
@@ -355,7 +353,7 @@
     var pauseShield=document.getElementById('pauseShield');
     var launchShield=document.getElementById('launchShield'),launchShieldText=document.getElementById('launchShieldText'),launchShieldProgress=document.getElementById('launchShieldProgress');
     var currentTitle=document.getElementById('currentTitle'),currentMeta=document.getElementById('currentMeta');
-    var headerTitle=document.getElementById('headerTitle');
+   
     var prevBtn=document.getElementById('prevBtn'),nextBtn=document.getElementById('nextBtn');
     var dragPreview=document.getElementById('dragPreview'),dragThumb=document.getElementById('dragThumb'),dragTime=document.getElementById('dragTime');
     var spinner=document.getElementById('spinner'),pdfLink=document.getElementById('pdfLink');
@@ -383,7 +381,7 @@
         if(!allLectures.length||idx<0||idx>=allLectures.length)return;
         const lec=allLectures[idx];currentIndex=idx;
         currentTitle.textContent=lec.title;currentMeta.textContent=(lec.subject_name||'');
-        headerTitle.textContent=lec.title;updateNavButtons();
+        updateNavButtons();
         if(lec.pdf_url){currentPdfUrl=lec.pdf_url;pdfLink.href=lec.pdf_url;pdfLink.style.display='inline-flex'}else{pdfLink.style.display='none';currentPdfUrl=''}
         if(player&&player.loadVideoById)player.loadVideoById(lec.youtube_id);
         renderSuggestions();markUnsafe();enforceBarsVisibility();playRetries=0;
