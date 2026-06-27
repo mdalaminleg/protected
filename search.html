@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Search — SciVerse Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+
+        :root{
+            --blue:#1a73e8;--blue-h:#1557b0;--red:#d93025;--red-bg:#fce8e6;
+            --green:#1e8e3e;--grn-bg:#e6f4ea;
+            --bg:#f8f9fa;--surf:#ffffff;--hov:#f1f3f4;--border:#dadce0;
+            --t1:#202124;--t2:#3c4043;--t3:#5f6368;--t4:#80868b;
+            --gs:'Google Sans','Roboto',system-ui,sans-serif;
+            --rb:'Roboto',system-ui,sans-serif;
+            --mono:'JetBrains Mono',monospace;
+            --hh:64px;--r:4px;--rl:8px;--tr:.2s cubic-bezier(.4,0,.2,1);
+        }
+
+        body{
+            font-family:var(--rb);background:var(--bg);color:var(--t2);
+            -webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh;
+            display:flex;flex-direction:column;
+        }
+
+        .header{
+            position:fixed;top:0;left:0;right:0;height:var(--hh);
+            background:var(--surf);border-bottom:1px solid var(--border);
+            z-index:1000;display:flex;align-items:center;
+            justify-content:space-between;padding:0 24px;
+            transition:transform .25s ease;
+        }
+        .header.hidden{transform:translateY(-100%)}
+        .header-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+        .back-btn{
+            width:40px;height:40px;border:none;background:none;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            cursor:pointer;color:var(--t3);transition:background var(--tr);flex-shrink:0;
+            text-decoration:none;
+        }
+        .back-btn:hover{background:var(--hov)}
+        .back-btn svg{width:20px;height:20px}
+        .logo-img{width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0}
+        .logo-text{font-family:var(--gs);font-size:1.25rem;font-weight:500;color:var(--t1);letter-spacing:-0.2px}
+        .header-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+        .icon-btn{
+            width:34px;height:34px;border:none;background:none;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            cursor:pointer;color:var(--t3);transition:background var(--tr);flex-shrink:0;
+        }
+        .icon-btn:hover{background:var(--hov)}
+        .icon-btn svg{width:18px;height:18px}
+        .icon-btn.sign-out:hover{background:var(--red-bg);color:var(--red)}
+        .avatar{
+            width:34px;height:34px;border-radius:50%;background:var(--blue);
+            display:flex;align-items:center;justify-content:center;
+            font-family:var(--gs);font-weight:500;font-size:13px;
+            color:#fff;cursor:pointer;flex-shrink:0;
+        }
+
+        .main{
+            flex:1;padding-top:calc(var(--hh) + 24px);
+            max-width:800px;margin:0 auto;width:100%;
+            padding-left:24px;padding-right:24px;padding-bottom:40px;
+        }
+
+        .search-wrap{
+            position:relative;margin-bottom:28px;
+        }
+        .search-input{
+            width:100%;height:52px;padding:0 48px 0 52px;
+            background:var(--surf);border:1px solid var(--border);
+            border-radius:28px;font-family:var(--rb);font-size:1rem;
+            color:var(--t1);outline:none;transition:all var(--tr);
+            box-shadow:0 1px 2px rgba(60,64,67,.08);
+        }
+        .search-input:hover{box-shadow:0 1px 3px rgba(60,64,67,.15)}
+        .search-input:focus{
+            box-shadow:0 1px 6px rgba(32,33,36,.28);
+            border-color:rgba(223,225,229,0);
+        }
+        .search-input::placeholder{color:var(--t4)}
+        .search-icon{
+            position:absolute;left:18px;top:50%;transform:translateY(-50%);
+            color:var(--t4);pointer-events:none;
+        }
+        .search-icon svg{width:20px;height:20px}
+        .search-clear{
+            position:absolute;right:12px;top:50%;transform:translateY(-50%);
+            width:32px;height:32px;border:none;background:none;border-radius:50%;
+            display:none;align-items:center;justify-content:center;
+            cursor:pointer;color:var(--t4);transition:all var(--tr);
+        }
+        .search-clear:hover{background:var(--hov);color:var(--t2)}
+        .search-clear svg{width:16px;height:16px}
+        .search-clear.visible{display:flex}
+
+        .results-info{
+            font-size:.82rem;color:var(--t4);margin-bottom:16px;
+            display:none;
+        }
+        .results-info.visible{display:block}
+
+        .results-list{display:flex;flex-direction:column;gap:10px}
+
+        .result-card{
+            background:var(--surf);border:1px solid var(--border);
+            border-radius:var(--rl);padding:18px 20px;
+            text-decoration:none;transition:all var(--tr);
+            display:flex;align-items:center;gap:14px;
+        }
+        .result-card:hover{
+            box-shadow:0 1px 3px rgba(60,64,67,.3);
+            border-color:var(--blue);
+        }
+        .result-icon{
+            width:40px;height:40px;border-radius:50%;background:#e8f0fe;
+            display:flex;align-items:center;justify-content:center;
+            color:var(--blue);flex-shrink:0;
+        }
+        .result-icon svg{width:18px;height:18px}
+        .result-info{flex:1;min-width:0}
+        .result-info .title{
+            font-family:var(--gs);font-size:.95rem;font-weight:500;
+            color:var(--t1);margin-bottom:2px;
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+        }
+        .result-info .meta{
+            font-size:.78rem;color:var(--t4);
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+        }
+        .result-info .meta span{color:var(--t3)}
+        .result-info .match{
+            font-size:.72rem;color:var(--blue);margin-top:2px;
+        }
+        .result-arrow{color:var(--t4);flex-shrink:0}
+        .result-arrow svg{width:16px;height:16px}
+
+        .empty-state{
+            text-align:center;padding:80px 20px;
+        }
+        .empty-icon{
+            width:64px;height:64px;border-radius:50%;background:var(--hov);
+            display:flex;align-items:center;justify-content:center;
+            margin:0 auto 20px;color:var(--t4);
+        }
+        .empty-icon svg{width:28px;height:28px}
+        .empty-state h3{
+            font-family:var(--gs);font-size:1.2rem;font-weight:500;
+            color:var(--t2);margin-bottom:8px;
+        }
+        .empty-state p{font-size:.9rem;color:var(--t3);max-width:400px;margin:0 auto;line-height:1.6}
+
+        .spinner-page{
+            width:36px;height:36px;border:3px solid var(--border);
+            border-top-color:var(--blue);border-radius:50%;
+            animation:spin .8s linear infinite;margin:60px auto;
+        }
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        .footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
+        .footer-inner{
+            max-width:1080px;margin:0 auto;padding:40px 24px 24px;
+            display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
+        }
+        .fc h4{font-family:var(--gs);font-size:.875rem;font-weight:500;color:var(--t2);margin-bottom:12px}
+        .fc p{font-size:.8rem;color:var(--t3);line-height:1.7}
+        .fc a{display:block;font-size:.8rem;color:var(--t3);text-decoration:none;line-height:2}
+        .fc a:hover{color:var(--blue);text-decoration:underline}
+        .footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+        .footer-bottom{
+            max-width:1080px;margin:0 auto;padding:16px 24px;
+            border-top:1px solid var(--border);
+            display:flex;justify-content:space-between;align-items:center;
+            font-size:.75rem;color:var(--t4);flex-wrap:wrap;gap:8px;
+        }
+        .footer-links{display:flex;gap:20px}
+        .footer-links a{color:var(--t4);text-decoration:none;font-size:.75rem}
+        .footer-links a:hover{text-decoration:underline;color:var(--blue)}
+        .footer-social{display:flex;gap:12px}
+        .footer-social a{color:var(--t4);display:flex;align-items:center;transition:color var(--tr)}
+        .footer-social a:hover{color:var(--blue)}
+        .footer-social a svg{width:16px;height:16px}
+
+        .toast{
+            position:fixed;bottom:24px;left:24px;z-index:9999;
+            padding:14px 24px;border-radius:var(--r);background:#323232;
+            color:#f5f5f5;font-size:.875rem;
+            box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px rgba(0,0,0,.14),0 1px 18px rgba(0,0,0,.12);
+            transform:translateY(80px);opacity:0;transition:all .25s cubic-bezier(0,0,.2,1);pointer-events:none;
+        }
+        .toast.show{transform:translateY(0);opacity:1}
+
+        @media(max-width:768px){
+            .footer-inner{grid-template-columns:1fr 1fr;gap:28px}
+        }
+        @media(max-width:600px){
+            .main{padding-left:16px;padding-right:16px}
+            .footer-inner{grid-template-columns:1fr;gap:20px}
+            .footer-bottom{flex-direction:column;text-align:center}
+            .search-input{height:46px;font-size:.9rem;padding:0 42px 0 46px}
+        }
+    </style>
+</head>
+<body>
+
+<header class="header" id="header">
+    <div class="header-left">
+        <a href="/dashboard.html" class="back-btn" title="Back to dashboard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+        <img src="/images/protected.png" alt="SciVerse" class="logo-img" />
+        <span class="logo-text">SciVerse Academy</span>
+    </div>
+    <div class="header-right">
+        <button class="icon-btn sign-out" id="soBtn" title="Sign out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+        <div class="avatar" id="avatar">S</div>
+    </div>
+</header>
+
+<main class="main">
+    <div class="search-wrap">
+        <div class="search-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search your lectures..." autofocus />
+        <button class="search-clear" id="searchClear" aria-label="Clear search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+
+    <div class="results-info" id="resultsInfo"></div>
+    <div class="results-list" id="resultsList"></div>
+
+    <div class="spinner-page" id="spinner"></div>
+
+    <div class="empty-state" id="emptyState" style="display:none">
+        <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <h3 id="emptyTitle">Search your lectures</h3>
+        <p id="emptyMsg">Type a keyword to find lectures across all your enrolled courses.</p>
+    </div>
+
+    <div class="empty-state" id="noResultsState" style="display:none">
+        <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <h3>No results found</h3>
+        <p>Try a different keyword. Search works across lecture titles, course names, and subject names.</p>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="fc">
+            <div class="footer-brand">
+                <img src="/images/protected.png" alt="SciVerse" height="24" style="border-radius:50%" />
+                <span style="font-family:var(--gs);font-size:1rem;font-weight:500;color:var(--t2)">SciVerse Academy</span>
+            </div>
+            <p>Enabling comprehensive academic exploration through structured, accessible learning resources.</p>
+        </div>
+        <div class="fc"><h4>Platform</h4><a href="/dashboard.html">Dashboard</a><a href="/search.html">Search</a><a href="/index.html#features">Features</a></div>
+        <div class="fc"><h4>Support</h4><a href="mailto:text.me.md.alamin@gmail.com">Contact Admin</a><a href="#">Help Center</a><a href="#">Report Issue</a></div>
+        <div class="fc"><h4>Legal</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+    </div>
+    <div class="footer-bottom">
+        <span>&copy; 2026 SciVerse Academy</span>
+        <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Settings</a></div>
+        <div class="footer-social">
+            <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+            <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg></a>
+        </div>
+    </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="/network-check.js"></script>
+<script src="/api-fix.js"></script>
+<script>
+    const API = 'https://sciverseacademy.pages.dev/api';
+    const token = localStorage.getItem('site_token');
+    const user = JSON.parse(localStorage.getItem('site_user') || 'null');
+
+    if (!token || !user) { window.location.href = '/index.html'; }
+
+    const header = document.getElementById('header');
+    let lastY = 0, ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                var y = window.scrollY;
+                if (y > lastY && y > 80) {
+                    header.classList.add('hidden');
+                } else {
+                    header.classList.remove('hidden');
+                }
+                lastY = y;
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+
+    function toast(msg) {
+        var t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(function() { t.classList.remove('show'); }, 3000);
+    }
+
+    function escapeHtml(str) {
+        var d = document.createElement('div');
+        d.textContent = str || '';
+        return d.innerHTML;
+    }
+
+    var initChar = (user.name || 'S')[0].toUpperCase();
+    document.getElementById('avatar').textContent = initChar;
+    document.getElementById('soBtn').addEventListener('click', function() {
+        localStorage.removeItem('site_token');
+        localStorage.removeItem('site_user');
+        window.location.href = '/index.html';
+    });
+
+    // ── SEARCH LOGIC ──
+    var allItems = [];
+    var loaded = false;
+
+    var searchInput = document.getElementById('searchInput');
+    var searchClear = document.getElementById('searchClear');
+    var resultsList = document.getElementById('resultsList');
+    var resultsInfo = document.getElementById('resultsInfo');
+    var spinner = document.getElementById('spinner');
+    var emptyState = document.getElementById('emptyState');
+    var noResultsState = document.getElementById('noResultsState');
+
+    async function loadAllData() {
+        spinner.style.display = 'block';
+        try {
+            // Get enrolled courses
+            var coursesRes = await fetch(API + '/user/courses', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            var coursesData = await coursesRes.json();
+
+            if (!coursesRes.ok || !coursesData.courses || !coursesData.courses.length) {
+                spinner.style.display = 'none';
+                emptyState.style.display = 'block';
+                document.getElementById('emptyTitle').textContent = 'No courses enrolled';
+                document.getElementById('emptyMsg').textContent = 'You need to be enrolled in courses to search lectures.';
+                return;
+            }
+
+            // Fetch all lectures from all enrolled courses
+            for (var i = 0; i < coursesData.courses.length; i++) {
+                var course = coursesData.courses[i];
+                try {
+                    var courseDetailRes = await fetch(API + '/user/course?id=' + course.id, {
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    var courseDetail = await courseDetailRes.json();
+                    if (courseDetail.ok !== false && courseDetail.subjects) {
+                        for (var j = 0; j < courseDetail.subjects.length; j++) {
+                            var subject = courseDetail.subjects[j];
+                            if (subject.lectures) {
+                                for (var k = 0; k < subject.lectures.length; k++) {
+                                    var lecture = subject.lectures[k];
+                                    allItems.push({
+                                        lectureId: lecture.id,
+                                        lectureTitle: lecture.title,
+                                        subjectName: subject.title,
+                                        courseId: course.id,
+                                        courseTitle: course.title,
+                                        searchText: (lecture.title + ' ' + subject.title + ' ' + course.title).toLowerCase()
+                                    });
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // Skip failed course loads
+                }
+            }
+
+            spinner.style.display = 'none';
+            loaded = true;
+
+            if (allItems.length === 0) {
+                emptyState.style.display = 'block';
+                document.getElementById('emptyTitle').textContent = 'No lectures found';
+                document.getElementById('emptyMsg').textContent = 'Your enrolled courses don\'t have any lectures yet.';
+            } else {
+                emptyState.style.display = 'block';
+                document.getElementById('emptyTitle').textContent = 'Search your lectures';
+                document.getElementById('emptyMsg').textContent = allItems.length + ' lectures available across your courses. Type to search.';
+            }
+
+            // If there's already text in the input, search
+            if (searchInput.value.trim()) {
+                performSearch();
+            }
+
+        } catch (e) {
+            spinner.style.display = 'none';
+            emptyState.style.display = 'block';
+            document.getElementById('emptyTitle').textContent = 'Connection error';
+            document.getElementById('emptyMsg').textContent = 'Please check your network and try again.';
+        }
+    }
+
+    function performSearch() {
+        var query = searchInput.value.trim().toLowerCase();
+
+        if (!loaded) return;
+
+        // Show/hide clear button
+        if (query) {
+            searchClear.classList.add('visible');
+        } else {
+            searchClear.classList.remove('visible');
+        }
+
+        // If empty query, show initial state
+        if (!query) {
+            resultsList.innerHTML = '';
+            resultsInfo.classList.remove('visible');
+            emptyState.style.display = 'block';
+            noResultsState.style.display = 'none';
+            document.getElementById('emptyTitle').textContent = 'Search your lectures';
+            document.getElementById('emptyMsg').textContent = allItems.length + ' lectures available across your courses. Type to search.';
+            return;
+        }
+
+        // Filter results
+        var filtered = allItems.filter(function(item) {
+            return item.searchText.indexOf(query) !== -1;
+        });
+
+        // Show results
+        emptyState.style.display = 'none';
+
+        if (filtered.length === 0) {
+            resultsList.innerHTML = '';
+            resultsInfo.classList.remove('visible');
+            noResultsState.style.display = 'block';
+        } else {
+            noResultsState.style.display = 'none';
+            resultsInfo.classList.add('visible');
+            resultsInfo.textContent = filtered.length + ' result' + (filtered.length === 1 ? '' : 's') + ' for "' + escapeHtml(searchInput.value.trim()) + '"';
+
+            resultsList.innerHTML = '';
+            filtered.forEach(function(item) {
+                var card = document.createElement('a');
+                card.className = 'result-card';
+                card.href = '/lecture.html?lecture_id=' + item.lectureId + '&course_id=' + item.courseId;
+
+                // Highlight matching text
+                var titleHtml = escapeHtml(item.lectureTitle);
+                var metaHtml = escapeHtml(item.courseTitle) + ' <span>&rsaquo;</span> ' + escapeHtml(item.subjectName);
+
+                card.innerHTML = ''
+                    + '<div class="result-icon">'
+                    + '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>'
+                    + '</div>'
+                    + '<div class="result-info">'
+                    + '<div class="title">' + titleHtml + '</div>'
+                    + '<div class="meta">' + metaHtml + '</div>'
+                    + '</div>'
+                    + '<div class="result-arrow">'
+                    + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>'
+                    + '</div>';
+
+                resultsList.appendChild(card);
+            });
+        }
+    }
+
+    // Event listeners
+    searchInput.addEventListener('input', function() {
+        performSearch();
+    });
+
+    searchClear.addEventListener('click', function() {
+        searchInput.value = '';
+        searchInput.focus();
+        performSearch();
+    });
+
+    // Keyboard shortcut: / to focus search
+    document.addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (e.key === '/') {
+            e.preventDefault();
+            searchInput.focus();
+        }
+        if (e.key === 'Escape') {
+            searchInput.blur();
+        }
+    });
+
+    // Load data on page load
+    loadAllData();
+</script>
+</body>
+</html>
