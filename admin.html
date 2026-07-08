@@ -19,7 +19,7 @@
             --gs:'Google Sans','Roboto',system-ui,sans-serif;
             --rb:'Roboto',system-ui,sans-serif;
             --mono:'JetBrains Mono',monospace;
-            --hh:64px;--r:4px;--rl:8px;--tr:.2s cubic-bezier(.4,0,.2,1);
+            --hh:64px;--r:4px;--rl:8px;--rr:24px;--tr:.2s cubic-bezier(.4,0,.2,1);
         }
 
         body{
@@ -63,8 +63,9 @@
         .avatar:hover{border-color:var(--border)}
 
         .main{
-            flex:1;padding-top:calc(var(--hh) + 32px);padding:calc(var(--hh) + 32px) 24px 40px;
+            flex:1;padding-top:calc(var(--hh) + 32px);
             max-width:1400px;margin:0 auto;width:100%;
+            padding-left:24px;padding-right:24px;padding-bottom:40px;
         }
 
         .page-header{margin-bottom:28px}
@@ -141,9 +142,7 @@
         .badge-blocked{background:var(--red-bg);color:var(--red)}
         .badge-admin{background:#e8f0fe;color:var(--blue)}
 
-        .empty-state{
-            text-align:center;padding:60px 20px;
-        }
+        .empty-state{text-align:center;padding:60px 20px}
         .empty-icon{
             width:56px;height:56px;border-radius:50%;background:var(--hov);
             display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--t4);
@@ -158,25 +157,51 @@
         }
         @keyframes spin{to{transform:rotate(360deg)}}
 
+        /* ── MASTER KEY MODAL ── */
         .modal-overlay{
-            position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;
+            position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;
             display:none;align-items:center;justify-content:center;padding:20px;
         }
         .modal-overlay.open{display:flex}
         .modal{
             background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
-            padding:32px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;
-            box-shadow:0 24px 50px rgba(0,0,0,.3);
+            padding:40px;width:100%;max-width:420px;box-shadow:0 24px 50px rgba(0,0,0,.3);
         }
-        .modal h2{font-family:var(--gs);font-size:1.3rem;font-weight:500;color:var(--t1);margin-bottom:12px}
-        .modal p{font-size:.9rem;color:var(--t3);line-height:1.6;margin-bottom:20px}
-        .modal .form-group{margin-bottom:14px}
-        .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
-        .alert{
-            padding:12px 16px;border-radius:var(--r);font-size:.8rem;font-weight:400;margin-bottom:16px;display:none;
+        .modal-icon{
+            width:48px;height:48px;border-radius:50%;background:#e8f0fe;
+            display:flex;align-items:center;justify-content:center;
+            margin:0 auto 16px;color:var(--blue);
         }
-        .alert-e{display:block;background:var(--red-bg);color:var(--red);border:1px solid rgba(217,48,37,.2)}
-        .alert-s{display:block;background:var(--grn-bg);color:var(--green);border:1px solid rgba(30,142,62,.2)}
+        .modal-icon svg{width:22px;height:22px}
+        .modal h2{font-family:var(--gs);font-size:1.3rem;font-weight:500;color:var(--t1);text-align:center;margin-bottom:4px}
+        .modal .subtitle{font-size:.85rem;color:var(--t3);text-align:center;margin-bottom:24px;line-height:1.5}
+        .modal .field{margin-bottom:16px}
+        .modal .field-label{display:block;font-size:.75rem;font-weight:500;color:var(--t3);margin-bottom:4px}
+        .modal .field-input{
+            width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);
+            font-family:var(--rb);font-size:.95rem;color:var(--t1);background:var(--surf);
+            outline:none;transition:all var(--tr);
+        }
+        .modal .field-input:focus{border:2px solid var(--blue);padding:11px 13px}
+        .modal .alert{padding:10px 14px;border-radius:var(--r);font-size:.8rem;margin-bottom:16px;display:none}
+        .modal .alert-e{display:block;background:var(--red-bg);color:var(--red);border:1px solid rgba(217,48,37,.2)}
+        .modal .btn-full{width:100%;height:38px;justify-content:center;font-size:.875rem}
+        .modal .spinner-inline{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+        .modal .btn-full:disabled{background:var(--hov);color:var(--t4);cursor:not-allowed;box-shadow:none}
+
+        /* ── CONFIRMATION MODAL ── */
+        .confirm-overlay{
+            position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2500;
+            display:none;align-items:center;justify-content:center;padding:20px;
+        }
+        .confirm-overlay.open{display:flex}
+        .confirm-modal{
+            background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
+            padding:32px;width:100%;max-width:440px;box-shadow:0 24px 50px rgba(0,0,0,.3);
+        }
+        .confirm-modal h2{font-family:var(--gs);font-size:1.2rem;font-weight:500;color:var(--t1);margin-bottom:8px}
+        .confirm-modal p{font-size:.9rem;color:var(--t3);line-height:1.6;margin-bottom:20px}
+        .confirm-modal .cf-footer{display:flex;gap:10px;justify-content:flex-end}
 
         .footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
         .footer-inner{
@@ -212,8 +237,7 @@
         .toast.show{transform:translateY(0);opacity:1}
 
         @media(max-width:900px){
-            .form-row{flex-direction:column}
-            .form-group{min-width:100%}
+            .form-row{flex-direction:column}.form-group{min-width:100%}
             .footer-inner{grid-template-columns:1fr 1fr;gap:28px}
         }
         @media(max-width:600px){
@@ -222,7 +246,7 @@
             .footer-bottom{flex-direction:column;text-align:center}
             .stats-grid{grid-template-columns:1fr 1fr}
             .tab-btn{padding:10px 14px;font-size:.75rem}
-            .modal{padding:24px}
+            .modal{padding:28px 22px}
         }
     </style>
 </head>
@@ -269,7 +293,7 @@
             <button class="btn btn-primary btn-sm" onclick="loadUsers()">Refresh</button>
             <span style="font-size:.78rem;color:var(--t4)" id="usersCount"></span>
         </div>
-        <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th style="min-width:200px">Actions</th></tr></thead><tbody id="usersBody"></tbody></table></div>
+        <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Device</th><th style="min-width:220px">Actions</th></tr></thead><tbody id="usersBody"></tbody></table></div>
         <div class="spinner-el" id="usersSpinner"></div>
     </div>
 
@@ -348,12 +372,38 @@
     </div>
 </main>
 
-<div class="modal-overlay" id="modal">
+<!-- MASTER KEY MODAL -->
+<div class="modal-overlay" id="masterKeyModal">
     <div class="modal">
-        <h2 id="modalTitle">Confirm</h2>
-        <div class="alert" id="modalAlert"></div>
-        <div id="modalBody"></div>
-        <div class="modal-footer" id="modalFooter"></div>
+        <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h2 id="masterKeyTitle">Set Master Key</h2>
+        <p class="subtitle" id="masterKeySubtitle">Create a master key to secure your admin panel. You will need this every time you sign in.</p>
+        <div class="alert" id="masterKeyAlert"></div>
+        <form id="masterKeyForm" autocomplete="off">
+            <div class="field" id="masterKeyConfirmField" style="display:none">
+                <label class="field-label" for="masterKeyConfirm">Confirm Master Key</label>
+                <input type="password" class="field-input" id="masterKeyConfirm" placeholder="Re-enter your master key" />
+            </div>
+            <div class="field">
+                <label class="field-label" for="masterKeyInput">Master Key</label>
+                <input type="password" class="field-input" id="masterKeyInput" placeholder="Enter master key" required autofocus />
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" id="masterKeyBtn">
+                <span id="masterKeyBtnText">Continue</span>
+                <span class="spinner-inline" id="masterKeySpinner"></span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- CONFIRMATION MODAL -->
+<div class="confirm-overlay" id="confirmModal">
+    <div class="confirm-modal">
+        <h2 id="confirmTitle">Confirm</h2>
+        <p id="confirmBody"></p>
+        <div class="cf-footer" id="confirmFooter"></div>
     </div>
 </div>
 
@@ -391,6 +441,12 @@
 
     if (!token || !user || user.role !== 'admin') { window.location.href = '/index.html'; }
 
+    // ── MASTER KEY STATE ──
+    let masterKeyVerified = false;
+    let masterKeyIsSet = null;
+    const masterKeyToken = sessionStorage.getItem('sciverse_master_key');
+
+    // ── HEADER SCROLL ──
     const header = document.getElementById('header');
     let lastY = 0, ticking = false;
     window.addEventListener('scroll', () => {
@@ -404,6 +460,7 @@
         }
     }, { passive: true });
 
+    // ── HEADER RENDER ──
     const init = (user.name || 'A')[0].toUpperCase();
     document.getElementById('headerRight').innerHTML = `
         <button class="icon-btn sign-out" id="soBtn" title="Sign out">
@@ -412,15 +469,161 @@
         <div class="avatar">${init}</div>
     `;
     document.getElementById('soBtn').addEventListener('click', () => {
+        sessionStorage.removeItem('sciverse_master_key');
         localStorage.removeItem('site_token');
         localStorage.removeItem('site_user');
         window.location.href = '/index.html';
     });
 
+    // ── TOAST ──
     function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
-    function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
 
-    // Tabs
+    // ── MASTER KEY MODAL ──
+    function showMasterKeyAlert(msg) {
+        const el = document.getElementById('masterKeyAlert');
+        el.textContent = msg;
+        el.className = 'alert alert-e';
+    }
+    function clearMasterKeyAlert() {
+        const el = document.getElementById('masterKeyAlert');
+        el.className = 'alert';
+        el.textContent = '';
+    }
+
+    function resetMasterKeyBtn() {
+        document.getElementById('masterKeyBtn').disabled = false;
+        document.getElementById('masterKeySpinner').style.display = 'none';
+        document.getElementById('masterKeyBtnText').style.display = 'inline';
+    }
+
+    async function checkMasterKeyStatus() {
+        try {
+            const res = await fetch(API + '/admin/master-key-status', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const data = await res.json();
+            masterKeyIsSet = data.isSet;
+
+            if (!masterKeyIsSet) {
+                // Need to set master key
+                document.getElementById('masterKeyTitle').textContent = 'Set Master Key';
+                document.getElementById('masterKeySubtitle').textContent = 'Create a master key to secure your admin panel. You will need this every time you sign in to access admin features.';
+                document.getElementById('masterKeyConfirmField').style.display = 'block';
+                document.getElementById('masterKeyBtnText').textContent = 'Set Master Key';
+                document.getElementById('masterKeyModal').classList.add('open');
+                document.getElementById('masterKeyInput').focus();
+            } else if (!masterKeyToken) {
+                // Need to verify master key
+                document.getElementById('masterKeyTitle').textContent = 'Enter Master Key';
+                document.getElementById('masterKeySubtitle').textContent = 'Your admin panel is locked. Enter your master key to continue.';
+                document.getElementById('masterKeyConfirmField').style.display = 'none';
+                document.getElementById('masterKeyBtnText').textContent = 'Unlock';
+                document.getElementById('masterKeyModal').classList.add('open');
+                document.getElementById('masterKeyInput').focus();
+            } else {
+                // Already verified in this session
+                masterKeyVerified = true;
+                document.getElementById('masterKeyModal').classList.remove('open');
+            }
+        } catch (e) {
+            toast('Failed to check master key status.');
+        }
+    }
+
+    document.getElementById('masterKeyForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        clearMasterKeyAlert();
+
+        const masterKey = document.getElementById('masterKeyInput').value;
+        if (!masterKey || masterKey.length < 6) {
+            showMasterKeyAlert('Master key must be at least 6 characters.');
+            return;
+        }
+
+        if (!masterKeyIsSet) {
+            // Setting master key for first time
+            const confirmKey = document.getElementById('masterKeyConfirm').value;
+            if (masterKey !== confirmKey) {
+                showMasterKeyAlert('Master keys do not match.');
+                return;
+            }
+        }
+
+        const btn = document.getElementById('masterKeyBtn');
+        btn.disabled = true;
+        document.getElementById('masterKeySpinner').style.display = 'inline-block';
+        document.getElementById('masterKeyBtnText').style.display = 'none';
+
+        const endpoint = masterKeyIsSet ? '/admin/verify-master-key' : '/admin/set-master-key';
+
+        try {
+            const res = await fetch(API + endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ masterKey })
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                showMasterKeyAlert(data.error || 'Failed.');
+                resetMasterKeyBtn();
+                return;
+            }
+
+            sessionStorage.setItem('sciverse_master_key', masterKey);
+            masterKeyVerified = true;
+            masterKeyIsSet = true;
+            document.getElementById('masterKeyModal').classList.remove('open');
+            toast(masterKeyIsSet ? 'Master key verified.' : 'Master key set successfully.');
+            loadAllData();
+        } catch (e) {
+            showMasterKeyAlert('Network error.');
+            resetMasterKeyBtn();
+        }
+    });
+
+    // ── API HELPER ──
+    async function api(method, path, body) {
+        if (!navigator.onLine) { toast('No internet connection.'); return { ok: false, data: { error: 'No internet' }, status: 0 }; }
+        try {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            };
+            if (sessionStorage.getItem('sciverse_master_key')) {
+                headers['X-Master-Key'] = sessionStorage.getItem('sciverse_master_key');
+            }
+            const opts = { method, headers };
+            if (body) opts.body = JSON.stringify(body);
+            const res = await fetch(API + path, opts);
+            const data = await res.json();
+            return { ok: res.ok, data, status: res.status };
+        } catch (e) {
+            return { ok: false, data: { error: e.message }, status: 0 };
+        }
+    }
+
+    // ── ESCAPE HTML ──
+    function escapeHtml(str) {
+        const d = document.createElement('div');
+        d.textContent = str || '';
+        return d.innerHTML;
+    }
+
+    // ── CONFIRMATION MODAL ──
+    function openConfirm(title, body, footer) {
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmBody').innerHTML = body;
+        document.getElementById('confirmFooter').innerHTML = footer;
+        document.getElementById('confirmModal').classList.add('open');
+    }
+    function closeConfirm() { document.getElementById('confirmModal').classList.remove('open'); }
+    document.getElementById('confirmModal').addEventListener('click', function(e) { if (e.target === this) closeConfirm(); });
+
+    // ── TABS ──
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -438,34 +641,7 @@
         });
     });
 
-    // Modal
-    function openModal(title, bodyHtml, footerHtml) {
-        document.getElementById('modalTitle').textContent = title;
-        document.getElementById('modalBody').innerHTML = bodyHtml;
-        document.getElementById('modalFooter').innerHTML = footerHtml || '';
-        document.getElementById('modal').classList.add('open');
-    }
-    function closeModal() { document.getElementById('modal').classList.remove('open'); }
-    function modalAlert(msg, type) {
-        const el = document.getElementById('modalAlert');
-        el.textContent = msg; el.className = 'alert alert-' + type;
-    }
-    function clearModalAlert() { const el = document.getElementById('modalAlert'); el.className = 'alert'; el.textContent = ''; }
-    document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-
-    // API
-    async function api(method, path, body) {
-        if (!navigator.onLine) { toast('No internet connection.'); return { ok: false, data: { error: 'No internet' }, status: 0 }; }
-        try {
-            const opts = { method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token } };
-            if (body) opts.body = JSON.stringify(body);
-            const res = await fetch(API + path, opts);
-            const data = await res.json();
-            return { ok: res.ok, data, status: res.status };
-        } catch (e) { return { ok: false, data: { error: e.message }, status: 0 }; }
-    }
-
-    // Stats
+    // ── STATS ──
     async function loadStats() {
         const result = await api('GET', '/admin/stats');
         if (result.ok && result.data.stats) {
@@ -478,14 +654,14 @@
         }
     }
 
-    // Users
+    // ── USERS ──
     async function loadUsers() {
         document.getElementById('usersSpinner').style.display = 'block';
         const result = await api('GET', '/admin/users');
         document.getElementById('usersSpinner').style.display = 'none';
         const tbody = document.getElementById('usersBody'); tbody.innerHTML = '';
         if (!result.ok || !result.data.users || !result.data.users.length) {
-            tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><h3>No users found</h3></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><h3>No users found</h3></div></td></tr>';
             document.getElementById('usersCount').textContent = '';
             return;
         }
@@ -493,6 +669,8 @@
         result.data.users.forEach(u => {
             let statusBadge = u.is_blocked ? '<span class="badge badge-blocked">Blocked</span>' : u.is_approved ? '<span class="badge badge-approved">Approved</span>' : '<span class="badge badge-pending">Pending</span>';
             let roleBadge = u.role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : '';
+            let deviceInfo = u.device_fingerprint ? '<span style="font-family:var(--mono);font-size:.65rem">' + (u.device_fingerprint || '').substring(0, 8) + '...</span>' : '<span style="color:var(--t4)">—</span>';
+            if (u.device_ip) deviceInfo += '<br><span style="font-size:.65rem;color:var(--t4)">' + escapeHtml(u.device_ip || '') + '</span>';
             let actions = '';
             if (!u.is_approved && !u.is_blocked) actions += '<button class="btn btn-success btn-xs" onclick="approveUser(' + u.id + ')">Approve</button> ';
             if (u.is_blocked) actions += '<button class="btn btn-outline btn-xs" onclick="unblockUser(' + u.id + ')">Unblock</button> ';
@@ -500,7 +678,7 @@
             if (u.role !== 'admin') actions += '<button class="btn btn-danger btn-xs" onclick="deleteUser(' + u.id + ')">Delete</button> ';
             if (u.device_fingerprint) actions += '<button class="btn btn-outline btn-xs" onclick="resetDevice(' + u.id + ')">Reset Device</button>';
             const row = document.createElement('tr');
-            row.innerHTML = `<td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${roleBadge}</td><td>${statusBadge}</td><td>${actions}</td>`;
+            row.innerHTML = `<td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${roleBadge}</td><td>${statusBadge}</td><td>${deviceInfo}</td><td>${actions}</td>`;
             tbody.appendChild(row);
         });
     }
@@ -508,11 +686,14 @@
     window.approveUser = async (id) => { const r = await api('PUT', '/admin/users/' + id + '/approve'); if (r.ok) { toast('User approved.'); loadUsers(); loadStats(); } else toast('Failed.'); };
     window.blockUser = async (id) => { const r = await api('PUT', '/admin/users/' + id + '/block'); if (r.ok) { toast('User blocked.'); loadUsers(); loadStats(); } else toast('Failed.'); };
     window.unblockUser = async (id) => { const r = await api('PUT', '/admin/users/' + id + '/unblock'); if (r.ok) { toast('User unblocked.'); loadUsers(); loadStats(); } else toast('Failed.'); };
-    window.resetDevice = async (id) => { const r = await api('PUT', '/admin/users/' + id + '/reset-device'); if (r.ok) { toast('Device reset.'); loadUsers(); } else toast('Failed.'); };
-    window.deleteUser = function(id) { openModal('Delete User', '<p>Permanently delete this user and all their data?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteUser(' + id + ')">Delete</button>'); };
-    window.confirmDeleteUser = async (id) => { closeModal(); const r = await api('DELETE', '/admin/users/' + id); if (r.ok) { toast('User deleted.'); loadUsers(); loadStats(); } else toast('Failed.'); };
+    window.resetDevice = async (id) => { const r = await api('PUT', '/admin/users/' + id + '/reset-device'); if (r.ok) { toast('Device reset. User can log in from a new device.'); loadUsers(); } else toast('Failed.'); };
+    window.deleteUser = function(id) {
+        openConfirm('Delete User', '<p>Permanently delete this user and all their data?</p>',
+            '<button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteUser(' + id + ')">Delete</button>');
+    };
+    window.confirmDeleteUser = async (id) => { closeConfirm(); const r = await api('DELETE', '/admin/users/' + id); if (r.ok) { toast('User deleted.'); loadUsers(); loadStats(); } else toast('Failed.'); };
 
-    // Courses
+    // ── COURSES ──
     async function loadCourses() {
         document.getElementById('coursesSpinner').style.display = 'block';
         const result = await api('GET', '/admin/courses');
@@ -541,22 +722,25 @@
         if (!result.ok) return;
         const course = result.data.courses.find(c => c.id === id);
         if (!course) return;
-        openModal('Edit Course',
+        openConfirm('Edit Course',
             '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editCourseTitle" value="' + escapeHtml(course.title) + '" /></div>' +
             '<div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="editCourseDesc">' + escapeHtml(course.description || '') + '</textarea></div>',
-            '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveCourse(' + id + ')">Save</button>');
+            '<button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-primary" onclick="saveCourse(' + id + ')">Save</button>');
     };
     window.saveCourse = async (id) => {
         const title = document.getElementById('editCourseTitle').value.trim();
         const desc = document.getElementById('editCourseDesc').value.trim();
         if (!title) { toast('Title required.'); return; }
         const r = await api('PUT', '/admin/courses/' + id, { title, description: desc });
-        if (r.ok) { closeModal(); toast('Course updated.'); loadCourses(); loadCourseDropdowns(); } else toast('Failed.');
+        if (r.ok) { closeConfirm(); toast('Course updated.'); loadCourses(); loadCourseDropdowns(); } else toast('Failed.');
     };
-    window.deleteCourse = function(id) { openModal('Delete Course', '<p>Delete this course and ALL its subjects, lectures, resources, and enrollments?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteCourse(' + id + ')">Delete</button>'); };
-    window.confirmDeleteCourse = async (id) => { closeModal(); const r = await api('DELETE', '/admin/courses/' + id); if (r.ok) { toast('Course deleted.'); loadCourses(); loadStats(); loadCourseDropdowns(); loadSubjects(); loadLectures(); loadResources(); loadEnrollments(); } else toast('Failed.'); };
+    window.deleteCourse = function(id) {
+        openConfirm('Delete Course', '<p>Delete this course and ALL its subjects, lectures, resources, and enrollments?</p>',
+            '<button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteCourse(' + id + ')">Delete</button>');
+    };
+    window.confirmDeleteCourse = async (id) => { closeConfirm(); const r = await api('DELETE', '/admin/courses/' + id); if (r.ok) { toast('Course deleted.'); loadCourses(); loadStats(); loadCourseDropdowns(); loadSubjects(); loadLectures(); loadResources(); loadEnrollments(); } else toast('Failed.'); };
 
-    // Subjects
+    // ── SUBJECTS ──
     async function loadSubjects() {
         document.getElementById('subjectsSpinner').style.display = 'block';
         const tbody = document.getElementById('subjectsBody'); tbody.innerHTML = '';
@@ -592,11 +776,11 @@
         if (r.ok) { toast('Subject created.'); document.getElementById('subjectTitle').value = ''; document.getElementById('subjectDesc').value = ''; loadSubjects(); } else toast('Failed.');
     };
     window.editSubject = function(id) {
-        openModal('Edit Subject',
+        openConfirm('Edit Subject',
             '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editSubjectTitle" /></div>' +
             '<div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="editSubjectDesc"></textarea></div>' +
             '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editSubjectOrder" type="number" value="0" /></div>',
-            '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveSubject(' + id + ')">Save</button>');
+            '<button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-primary" onclick="saveSubject(' + id + ')">Save</button>');
         (async () => {
             const coursesResult = await api('GET', '/admin/courses');
             if (!coursesResult.ok) return;
@@ -615,12 +799,15 @@
         const order = parseInt(document.getElementById('editSubjectOrder').value) || 0;
         if (!title) { toast('Title required.'); return; }
         const r = await api('PUT', '/admin/subjects/' + id, { title, description: desc, sort_order: order });
-        if (r.ok) { closeModal(); toast('Subject updated.'); loadSubjects(); } else toast('Failed.');
+        if (r.ok) { closeConfirm(); toast('Subject updated.'); loadSubjects(); } else toast('Failed.');
     };
-    window.deleteSubject = function(id) { openModal('Delete Subject', '<p>Delete this subject and ALL its lectures?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteSubject(' + id + ')">Delete</button>'); };
-    window.confirmDeleteSubject = async (id) => { closeModal(); const r = await api('DELETE', '/admin/subjects/' + id); if (r.ok) { toast('Subject deleted.'); loadSubjects(); loadLectures(); } else toast('Failed.'); };
+    window.deleteSubject = function(id) {
+        openConfirm('Delete Subject', '<p>Delete this subject and ALL its lectures?</p>',
+            '<button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteSubject(' + id + ')">Delete</button>');
+    };
+    window.confirmDeleteSubject = async (id) => { closeConfirm(); const r = await api('DELETE', '/admin/subjects/' + id); if (r.ok) { toast('Subject deleted.'); loadSubjects(); loadLectures(); } else toast('Failed.'); };
 
-    // Lectures
+    // ── LECTURES ──
     async function loadLectures() {
         document.getElementById('lecturesSpinner').style.display = 'block';
         const tbody = document.getElementById('lecturesBody'); tbody.innerHTML = '';
@@ -665,12 +852,12 @@
         if (r.ok) { toast('Lecture created.'); document.getElementById('lectureTitle').value = ''; document.getElementById('lectureYoutubeId').value = ''; document.getElementById('lecturePdf').value = ''; loadLectures(); } else toast('Failed.');
     };
     window.editLecture = function(id) {
-        openModal('Edit Lecture',
+        openConfirm('Edit Lecture',
             '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editLectureTitle" /></div>' +
             '<div class="form-group"><label class="form-label">YouTube ID</label><input class="form-input" id="editLectureYt" /></div>' +
             '<div class="form-group"><label class="form-label">PDF URL</label><input class="form-input" id="editLecturePdf" /></div>' +
             '<div class="form-group"><label class="form-label">Order</label><input class="form-input" id="editLectureOrder" type="number" value="0" /></div>',
-            '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveLecture(' + id + ')">Save</button>');
+            '<button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-primary" onclick="saveLecture(' + id + ')">Save</button>');
         (async () => {
             const coursesResult = await api('GET', '/admin/courses');
             if (!coursesResult.ok) return;
@@ -694,12 +881,15 @@
         const order = parseInt(document.getElementById('editLectureOrder').value) || 0;
         if (!title) { toast('Title required.'); return; }
         const r = await api('PUT', '/admin/lectures/' + id, { title, youtube_id: yt, pdf_url: pdf, sort_order: order });
-        if (r.ok) { closeModal(); toast('Lecture updated.'); loadLectures(); } else toast('Failed.');
+        if (r.ok) { closeConfirm(); toast('Lecture updated.'); loadLectures(); } else toast('Failed.');
     };
-    window.deleteLecture = function(id) { openModal('Delete Lecture', '<p>Delete this lecture?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteLecture(' + id + ')">Delete</button>'); };
-    window.confirmDeleteLecture = async (id) => { closeModal(); const r = await api('DELETE', '/admin/lectures/' + id); if (r.ok) { toast('Lecture deleted.'); loadLectures(); } else toast('Failed.'); };
+    window.deleteLecture = function(id) {
+        openConfirm('Delete Lecture', '<p>Delete this lecture?</p>',
+            '<button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteLecture(' + id + ')">Delete</button>');
+    };
+    window.confirmDeleteLecture = async (id) => { closeConfirm(); const r = await api('DELETE', '/admin/lectures/' + id); if (r.ok) { toast('Lecture deleted.'); loadLectures(); } else toast('Failed.'); };
 
-    // Resources
+    // ── RESOURCES ──
     async function loadResources() {
         document.getElementById('resourcesSpinner').style.display = 'block';
         const tbody = document.getElementById('resourcesBody'); tbody.innerHTML = '';
@@ -732,11 +922,11 @@
         if (r.ok) { toast('Resource created.'); document.getElementById('resourceTitle').value = ''; document.getElementById('resourceDesc').value = ''; document.getElementById('resourceLink').value = ''; loadResources(); } else toast('Failed.');
     };
     window.editResource = function(id) {
-        openModal('Edit Resource',
+        openConfirm('Edit Resource',
             '<div class="form-group"><label class="form-label">Title</label><input class="form-input" id="editResourceTitle" /></div>' +
             '<div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="editResourceDesc"></textarea></div>' +
             '<div class="form-group"><label class="form-label">Link URL</label><input class="form-input" id="editResourceLink" /></div>',
-            '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveResource(' + id + ')">Save</button>');
+            '<button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-primary" onclick="saveResource(' + id + ')">Save</button>');
         (async () => {
             const coursesResult = await api('GET', '/admin/courses');
             if (!coursesResult.ok) return;
@@ -755,12 +945,15 @@
         const link = document.getElementById('editResourceLink').value.trim();
         if (!title) { toast('Title required.'); return; }
         const r = await api('PUT', '/admin/resources/' + id, { title, description: desc, link_url: link, sort_order: 0 });
-        if (r.ok) { closeModal(); toast('Resource updated.'); loadResources(); } else toast('Failed.');
+        if (r.ok) { closeConfirm(); toast('Resource updated.'); loadResources(); } else toast('Failed.');
     };
-    window.deleteResource = function(id) { openModal('Delete Resource', '<p>Delete this resource?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteResource(' + id + ')">Delete</button>'); };
-    window.confirmDeleteResource = async (id) => { closeModal(); const r = await api('DELETE', '/admin/resources/' + id); if (r.ok) { toast('Resource deleted.'); loadResources(); } else toast('Failed.'); };
+    window.deleteResource = function(id) {
+        openConfirm('Delete Resource', '<p>Delete this resource?</p>',
+            '<button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteResource(' + id + ')">Delete</button>');
+    };
+    window.confirmDeleteResource = async (id) => { closeConfirm(); const r = await api('DELETE', '/admin/resources/' + id); if (r.ok) { toast('Resource deleted.'); loadResources(); } else toast('Failed.'); };
 
-    // Enrollments
+    // ── ENROLLMENTS ──
     async function loadEnrollmentDropdowns() {
         const usersR = await api('GET', '/admin/users');
         const coursesR = await api('GET', '/admin/courses');
@@ -793,7 +986,7 @@
         if (r.ok) { toast('User unenrolled.'); loadEnrollments(); loadStats(); } else toast('Failed.');
     };
 
-    // Audit Logs
+    // ── AUDIT LOGS ──
     async function loadAuditLogs() {
         document.getElementById('auditSpinner').style.display = 'block';
         const result = await api('GET', '/admin/audit-logs');
@@ -807,12 +1000,18 @@
             tbody.appendChild(tr);
         });
     }
-    window.deleteAuditLog = function(id) { openModal('Delete Log', '<p>Delete this audit log entry?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteAuditLog(' + id + ')">Delete</button>'); };
-    window.confirmDeleteAuditLog = async (id) => { closeModal(); const r = await api('DELETE', '/admin/audit-logs/' + id); if (r.ok) { toast('Log deleted.'); loadAuditLogs(); } else toast('Failed.'); };
-    window.deleteAllAuditLogs = function() { openModal('Delete All Logs', '<p style="color:var(--red)">Permanently delete ALL audit logs?</p>', '<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteAllAudit()">Delete All</button>'); };
-    window.confirmDeleteAllAudit = async () => { closeModal(); const r = await api('DELETE', '/admin/audit-logs/all'); if (r.ok) { toast('All logs deleted.'); loadAuditLogs(); } else toast('Failed.'); };
+    window.deleteAuditLog = function(id) {
+        openConfirm('Delete Log', '<p>Delete this audit log entry?</p>',
+            '<button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteAuditLog(' + id + ')">Delete</button>');
+    };
+    window.confirmDeleteAuditLog = async (id) => { closeConfirm(); const r = await api('DELETE', '/admin/audit-logs/' + id); if (r.ok) { toast('Log deleted.'); loadAuditLogs(); } else toast('Failed.'); };
+    window.deleteAllAuditLogs = function() {
+        openConfirm('Delete All Logs', '<p style="color:var(--red)">Permanently delete ALL audit logs?</p>',
+            '<button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteAllAudit()">Delete All</button>');
+    };
+    window.confirmDeleteAllAudit = async () => { closeConfirm(); const r = await api('DELETE', '/admin/audit-logs/all'); if (r.ok) { toast('All logs deleted.'); loadAuditLogs(); } else toast('Failed.'); };
 
-    // Course dropdowns
+    // ── COURSE DROPDOWNS ──
     async function loadCourseDropdowns() {
         const result = await api('GET', '/admin/courses');
         if (!result.ok || !result.data.courses) return;
@@ -824,11 +1023,16 @@
         });
     }
 
-    // Init
-    loadStats();
-    loadUsers();
-    loadCourseDropdowns();
-    loadEnrollmentDropdowns();
+    // ── INIT ──
+    function loadAllData() {
+        loadStats();
+        loadUsers();
+        loadCourseDropdowns();
+        loadEnrollmentDropdowns();
+    }
+
+    // Start: check master key first
+    checkMasterKeyStatus();
 </script>
 </body>
 </html>
