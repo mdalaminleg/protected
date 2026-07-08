@@ -7,7 +7,7 @@ const JWT_SECRET = 'sciverse-academy-jwt-secret-key-2026';
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Master-Key'
 };
 
 // ─── HELPERS ────────────────────────────────────────────────
@@ -104,6 +104,7 @@ async function ensureTables(db) {
       is_blocked INTEGER NOT NULL DEFAULT 0,
       device_fingerprint TEXT,
       device_ip TEXT,
+      master_key_hash TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
@@ -185,6 +186,7 @@ async function ensureTables(db) {
 
   // Indexes
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`).run();
+  await db.prepare(`CREATE INDEX IF NOT EXISTS idx_users_fingerprint ON users(device_fingerprint)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_subjects_course ON subjects(course_id)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_lectures_subject ON lectures(subject_id)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_resources_course ON resources(course_id)`).run();
@@ -203,10 +205,41 @@ async function ensureTables(db) {
   const migrations = [
     "ALTER TABLE users ADD COLUMN device_ip TEXT",
     "ALTER TABLE users ADD COLUMN device_fingerprint TEXT",
+    "ALTER TABLE users ADD COLUMN master_key_hash TEXT",
   ];
   for (const sql of migrations) {
     try { await db.prepare(sql).run(); } catch (e) { /* column likely exists */ }
   }
+}
+
+// ─── MASTER KEY VERIFICATION ────────────────────────────────
+
+async function verifyMasterKey(db, userId, masterKey) {
+  if (!masterKey) return false;
+  const user = await db.prepare('SELECT master_key_hash FROM users WHERE id = ?').bind(userId).first();
+  if (!user || !user.master_key_hash) return false;
+  const hashed = await sha256(masterKey);
+  return hashed === user.master_key_hash;
+}
+
+async function requireMasterKey(db, user, request) {
+  // Only check for admin users
+  if (user.role !== 'admin') return true;
+
+  // Check if master key is even set up
+  const adminUser = await db.prepare('SELECT master_key_hash FROM users WHERE id = ?').bind(user.id).first();
+  if (!adminUser || !adminUser.master_key_hash) {
+    // Master key not set yet — only allow the set-master-key endpoint
+    const url = new URL(request.url);
+    const path = url.pathname.replace('/api', '');
+    if (path === '/admin/set-master-key') return true;
+    return false; // Block all other admin routes until master key is set
+  }
+
+  // Master key is set — verify it
+  const masterKey = request.headers.get('X-Master-Key') || '';
+  const isValid = await verifyMasterKey(db, user.id, masterKey);
+  return isValid;
 }
 
 // ─── AUTH HANDLERS ──────────────────────────────────────────
@@ -219,11 +252,15 @@ async function handleAuth(method, path, body, db, request) {
     if (password.length < 6) return err('Password must be at least 6 characters.', 400);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err('Invalid email format.', 400);
 
+    // Check if email already exists
     const existing = await db.prepare('SELECT id FROM users WHERE email = ?').bind(email.toLowerCase().trim()).first();
     if (existing) return err('An account with this email already exists.', 409);
 
+    // One account per device — check fingerprint
     const fp = getFingerprint(request);
     const fpHash = await hashFingerprint(fp);
+    const existingDevice = await db.prepare('SELECT id FROM users WHERE device_fingerprint = ?').bind(fpHash).first();
+    if (existingDevice) return err('An account already exists on this device.', 409);
 
     const hashedPw = await sha256(password);
     const result = await db.prepare(
@@ -260,7 +297,13 @@ async function handleAuth(method, path, body, db, request) {
     if (user.role !== 'admin') {
       const fp = getFingerprint(request);
       const fpHash = await hashFingerprint(fp);
-      if (user.device_fingerprint && user.device_fingerprint !== fpHash) {
+
+      // If fingerprint is NULL (just reset by admin), save the new one
+      if (!user.device_fingerprint) {
+        await db.prepare('UPDATE users SET device_fingerprint = ?, device_ip = ?, updated_at = datetime(\'now\') WHERE id = ?')
+          .bind(fpHash, request.headers.get('CF-Connecting-IP') || '', user.id).run();
+      } else if (user.device_fingerprint !== fpHash) {
+        // Fingerprint exists and doesn't match — block the account
         await db.prepare('UPDATE users SET is_blocked = 1 WHERE id = ?').bind(user.id).run();
         await db.prepare(
           'INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)'
@@ -280,9 +323,13 @@ async function handleAuth(method, path, body, db, request) {
       'INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)'
     ).bind(user.id, 'login_success', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
 
+    // Check if master key is set (for admin)
+    const needsMasterKey = user.role === 'admin' && !user.master_key_hash;
+
     return json({
       token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role }
+      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      needsMasterKey: needsMasterKey || false
     });
   }
 
@@ -316,7 +363,6 @@ async function handleUser(method, path, body, db, user, request) {
     const courseId = url.searchParams.get('id');
     if (!courseId) return err('Course ID required', 400);
 
-    // Admin bypass — admins can view any course without enrollment
     if (user.role !== 'admin') {
       const enrollment = await db.prepare('SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?').bind(user.id, courseId).first();
       if (!enrollment) return err('Not enrolled in this course', 403);
@@ -328,7 +374,6 @@ async function handleUser(method, path, body, db, user, request) {
     const subjects = await db.prepare('SELECT * FROM subjects WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
     const resources = await db.prepare('SELECT * FROM resources WHERE course_id = ? ORDER BY sort_order ASC, id ASC').bind(courseId).all();
 
-    // Get lectures for each subject
     const subjectsWithLectures = [];
     for (const sub of subjects.results) {
       const lectures = await db.prepare('SELECT * FROM lectures WHERE subject_id = ? ORDER BY sort_order ASC, id ASC').bind(sub.id).all();
@@ -344,6 +389,47 @@ async function handleUser(method, path, body, db, user, request) {
 // ─── ADMIN HANDLERS ─────────────────────────────────────────
 
 async function handleAdmin(method, path, body, db, user, request) {
+  // ── MASTER KEY SETUP ──
+  if (method === 'POST' && path === '/admin/set-master-key') {
+    const { masterKey } = body || {};
+    if (!masterKey || masterKey.length < 6) return err('Master key must be at least 6 characters.', 400);
+
+    const existing = await db.prepare('SELECT master_key_hash FROM users WHERE id = ?').bind(user.id).first();
+    if (existing && existing.master_key_hash) return err('Master key is already set.', 400);
+
+    const hashed = await sha256(masterKey);
+    await db.prepare('UPDATE users SET master_key_hash = ?, updated_at = datetime(\'now\') WHERE id = ?').bind(hashed, user.id).run();
+
+    await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)')
+      .bind(user.id, 'master_key_set', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
+
+    return json({ message: 'Master key set successfully.' });
+  }
+
+  // ── MASTER KEY VERIFY ──
+  if (method === 'POST' && path === '/admin/verify-master-key') {
+    const { masterKey } = body || {};
+    if (!masterKey) return err('Master key is required.', 400);
+
+    const isValid = await verifyMasterKey(db, user.id, masterKey);
+    if (!isValid) {
+      await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)')
+        .bind(user.id, 'master_key_failed', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
+      return err('Invalid master key.', 403);
+    }
+
+    await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)')
+      .bind(user.id, 'master_key_verified', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
+
+    return json({ message: 'Master key verified.' });
+  }
+
+  // ── CHECK MASTER KEY STATUS ──
+  if (method === 'GET' && path === '/admin/master-key-status') {
+    const adminUser = await db.prepare('SELECT master_key_hash FROM users WHERE id = ?').bind(user.id).first();
+    return json({ isSet: !!(adminUser && adminUser.master_key_hash) });
+  }
+
   // ── USERS ──
   if (method === 'GET' && path === '/admin/users') {
     const users = await db.prepare('SELECT id, name, email, role, is_approved, is_blocked, device_fingerprint, device_ip, created_at FROM users ORDER BY created_at DESC').all();
@@ -382,7 +468,7 @@ async function handleAdmin(method, path, body, db, user, request) {
 
   if (method === 'PUT' && path.match(/^\/admin\/users\/\d+\/reset-device$/)) {
     const userId = parseInt(path.split('/')[3]);
-    await db.prepare('UPDATE users SET device_fingerprint = NULL, updated_at = datetime(\'now\') WHERE id = ?').bind(userId).run();
+    await db.prepare('UPDATE users SET device_fingerprint = NULL, device_ip = NULL, updated_at = datetime(\'now\') WHERE id = ?').bind(userId).run();
     await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `reset_device_${userId}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
     return json({ message: 'Device fingerprint reset. User can log in from a new device.' });
   }
@@ -531,14 +617,12 @@ async function handleAdmin(method, path, body, db, user, request) {
     return json({ logs: logs.results });
   }
 
-  // DELETE single audit log
   if (method === 'DELETE' && path.match(/^\/admin\/audit-logs\/\d+$/)) {
     const logId = parseInt(path.split('/')[3]);
     await db.prepare('DELETE FROM audit_logs WHERE id = ?').bind(logId).run();
     return json({ message: 'Log deleted.' });
   }
 
-  // DELETE all audit logs
   if (method === 'DELETE' && path === '/admin/audit-logs/all') {
     await db.prepare('DELETE FROM audit_logs').run();
     await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, 'deleted_all_audit_logs', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
@@ -603,6 +687,16 @@ export async function onRequest(context) {
   // Admin routes
   if (path.startsWith('/admin/')) {
     if (authUser.role !== 'admin') return err('Forbidden. Admin access required.', 403);
+
+    // Skip master key check for these endpoints
+    if (path === '/admin/set-master-key' || path === '/admin/verify-master-key' || path === '/admin/master-key-status') {
+      return handleAdmin(method, path, body, db, authUser, request);
+    }
+
+    // Require master key for all other admin routes
+    const masterOk = await requireMasterKey(db, authUser, request);
+    if (!masterOk) return err('Master key required. Please verify your master key first.', 403);
+
     return handleAdmin(method, path, body, db, authUser, request);
   }
 
@@ -611,12 +705,10 @@ export async function onRequest(context) {
     return handleUser(method, path, body, db, authUser, request);
   }
 
-  // GET /api/courses/:id — for lecture page & admin panel loading full course data
-  // ADMIN BYPASS: admins don't need enrollment to view course data
+  // GET /api/courses/:id
   if (method === 'GET' && path.match(/^\/courses\/\d+$/)) {
     const courseId = parseInt(path.split('/')[2]);
 
-    // Skip enrollment check for admin users
     if (authUser.role !== 'admin') {
       const enrollment = await db.prepare('SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?').bind(authUser.id, courseId).first();
       if (!enrollment) return err('Not enrolled in this course', 403);
