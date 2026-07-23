@@ -53,7 +53,7 @@
         html{font-size:16px;scroll-behavior:smooth;}
         body{
             background: linear-gradient(0deg, #FFF 0%, #FFF 100%), var(--neutral-95, #E7E6E9);
-            font-family: var(--font-primary), sans-serif;
+            font-family: var(--font-primary);
             -webkit-font-smoothing: antialiased;
             color: var(--color-dark);
             line-height: 1.5;
@@ -63,7 +63,7 @@
             flex-direction: column;
         }
         a{background-color:transparent;color:inherit;cursor:pointer;text-decoration:none;}
-        button{background-color:transparent;color:inherit;border-width:0;padding:0;cursor:pointer;font-family:inherit;}
+        button{background-color:transparent;color:inherit;border-width:0;padding:0;cursor:pointer;font-family:var(--font-primary);}
         ul,ol{list-style:none;}
         h1,h2,h3,h4,h5,h6{margin:0;font-size:inherit;font-weight:inherit;}
         p{margin:0;}
@@ -74,7 +74,7 @@
         .main-content{max-width:var(--content-width);width:100%;margin:0 auto;padding:0 1rem;}
         @media(min-width:1320px){.main-content{padding:0;}}
 
-        /* ========== BUTTONS ========== */
+        /* ========== BUTTONS - All use Poppins ========== */
         .btn{
             border-radius:var(--border-radius-pill);display:inline-flex;align-items:center;
             justify-content:center;transition:var(--transition-smooth);gap:8px;
@@ -94,10 +94,7 @@
         .btn-lg{padding:0 2.5rem;height:4rem;font-size:1.1rem;}
         .btn-full{width:100%;}
 
-        /* ========== TYPOGRAPHY ========== */
-        .text-accent{color:var(--color-accent);}
-        .text-purple{color:var(--color-primary);}
-        .text-white{color:var(--color-white);}
+        /* ========== TYPOGRAPHY - Consistent Poppins/Roboto ========== */
         .heading-1{font-family:var(--font-primary);font-size:2.25rem;font-weight:700;line-height:1.15;}
         .heading-2{font-family:var(--font-primary);font-size:2rem;font-weight:700;line-height:1.2;}
         .heading-3{font-family:var(--font-primary);font-size:1.5rem;font-weight:700;line-height:1.3;}
@@ -120,13 +117,9 @@
             padding:0 1rem;width:100%;
         }
         .header-logo{display:flex;align-items:center;gap:10px;}
-        .header-logo .logo-icon{
-            width:44px;height:44px;border-radius:12px;background:var(--color-primary);
-            display:flex;align-items:center;justify-content:center;
-            font-family:var(--font-primary);font-weight:700;font-size:1.1rem;
-            color:var(--color-accent);flex-shrink:0;
+        .header-logo .logo-img{
+            height:40px;width:40px;border-radius:50%;object-fit:cover;flex-shrink:0;
         }
-        .header-logo .logo-icon svg{width:24px;height:24px;}
         .header-logo .logo-text{
             font-family:var(--font-primary);font-size:1.25rem;font-weight:700;
             color:var(--color-text-dark);letter-spacing:-0.2px;
@@ -137,6 +130,7 @@
             width:40px;height:40px;border:none;background:none;border-radius:50%;
             display:flex;align-items:center;justify-content:center;
             cursor:pointer;color:var(--color-text-dark);transition:background var(--transition-fast);
+            font-family:var(--font-primary);
         }
         .icon-btn:hover{background:var(--color-primary-ghost);}
         .icon-btn.sign-out:hover{background:#fce8e6;color:#d93025;}
@@ -165,7 +159,7 @@
         }
         .hero h1 .highlight{color:var(--color-primary);}
         .hero p{
-            font-family:var(--font-secondary);font-size:1.125rem;color:var(--color-dark);
+            font-family:var(--font-secondary);font-size:1.125rem;font-weight:400;color:var(--color-dark);
             max-width:745px;margin:0 auto 32px;line-height:1.5;
         }
         .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
@@ -212,13 +206,13 @@
         }
         .section-header h2 .accent{color:var(--color-accent);}
         .section-header p{
-            font-family:var(--font-secondary);font-size:1.125rem;color:var(--color-dark);
+            font-family:var(--font-secondary);font-size:1.125rem;font-weight:400;color:var(--color-dark);
             max-width:745px;margin:0 auto;line-height:1.5;
         }
         @media(min-width:768px){.section-header h2{font-size:2.5rem;}}
         @media(min-width:1024px){.section-header h2{font-size:4rem;line-height:1.3;max-width:920px;margin:0 auto 32px;}}
 
-        /* ========== FEATURES (Brand Cards Style) ========== */
+        /* ========== FEATURES ========== */
         .features-section{padding:50px 30px;max-width:var(--content-width);margin:0 auto;}
         .feature-grid{display:grid;grid-template-columns:1fr;gap:27px;max-width:1094px;margin:0 auto;}
         .feature-card{
@@ -243,8 +237,14 @@
         }
         .feature-card-img .img-icon svg{width:28px;height:28px;stroke:white;fill:none;}
         .feature-card-body{padding:16px 20px 24px;display:flex;flex-direction:column;gap:8px;}
-        .feature-card-body h3{font-family:var(--font-primary);font-weight:700;font-size:1.25rem;color:var(--color-dark);line-height:1.3;}
-        .feature-card-body p{font-family:var(--font-secondary);font-size:0.875rem;color:#666;line-height:1.5;}
+        .feature-card-body h3{
+            font-family:var(--font-primary);font-weight:700;font-size:1.25rem;
+            color:var(--color-dark);line-height:1.3;
+        }
+        .feature-card-body p{
+            font-family:var(--font-secondary);font-weight:400;font-size:0.875rem;
+            color:#666;line-height:1.5;
+        }
         .feature-card-icon{
             width:48px;height:48px;border-radius:50%;display:flex;
             align-items:center;justify-content:center;margin-bottom:4px;
@@ -260,7 +260,7 @@
         @media(min-width:768px){.features-section{padding:50px 40px;}.feature-grid{grid-template-columns:repeat(2,1fr);}}
         @media(min-width:1024px){.features-section{padding:100px 0;}.feature-grid{grid-template-columns:repeat(3,1fr);}}
 
-        /* ========== STEPS (Numbers Section Style) ========== */
+        /* ========== STEPS ========== */
         .steps-section{padding:50px 30px;max-width:var(--content-width);margin:0 auto;}
         .steps-grid{display:grid;grid-template-columns:1fr;gap:34px;max-width:1094px;margin:0 auto;}
         .step-card{
@@ -280,7 +280,7 @@
             color:var(--color-dark);margin-top:8px;
         }
         .step-card .step-desc{
-            font-family:var(--font-secondary);font-size:0.9rem;
+            font-family:var(--font-secondary);font-weight:400;font-size:0.9rem;
             color:#666;margin-top:8px;line-height:1.5;
             max-width:280px;margin-left:auto;margin-right:auto;
         }
@@ -305,10 +305,10 @@
             color:var(--color-dark);text-align:center;margin-bottom:4px;
         }
         .modal .subtitle{
-            font-family:var(--font-secondary);font-size:0.9rem;color:var(--color-dark);
+            font-family:var(--font-secondary);font-weight:400;font-size:0.9rem;color:var(--color-dark);
             text-align:center;margin-bottom:28px;
         }
-        .modal .subtitle strong{font-weight:600;color:var(--color-text-dark);}
+        .modal .subtitle strong{font-family:var(--font-primary);font-weight:600;color:var(--color-text-dark);}
         .field{margin-bottom:18px;}
         .field-label{
             display:block;font-family:var(--font-primary);font-size:0.78rem;
@@ -317,14 +317,14 @@
         .field-input{
             width:100%;padding:12px 16px;border:1px solid var(--color-light-gray);
             border-radius:var(--border-radius-sm);font-family:var(--font-secondary);
-            font-size:0.95rem;color:var(--color-dark);background:var(--color-white);
+            font-weight:400;font-size:0.95rem;color:var(--color-dark);background:var(--color-white);
             outline:none;transition:border var(--transition-fast);
         }
         .field-input:hover{border-color:var(--color-gray);}
         .field-input:focus{border:2px solid var(--color-primary);padding:11px 15px;}
         .alert{
             padding:12px 14px;border-radius:var(--border-radius-sm);
-            font-family:var(--font-secondary);font-size:0.8rem;margin-bottom:16px;display:none;
+            font-family:var(--font-secondary);font-weight:400;font-size:0.8rem;margin-bottom:16px;display:none;
         }
         .alert-e{display:block;background:#fce8e6;color:#d93025;border:1px solid rgba(217,48,37,.2);}
         .spinner-inline{
@@ -332,37 +332,41 @@
             border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;
         }
         @keyframes spin{to{transform:rotate(360deg)}}
-        .btn-full{width:100%;height:44px;justify-content:center;}
-        .btn-full:disabled{background:var(--color-light-gray);color:#423950;opacity:0.5;cursor:not-allowed;box-shadow:none;}
         .modal-footer-link{
             text-align:center;margin-top:20px;font-family:var(--font-secondary);
-            font-size:0.9rem;color:var(--color-dark);
+            font-weight:400;font-size:0.9rem;color:var(--color-dark);
         }
-        .modal-footer-link a{color:var(--color-primary);text-decoration:none;font-weight:600;}
+        .modal-footer-link a{font-family:var(--font-primary);color:var(--color-primary);text-decoration:none;font-weight:600;}
         .modal-footer-link a:hover{text-decoration:underline;}
 
         /* ========== FOOTER ========== */
         .footer{background:var(--color-dark-bg);margin-top:auto;padding:60px 0;}
         .footer .main-container{display:flex;flex-direction:column;padding:0 36px!important;}
         .footer-logo-container{display:flex;align-items:center;margin-bottom:24px;gap:10px;}
-        .footer-logo-icon{
-            width:40px;height:40px;border-radius:10px;background:var(--color-primary);
-            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+        .footer-logo-img{height:40px;width:40px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+        .footer-logo-text{
+            font-family:var(--font-primary);font-size:1.5rem;font-weight:700;
+            color:var(--color-white);letter-spacing:-0.5px;
         }
-        .footer-logo-icon svg{width:22px;height:22px;fill:var(--color-accent);}
-        .footer-logo-text{font-family:var(--font-primary);font-size:1.5rem;font-weight:700;color:var(--color-white);letter-spacing:-0.5px;}
         .footer-body{display:flex;flex-direction:column;gap:24px;}
         .footer-columns{display:flex;flex-direction:column;gap:24px;}
         .footer-column{position:relative;display:flex;flex-direction:column;}
-        .footer-column h4{color:var(--color-white);font-family:var(--font-secondary);font-size:1.25rem;font-weight:500;margin-bottom:12px;}
+        .footer-column h4{
+            color:var(--color-white);font-family:var(--font-secondary);
+            font-size:1.25rem;font-weight:500;margin-bottom:12px;
+        }
         .footer-column ul{display:flex;flex-direction:column;gap:8px;}
-        .footer-column ul li a{color:var(--color-white);font-family:var(--font-secondary);font-size:1rem;transition:var(--transition-fast);}
+        .footer-column ul li a{
+            color:var(--color-white);font-family:var(--font-secondary);
+            font-weight:400;font-size:1rem;transition:var(--transition-fast);
+        }
         .footer-column ul li a:hover{text-decoration:underline;}
         .footer-social{display:flex;gap:16px;}
         .footer-social .social-btn{
             border-radius:66px;width:52px;height:52px;background:var(--color-primary);
             display:flex;align-items:center;justify-content:center;
-            color:var(--color-white);transition:var(--transition-fast);
+            color:var(--color-white);font-size:1.25rem;transition:var(--transition-fast);
+            font-family:var(--font-primary);
         }
         .footer-social .social-btn:hover{background:var(--color-primary-light);}
         .footer-social .social-btn svg{width:22px;height:22px;fill:currentColor;}
@@ -370,9 +374,15 @@
             display:flex;flex-direction:column;gap:16px;margin-top:32px;
             align-items:center;text-align:center;
         }
-        .footer-bottom p{color:var(--color-white);font-family:var(--font-secondary);font-size:1rem;}
+        .footer-bottom p{
+            color:var(--color-white);font-family:var(--font-secondary);
+            font-weight:400;font-size:1rem;
+        }
         .footer-bottom .footer-links{display:flex;gap:24px;align-items:center;}
-        .footer-bottom .footer-links a{color:var(--color-white);font-family:var(--font-secondary);font-size:1rem;text-decoration:underline;}
+        .footer-bottom .footer-links a{
+            color:var(--color-white);font-family:var(--font-secondary);
+            font-weight:400;font-size:1rem;text-decoration:underline;
+        }
 
         @media(max-width:1023px){.footer{padding:30px 0;}.footer .main-container{padding:0 1rem!important;}}
         @media(min-width:1024px){
@@ -391,7 +401,7 @@
             position:fixed;bottom:30px;left:30px;z-index:9999;
             padding:14px 28px;border-radius:var(--border-radius-pill);
             background:var(--color-dark-bg);color:var(--color-white);
-            font-family:var(--font-primary);font-size:0.9rem;font-weight:500;
+            font-family:var(--font-primary);font-weight:500;font-size:0.9rem;
             box-shadow:0 8px 24px rgba(0,0,0,.25);
             transform:translateY(80px);opacity:0;
             transition:all .25s cubic-bezier(0,0,.2,1);pointer-events:none;
@@ -418,13 +428,7 @@
 <header class="header" id="header">
     <div class="header-inner">
         <a href="/" class="header-logo">
-            <div class="logo-icon">
-                <!-- SciVerse Logo SVG - Purple bg with yellow accent -->
-                <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L2 7v5c0 5.5 4.3 10.7 10 12 5.7-1.3 10-6.5 10-12V7L12 2z" fill="var(--color-accent)" stroke="none" opacity="0.9"/>
-                    <path d="M9 12l2 2 4-4" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                </svg>
-            </div>
+            <img src="images/protected.png" alt="SciVerse Academy" class="logo-img" width="40" height="40">
             <span class="logo-text">SciVerse Academy</span>
         </a>
         <div class="header-right" id="headerRight"></div>
@@ -564,9 +568,7 @@
 <footer class="footer">
     <div class="main-container">
         <div class="footer-logo-container">
-            <div class="footer-logo-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 2L2 7v5c0 5.5 4.3 10.7 10 12 5.7-1.3 10-6.5 10-12V7L12 2z"/></svg>
-            </div>
+            <img src="images/protected.png" alt="SciVerse Academy" class="footer-logo-img" width="40" height="40">
             <span class="footer-logo-text">SciVerse Academy</span>
         </div>
         <div class="footer-body">
