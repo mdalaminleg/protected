@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SciVerse Academy — Learn Without Limits</title>
-    <meta name="description" content="Expert-led courses in physics, chemistry, biology and more — structured video lessons, downloadable guides, and progress tracking from one unified portal.">
+    <meta name="description" content="Expert-led courses in physics, chemistry, biology and more — structured video lessons, downloadable guides, and structured content from one unified portal.">
     <meta property="og:title" content="SciVerse Academy — Learn Without Limits">
     <meta property="og:description" content="Expert-led courses in physics, chemistry, biology and more.">
     <meta property="og:type" content="website">
@@ -25,15 +25,12 @@
             --color-primary-ghost: #F7F1FF;
             --color-accent: #FFAD01;
             --color-accent-hover: #e69900;
-            --color-accent-ghost: #FFF8E1;
             --color-white: #FFFFFF;
-            --color-off-white: #F7F1FF;
             --color-dark: #2D3135;
             --color-dark-bg: #2D3135;
             --color-gray: #B7B4BC;
             --color-light-gray: #DBD9DE;
             --color-text-dark: #28114B;
-            --color-purple-bg: #461f84;
             --neutral-95: #E7E6E9;
             --border-radius-sm: 24px;
             --border-radius-pill: 56px;
@@ -74,7 +71,7 @@
         .main-content{max-width:var(--content-width);width:100%;margin:0 auto;padding:0 1rem;}
         @media(min-width:1320px){.main-content{padding:0;}}
 
-        /* ========== BUTTONS - All use Poppins ========== */
+        /* ========== BUTTONS ========== */
         .btn{
             border-radius:var(--border-radius-pill);display:inline-flex;align-items:center;
             justify-content:center;transition:var(--transition-smooth);gap:8px;
@@ -83,27 +80,13 @@
         }
         .btn-primary{background:var(--color-primary);color:var(--color-white);height:3.75rem;padding:0 2rem;}
         .btn-primary:hover{background:var(--color-primary-hover);box-shadow:var(--shadow-sm);color:var(--color-white);text-decoration:none;}
-        .btn-primary:active{background:#361865;}
-        .btn-primary:disabled{background:var(--color-light-gray);color:#423950;opacity:0.38;cursor:not-allowed;pointer-events:none;}
         .btn-outline{background:transparent;border:1px solid var(--color-primary-light);color:var(--color-primary-light);height:3.75rem;padding:0 2rem;}
         .btn-outline:hover{border-color:var(--color-primary);color:var(--color-primary);background:var(--color-primary-ghost);text-decoration:none;}
-        .btn-outline:active{background:#C5A3F8;border-color:#361865;color:#361865;}
         .btn-accent{background:var(--color-accent);color:var(--color-primary);height:3.75rem;padding:0 2rem;font-weight:700;}
         .btn-accent:hover{background:var(--color-accent-hover);box-shadow:var(--shadow-sm);text-decoration:none;}
         .btn-sm{height:3rem;padding:0 1.5rem;font-size:0.875rem;}
         .btn-lg{padding:0 2.5rem;height:4rem;font-size:1.1rem;}
         .btn-full{width:100%;}
-
-        /* ========== TYPOGRAPHY - Consistent Poppins/Roboto ========== */
-        .heading-1{font-family:var(--font-primary);font-size:2.25rem;font-weight:700;line-height:1.15;}
-        .heading-2{font-family:var(--font-primary);font-size:2rem;font-weight:700;line-height:1.2;}
-        .heading-3{font-family:var(--font-primary);font-size:1.5rem;font-weight:700;line-height:1.3;}
-        .heading-4{font-family:var(--font-primary);font-size:1.25rem;font-weight:700;line-height:1.3;}
-        .body-text{font-family:var(--font-secondary);font-size:1rem;font-weight:400;line-height:1.5;}
-        .body-text-lg{font-family:var(--font-secondary);font-size:1.125rem;font-weight:400;line-height:1.5;}
-        .caption{font-family:var(--font-primary);font-size:0.75rem;font-weight:400;line-height:1.5;}
-        @media(min-width:768px){.heading-1{font-size:2.5rem;}.heading-2{font-size:2.5rem;}}
-        @media(min-width:1024px){.heading-1{font-size:4rem;line-height:70px;}.heading-2{font-size:4rem;line-height:1.3;}}
 
         /* ========== HEADER ========== */
         .header{
@@ -113,24 +96,16 @@
         }
         .header-inner{
             height:var(--header-height);display:flex;justify-content:space-between;
-            align-items:center;max-width:var(--max-width);margin:0 auto;
-            padding:0 1rem;width:100%;
+            align-items:center;max-width:var(--max-width);margin:0 auto;padding:0 1rem;width:100%;
         }
         .header-logo{display:flex;align-items:center;gap:10px;}
-        .header-logo .logo-img{
-            height:40px;width:40px;border-radius:50%;object-fit:cover;flex-shrink:0;
-        }
-        .header-logo .logo-text{
-            font-family:var(--font-primary);font-size:1.25rem;font-weight:700;
-            color:var(--color-text-dark);letter-spacing:-0.2px;
-        }
+        .header-logo .logo-img{height:40px;width:40px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+        .header-logo .logo-text{font-family:var(--font-primary);font-size:1.25rem;font-weight:700;color:var(--color-text-dark);}
         .header-right{display:flex;align-items:center;gap:8px;}
-
         .icon-btn{
             width:40px;height:40px;border:none;background:none;border-radius:50%;
             display:flex;align-items:center;justify-content:center;
             cursor:pointer;color:var(--color-text-dark);transition:background var(--transition-fast);
-            font-family:var(--font-primary);
         }
         .icon-btn:hover{background:var(--color-primary-ghost);}
         .icon-btn.sign-out:hover{background:#fce8e6;color:#d93025;}
@@ -138,77 +113,30 @@
         .avatar{
             width:36px;height:36px;border-radius:50%;background:var(--color-primary);
             display:flex;align-items:center;justify-content:center;
-            font-family:var(--font-primary);font-weight:600;font-size:14px;
+            font-family:var(--font-primary);font-weight:600;font-size:0.875rem;
             color:var(--color-white);cursor:pointer;flex-shrink:0;margin-left:4px;
             border:2px solid transparent;transition:var(--transition-fast);
         }
         .avatar:hover{border-color:var(--color-light-gray);}
-
         @media(min-width:1024px){.header-inner{height:95px;padding:0 32px;}}
 
         /* ========== MAIN ========== */
         .main{flex:1;padding-top:0;}
 
         /* ========== HERO ========== */
-        .hero{
-            padding:60px 24px 40px;text-align:center;max-width:920px;margin:0 auto;
-        }
-        .hero h1{
-            font-family:var(--font-primary);font-size:2.25rem;font-weight:700;
-            color:var(--color-dark);margin-bottom:16px;letter-spacing:-0.5px;line-height:1.15;
-        }
+        .hero{padding:60px 24px 40px;text-align:center;max-width:920px;margin:0 auto;}
+        .hero h1{font-family:var(--font-primary);font-size:2.25rem;font-weight:700;color:var(--color-dark);margin-bottom:16px;line-height:1.15;}
         .hero h1 .highlight{color:var(--color-primary);}
-        .hero p{
-            font-family:var(--font-secondary);font-size:1.125rem;font-weight:400;color:var(--color-dark);
-            max-width:745px;margin:0 auto 32px;line-height:1.5;
-        }
+        .hero p{font-family:var(--font-secondary);font-size:1.125rem;font-weight:400;color:var(--color-dark);max-width:745px;margin:0 auto 32px;line-height:1.5;}
         .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
         @media(min-width:768px){.hero{padding:80px 40px 50px;}.hero h1{font-size:2.5rem;}}
         @media(min-width:1024px){.hero{padding:100px 0 60px;}.hero h1{font-size:4rem;line-height:70px;}}
 
-        /* ========== SLIDER ========== */
-        .slider-wrap{
-            position:relative;width:100%;max-width:1100px;margin:0 auto 60px;
-            border-radius:var(--border-radius-card);overflow:hidden;
-            background:var(--color-white);border:1px solid var(--color-light-gray);
-            aspect-ratio:21/9;box-shadow:var(--shadow-card);
-        }
-        .slider-track{position:relative;width:100%;height:100%;}
-        .slider-slide{
-            position:absolute;inset:0;opacity:0;transition:opacity .8s ease;
-            display:flex;align-items:center;justify-content:center;
-        }
-        .slider-slide.active{opacity:1;}
-        .slider-slide img{width:100%;height:100%;object-fit:cover;}
-        .slider-caption{
-            position:absolute;bottom:0;left:0;right:0;padding:40px 24px 20px;
-            background:linear-gradient(to top,rgba(0,0,0,.5) 0%,transparent 100%);
-            color:var(--color-white);font-family:var(--font-primary);font-size:1.1rem;
-            font-weight:600;letter-spacing:-0.2px;
-        }
-        .slider-dots{
-            position:absolute;bottom:16px;right:24px;display:flex;gap:8px;z-index:10;
-        }
-        .slider-dot{
-            width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.5);
-            border:none;cursor:pointer;transition:all var(--transition-fast);
-        }
-        .slider-dot.active{background:var(--color-white);transform:scale(1.3);}
-        .slider-dot:hover{background:rgba(255,255,255,.8);}
-
         /* ========== SECTION HEADER ========== */
-        .section-header{
-            text-align:center;margin-bottom:36px;
-        }
-        .section-header h2{
-            font-family:var(--font-primary);font-size:2rem;font-weight:700;
-            color:var(--color-dark);margin-bottom:16px;line-height:1.2;
-        }
+        .section-header{text-align:center;margin-bottom:36px;}
+        .section-header h2{font-family:var(--font-primary);font-size:2rem;font-weight:700;color:var(--color-dark);margin-bottom:16px;line-height:1.2;}
         .section-header h2 .accent{color:var(--color-accent);}
-        .section-header p{
-            font-family:var(--font-secondary);font-size:1.125rem;font-weight:400;color:var(--color-dark);
-            max-width:745px;margin:0 auto;line-height:1.5;
-        }
+        .section-header p{font-family:var(--font-secondary);font-size:1.125rem;font-weight:400;color:var(--color-dark);max-width:745px;margin:0 auto;line-height:1.5;}
         @media(min-width:768px){.section-header h2{font-size:2.5rem;}}
         @media(min-width:1024px){.section-header h2{font-size:4rem;line-height:1.3;max-width:920px;margin:0 auto 32px;}}
 
@@ -216,47 +144,23 @@
         .features-section{padding:50px 30px;max-width:var(--content-width);margin:0 auto;}
         .feature-grid{display:grid;grid-template-columns:1fr;gap:27px;max-width:1094px;margin:0 auto;}
         .feature-card{
-            display:flex;flex-direction:column;gap:16px;
             border-radius:var(--border-radius-card);overflow:hidden;
-            background:var(--color-white);
-            box-shadow:var(--shadow-card);
+            background:var(--color-white);box-shadow:var(--shadow-card);
             transition:var(--transition-smooth);
         }
-        .feature-card:hover{
-            box-shadow:var(--shadow-card-hover);transform:translateY(-2px);
-        }
-        .feature-card-img{
-            width:100%;height:180px;object-fit:cover;
-            border-radius:var(--border-radius-card) var(--border-radius-card) 0 0;
-            display:flex;align-items:center;justify-content:center;
-            position:relative;overflow:hidden;
-        }
-        .feature-card-img .img-icon{
-            width:56px;height:56px;background:rgba(255,255,255,0.2);
-            border-radius:50%;display:flex;align-items:center;justify-content:center;
-        }
-        .feature-card-img .img-icon svg{width:28px;height:28px;stroke:white;fill:none;}
-        .feature-card-body{padding:16px 20px 24px;display:flex;flex-direction:column;gap:8px;}
-        .feature-card-body h3{
-            font-family:var(--font-primary);font-weight:700;font-size:1.25rem;
-            color:var(--color-dark);line-height:1.3;
-        }
-        .feature-card-body p{
-            font-family:var(--font-secondary);font-weight:400;font-size:0.875rem;
-            color:#666;line-height:1.5;
-        }
-        .feature-card-icon{
-            width:48px;height:48px;border-radius:50%;display:flex;
-            align-items:center;justify-content:center;margin-bottom:4px;
-        }
+        .feature-card:hover{box-shadow:var(--shadow-card-hover);transform:translateY(-2px);}
+        .feature-card-img{width:100%;height:200px;overflow:hidden;}
+        .feature-card-img img{width:100%;height:100%;object-fit:cover;display:block;}
+        .feature-card-body{padding:20px 24px 28px;}
+        /* All card titles - consistent: Poppins 1.25rem bold */
+        .feature-card-body h3{font-family:var(--font-primary);font-weight:700;font-size:1.25rem;color:var(--color-dark);line-height:1.3;margin-bottom:8px;}
+        /* All card descriptions - consistent: Roboto 1rem regular */
+        .feature-card-body p{font-family:var(--font-secondary);font-weight:400;font-size:1rem;color:#666;line-height:1.5;}
+        .feature-card-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
         .feature-card-icon svg{width:22px;height:22px;}
-        .ficon-purple{background:rgba(82,25,161,0.1);}
-        .ficon-purple svg{stroke:var(--color-primary);fill:none;}
-        .ficon-yellow{background:rgba(255,173,1,0.15);}
-        .ficon-yellow svg{stroke:#e69900;fill:none;}
-        .ficon-green{background:rgba(30,142,62,0.1);}
-        .ficon-green svg{stroke:#1e8e3e;fill:none;}
-
+        .ficon-purple{background:rgba(82,25,161,0.1);}.ficon-purple svg{stroke:var(--color-primary);fill:none;}
+        .ficon-yellow{background:rgba(255,173,1,0.15);}.ficon-yellow svg{stroke:#e69900;fill:none;}
+        .ficon-green{background:rgba(30,142,62,0.1);}.ficon-green svg{stroke:#1e8e3e;fill:none;}
         @media(min-width:768px){.features-section{padding:50px 40px;}.feature-grid{grid-template-columns:repeat(2,1fr);}}
         @media(min-width:1024px){.features-section{padding:100px 0;}.feature-grid{grid-template-columns:repeat(3,1fr);}}
 
@@ -264,126 +168,61 @@
         .steps-section{padding:50px 30px;max-width:var(--content-width);margin:0 auto;}
         .steps-grid{display:grid;grid-template-columns:1fr;gap:34px;max-width:1094px;margin:0 auto;}
         .step-card{
-            text-align:center;padding:40px 24px;
-            border-radius:var(--border-radius-card);
-            background:var(--color-white);
-            box-shadow:var(--shadow-card);
-            transition:var(--transition-smooth);
+            text-align:center;padding:40px 24px;border-radius:var(--border-radius-card);
+            background:var(--color-white);box-shadow:var(--shadow-card);transition:var(--transition-smooth);
         }
         .step-card:hover{box-shadow:var(--shadow-card-hover);transform:translateY(-2px);}
-        .step-card .step-number{
-            font-family:var(--font-primary);font-size:3rem;font-weight:700;
-            color:var(--color-primary);line-height:1;
-        }
-        .step-card .step-title{
-            font-family:var(--font-primary);font-size:1rem;font-weight:600;
-            color:var(--color-dark);margin-top:8px;
-        }
-        .step-card .step-desc{
-            font-family:var(--font-secondary);font-weight:400;font-size:0.9rem;
-            color:#666;margin-top:8px;line-height:1.5;
-            max-width:280px;margin-left:auto;margin-right:auto;
-        }
+        /* Step number: Poppins 3rem bold */
+        .step-card .step-number{font-family:var(--font-primary);font-size:3rem;font-weight:700;color:var(--color-primary);line-height:1;}
+        /* Step title: Poppins 1rem semibold */
+        .step-card .step-title{font-family:var(--font-primary);font-size:1rem;font-weight:600;color:var(--color-dark);margin-top:8px;}
+        /* Step desc: Roboto 1rem regular */
+        .step-card .step-desc{font-family:var(--font-secondary);font-weight:400;font-size:1rem;color:#666;margin-top:8px;line-height:1.5;max-width:280px;margin-left:auto;margin-right:auto;}
         .steps-cta{display:flex;justify-content:center;margin-top:40px;}
         .steps-cta .btn{width:100%;}
         @media(min-width:768px){.steps-section{padding:50px 40px;}.steps-grid{grid-template-columns:repeat(2,1fr);}.steps-cta .btn{width:auto;}}
         @media(min-width:1024px){.steps-section{padding:100px 0;}.steps-grid{grid-template-columns:repeat(3,1fr);}}
 
         /* ========== MODAL ========== */
-        .modal-overlay{
-            position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;
-            display:none;align-items:center;justify-content:center;padding:20px;
-        }
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;}
         .modal-overlay.open{display:flex;}
-        .modal{
-            background:var(--color-white);border:1px solid var(--color-light-gray);
-            border-radius:var(--border-radius-card);padding:40px;width:100%;
-            max-width:440px;box-shadow:0 24px 50px rgba(0,0,0,.25);
-        }
-        .modal h2{
-            font-family:var(--font-primary);font-size:1.5rem;font-weight:700;
-            color:var(--color-dark);text-align:center;margin-bottom:4px;
-        }
-        .modal .subtitle{
-            font-family:var(--font-secondary);font-weight:400;font-size:0.9rem;color:var(--color-dark);
-            text-align:center;margin-bottom:28px;
-        }
+        .modal{background:var(--color-white);border:1px solid var(--color-light-gray);border-radius:var(--border-radius-card);padding:40px;width:100%;max-width:440px;box-shadow:0 24px 50px rgba(0,0,0,.25);}
+        .modal h2{font-family:var(--font-primary);font-size:1.5rem;font-weight:700;color:var(--color-dark);text-align:center;margin-bottom:4px;}
+        .modal .subtitle{font-family:var(--font-secondary);font-weight:400;font-size:1rem;color:var(--color-dark);text-align:center;margin-bottom:28px;}
         .modal .subtitle strong{font-family:var(--font-primary);font-weight:600;color:var(--color-text-dark);}
         .field{margin-bottom:18px;}
-        .field-label{
-            display:block;font-family:var(--font-primary);font-size:0.78rem;
-            font-weight:600;color:var(--color-dark);margin-bottom:4px;letter-spacing:.3px;
-        }
-        .field-input{
-            width:100%;padding:12px 16px;border:1px solid var(--color-light-gray);
-            border-radius:var(--border-radius-sm);font-family:var(--font-secondary);
-            font-weight:400;font-size:0.95rem;color:var(--color-dark);background:var(--color-white);
-            outline:none;transition:border var(--transition-fast);
-        }
+        .field-label{display:block;font-family:var(--font-primary);font-size:0.875rem;font-weight:600;color:var(--color-dark);margin-bottom:4px;}
+        .field-input{width:100%;padding:12px 16px;border:1px solid var(--color-light-gray);border-radius:var(--border-radius-sm);font-family:var(--font-secondary);font-weight:400;font-size:1rem;color:var(--color-dark);background:var(--color-white);outline:none;transition:border var(--transition-fast);}
         .field-input:hover{border-color:var(--color-gray);}
         .field-input:focus{border:2px solid var(--color-primary);padding:11px 15px;}
-        .alert{
-            padding:12px 14px;border-radius:var(--border-radius-sm);
-            font-family:var(--font-secondary);font-weight:400;font-size:0.8rem;margin-bottom:16px;display:none;
-        }
+        .alert{padding:12px 14px;border-radius:var(--border-radius-sm);font-family:var(--font-secondary);font-weight:400;font-size:0.875rem;margin-bottom:16px;display:none;}
         .alert-e{display:block;background:#fce8e6;color:#d93025;border:1px solid rgba(217,48,37,.2);}
-        .spinner-inline{
-            width:18px;height:18px;border:2px solid rgba(255,255,255,.35);
-            border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;
-        }
+        .spinner-inline{width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
         @keyframes spin{to{transform:rotate(360deg)}}
-        .modal-footer-link{
-            text-align:center;margin-top:20px;font-family:var(--font-secondary);
-            font-weight:400;font-size:0.9rem;color:var(--color-dark);
-        }
+        .modal-footer-link{text-align:center;margin-top:20px;font-family:var(--font-secondary);font-weight:400;font-size:1rem;color:var(--color-dark);}
         .modal-footer-link a{font-family:var(--font-primary);color:var(--color-primary);text-decoration:none;font-weight:600;}
-        .modal-footer-link a:hover{text-decoration:underline;}
 
         /* ========== FOOTER ========== */
         .footer{background:var(--color-dark-bg);margin-top:auto;padding:60px 0;}
         .footer .main-container{display:flex;flex-direction:column;padding:0 36px!important;}
         .footer-logo-container{display:flex;align-items:center;margin-bottom:24px;gap:10px;}
         .footer-logo-img{height:40px;width:40px;border-radius:50%;object-fit:cover;flex-shrink:0;}
-        .footer-logo-text{
-            font-family:var(--font-primary);font-size:1.5rem;font-weight:700;
-            color:var(--color-white);letter-spacing:-0.5px;
-        }
+        .footer-logo-text{font-family:var(--font-primary);font-size:1.5rem;font-weight:700;color:var(--color-white);}
         .footer-body{display:flex;flex-direction:column;gap:24px;}
         .footer-columns{display:flex;flex-direction:column;gap:24px;}
         .footer-column{position:relative;display:flex;flex-direction:column;}
-        .footer-column h4{
-            color:var(--color-white);font-family:var(--font-secondary);
-            font-size:1.25rem;font-weight:500;margin-bottom:12px;
-        }
+        .footer-column h4{color:var(--color-white);font-family:var(--font-secondary);font-size:1.25rem;font-weight:500;margin-bottom:12px;}
         .footer-column ul{display:flex;flex-direction:column;gap:8px;}
-        .footer-column ul li a{
-            color:var(--color-white);font-family:var(--font-secondary);
-            font-weight:400;font-size:1rem;transition:var(--transition-fast);
-        }
+        .footer-column ul li a{color:var(--color-white);font-family:var(--font-secondary);font-weight:400;font-size:1rem;transition:var(--transition-fast);}
         .footer-column ul li a:hover{text-decoration:underline;}
         .footer-social{display:flex;gap:16px;}
-        .footer-social .social-btn{
-            border-radius:66px;width:52px;height:52px;background:var(--color-primary);
-            display:flex;align-items:center;justify-content:center;
-            color:var(--color-white);font-size:1.25rem;transition:var(--transition-fast);
-            font-family:var(--font-primary);
-        }
+        .footer-social .social-btn{border-radius:66px;width:52px;height:52px;background:var(--color-primary);display:flex;align-items:center;justify-content:center;color:var(--color-white);font-size:1.25rem;transition:var(--transition-fast);}
         .footer-social .social-btn:hover{background:var(--color-primary-light);}
         .footer-social .social-btn svg{width:22px;height:22px;fill:currentColor;}
-        .footer-bottom{
-            display:flex;flex-direction:column;gap:16px;margin-top:32px;
-            align-items:center;text-align:center;
-        }
-        .footer-bottom p{
-            color:var(--color-white);font-family:var(--font-secondary);
-            font-weight:400;font-size:1rem;
-        }
+        .footer-bottom{display:flex;flex-direction:column;gap:16px;margin-top:32px;align-items:center;text-align:center;}
+        .footer-bottom p{color:var(--color-white);font-family:var(--font-secondary);font-weight:400;font-size:1rem;}
         .footer-bottom .footer-links{display:flex;gap:24px;align-items:center;}
-        .footer-bottom .footer-links a{
-            color:var(--color-white);font-family:var(--font-secondary);
-            font-weight:400;font-size:1rem;text-decoration:underline;
-        }
-
+        .footer-bottom .footer-links a{color:var(--color-white);font-family:var(--font-secondary);font-weight:400;font-size:1rem;text-decoration:underline;}
         @media(max-width:1023px){.footer{padding:30px 0;}.footer .main-container{padding:0 1rem!important;}}
         @media(min-width:1024px){
             .footer .main-container{flex-direction:row;align-items:stretch;}
@@ -397,34 +236,15 @@
         }
 
         /* ========== TOAST ========== */
-        .toast{
-            position:fixed;bottom:30px;left:30px;z-index:9999;
-            padding:14px 28px;border-radius:var(--border-radius-pill);
-            background:var(--color-dark-bg);color:var(--color-white);
-            font-family:var(--font-primary);font-weight:500;font-size:0.9rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.25);
-            transform:translateY(80px);opacity:0;
-            transition:all .25s cubic-bezier(0,0,.2,1);pointer-events:none;
-        }
+        .toast{position:fixed;bottom:30px;left:30px;z-index:9999;padding:14px 28px;border-radius:var(--border-radius-pill);background:var(--color-dark-bg);color:var(--color-white);font-family:var(--font-primary);font-weight:500;font-size:1rem;box-shadow:0 8px 24px rgba(0,0,0,.25);transform:translateY(80px);opacity:0;transition:all .25s cubic-bezier(0,0,.2,1);pointer-events:none;}
         .toast.show{transform:translateY(0);opacity:1;}
 
-        /* ========== RESPONSIVE ========== */
-        @media(max-width:900px){
-            .hero h1{font-size:2.2rem;}
-            .slider-wrap{aspect-ratio:16/9;}
-        }
-        @media(max-width:600px){
-            .hero h1{font-size:1.8rem;}
-            .hero{padding:50px 20px 30px;}
-            .slider-wrap{aspect-ratio:4/3;border-radius:0;border-left:none;border-right:none;}
-            .slider-caption{font-size:0.9rem;padding:30px 16px 16px;}
-            .modal{padding:28px 22px;}
-        }
+        @media(max-width:900px){.hero h1{font-size:2.2rem;}}
+        @media(max-width:600px){.hero h1{font-size:1.8rem;}.hero{padding:50px 20px 30px;}.modal{padding:28px 22px;}}
     </style>
 </head>
 <body>
 
-<!-- ========== HEADER ========== -->
 <header class="header" id="header">
     <div class="header-inner">
         <a href="/" class="header-logo">
@@ -435,36 +255,14 @@
     </div>
 </header>
 
-<!-- ========== MAIN ========== -->
 <main class="main">
 
-    <!-- Hero -->
     <section class="hero">
         <h1><span class="highlight">SciVerse</span> Academy</h1>
-        <p id="heroSubtitle">Expert-led courses in physics, chemistry, biology and more — structured video lessons, downloadable guides, and progress tracking from one unified portal.</p>
+        <p id="heroSubtitle">Expert-led courses in physics, chemistry, biology and more — structured video lessons, downloadable guides, and structured content from one unified portal.</p>
         <div class="hero-actions" id="heroActions"></div>
     </section>
 
-    <!-- Image Slider -->
-    <div class="slider-wrap" id="sliderWrap">
-        <div class="slider-track" id="sliderTrack">
-            <div class="slider-slide active">
-                <img src="https://i.ibb.co.com/3YLRztMn/premium-photo-1664300813371-7e2e101f6f85.jpg" alt="Student learning online" loading="eager">
-                <div class="slider-caption">Learn from anywhere, at your own pace</div>
-            </div>
-            <div class="slider-slide">
-                <img src="https://i.ibb.co.com/yFdHgyRz/premium-photo-1661903078140-b2f497f7bf02.jpg" alt="Student with headphones" loading="lazy">
-                <div class="slider-caption">Engaging video lessons with expert instructors</div>
-            </div>
-            <div class="slider-slide">
-                <img src="https://i.ibb.co.com/67kfZkfH/photo-1610484826967-09c5720778c7.jpg" alt="Online education" loading="lazy">
-                <div class="slider-caption">Structured courses designed for mastery</div>
-            </div>
-        </div>
-        <div class="slider-dots" id="sliderDots"></div>
-    </div>
-
-    <!-- Features Section -->
     <section class="features-section" id="features">
         <div class="section-header">
             <h2>A <span class="accent">Unified Space</span> for Study</h2>
@@ -472,10 +270,8 @@
         </div>
         <div class="feature-grid">
             <div class="feature-card">
-                <div class="feature-card-img" style="background:linear-gradient(135deg,#5219A1,#7433DA);">
-                    <div class="img-icon">
-                        <svg viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    </div>
+                <div class="feature-card-img">
+                    <img src="https://i.ibb.co.com/bRF7jf11/online-tutorials-concept-52683-37480.jpg" alt="Video Tutorials" loading="lazy">
                 </div>
                 <div class="feature-card-body">
                     <div class="feature-card-icon ficon-purple">
@@ -486,10 +282,8 @@
                 </div>
             </div>
             <div class="feature-card">
-                <div class="feature-card-img" style="background:linear-gradient(135deg,#FFAD01,#e69900);">
-                    <div class="img-icon">
-                        <svg viewBox="0 0 24 24" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    </div>
+                <div class="feature-card-img">
+                    <img src="https://i.ibb.co.com/GQjvyb0S/gestion-des-ressources.png" alt="Shared Resources" loading="lazy">
                 </div>
                 <div class="feature-card-body">
                     <div class="feature-card-icon ficon-yellow">
@@ -500,23 +294,20 @@
                 </div>
             </div>
             <div class="feature-card">
-                <div class="feature-card-img" style="background:linear-gradient(135deg,#1e8e3e,#2e7d32);">
-                    <div class="img-icon">
-                        <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    </div>
+                <div class="feature-card-img">
+                    <img src="https://i.ibb.co.com/R4VHXYhX/How-to-create-an-online-course-768x448-jpg.webp" alt="Structured Content" loading="lazy">
                 </div>
                 <div class="feature-card-body">
                     <div class="feature-card-icon ficon-green">
                         <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     </div>
-                    <h3>Progress Tracking</h3>
-                    <p>Automatically log completed lessons and jump back to exactly where you left off.</p>
+                    <h3>Structured Content</h3>
+                    <p>Courses designed with timely, well-organised modules that build understanding progressively and systematically.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Steps Section -->
     <section class="steps-section" id="how-it-works">
         <div class="section-header">
             <h2>Three <span class="accent">Simple Steps</span></h2>
@@ -549,7 +340,6 @@
 
 </main>
 
-<!-- ========== LOGIN MODAL ========== -->
 <div class="modal-overlay" id="loginModal">
     <div class="modal">
         <h2>Sign in</h2>
@@ -564,7 +354,6 @@
     </div>
 </div>
 
-<!-- ========== FOOTER ========== -->
 <footer class="footer">
     <div class="main-container">
         <div class="footer-logo-container">
@@ -573,75 +362,36 @@
         </div>
         <div class="footer-body">
             <div class="footer-columns">
-                <div class="footer-column">
-                    <h4>Platform</h4>
-                    <ul>
-                        <li><a href="/register.html">Get Started</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#how-it-works">How It Works</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Support</h4>
-                    <ul>
-                        <li><a href="mailto:text.me.md.alamin@gmail.com">Contact Admin</a></li>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Report Issue</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                    </ul>
-                </div>
+                <div class="footer-column"><h4>Platform</h4><ul><li><a href="/register.html">Get Started</a></li><li><a href="#features">Features</a></li><li><a href="#how-it-works">How It Works</a></li></ul></div>
+                <div class="footer-column"><h4>Support</h4><ul><li><a href="mailto:text.me.md.alamin@gmail.com">Contact Admin</a></li><li><a href="#">Help Center</a></li><li><a href="#">Report Issue</a></li></ul></div>
+                <div class="footer-column"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
                 <div class="footer-column">
                     <h4>Connect</h4>
                     <div class="footer-social">
-                        <a href="#" class="social-btn" aria-label="Twitter">
-                            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                        </a>
-                        <a href="#" class="social-btn" aria-label="GitHub">
-                            <svg viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-                        </a>
+                        <a href="#" class="social-btn" aria-label="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                        <a href="#" class="social-btn" aria-label="GitHub"><svg viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg></a>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2026 SciVerse Academy. All rights reserved.</p>
-                <div class="footer-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Settings</a>
-                </div>
+                <div class="footer-links"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Settings</a></div>
             </div>
         </div>
     </div>
 </footer>
 
-<!-- ========== TOAST ========== -->
 <div class="toast" id="toast"></div>
 
-<!-- ========== SCRIPTS ========== -->
 <script>
     const API = 'https://sciverseacademy.pages.dev/api';
     const token = localStorage.getItem('site_token');
     const user = JSON.parse(localStorage.getItem('site_user') || 'null');
     const loggedIn = !!(token && user);
-
     const header = document.getElementById('header');
     let lastY = 0, ticking = false;
     window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                const y = window.scrollY;
-                if (y > lastY && y > 80) header.style.transform = 'translateY(-100%)';
-                else header.style.transform = 'translateY(0)';
-                lastY = y; ticking = false;
-            });
-            ticking = true;
-        }
+        if (!ticking) { requestAnimationFrame(() => { const y = window.scrollY; if (y > lastY && y > 80) header.style.transform = 'translateY(-100%)'; else header.style.transform = 'translateY(0)'; lastY = y; ticking = false; }); ticking = true; }
     }, { passive: true });
 
     function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
@@ -655,9 +405,7 @@
             const init = (user.name || 'U')[0].toUpperCase();
             hr.innerHTML = `<button class="icon-btn sign-out" id="soBtn" title="Sign out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button><div class="avatar">${init}</div>`;
             document.getElementById('soBtn').addEventListener('click', () => { localStorage.removeItem('site_token'); localStorage.removeItem('site_user'); window.location.href = '/'; });
-            const dashboardUrl = user.role === 'admin' ? '/admin.html' : '/dashboard.html';
-            document.getElementById('heroSubtitle').textContent = 'Welcome back! Continue your learning journey.';
-            heroActions.innerHTML = `<a href="${dashboardUrl}" class="btn btn-primary btn-lg">Go to Dashboard</a><a href="#features" class="btn btn-outline btn-lg">Learn more</a>`;
+            heroActions.innerHTML = `<a href="${user.role==='admin'?'/admin.html':'/dashboard.html'}" class="btn btn-primary btn-lg">Go to Dashboard</a><a href="#features" class="btn btn-outline btn-lg">Learn more</a>`;
         } else {
             hr.innerHTML = `<button class="btn btn-outline btn-sm" onclick="openLoginModal()">Sign in</button><a href="/register.html" class="btn btn-primary btn-sm">Create account</a>`;
             heroActions.innerHTML = `<button class="btn btn-primary btn-lg" onclick="openLoginModal()">Sign in</button><a href="/register.html" class="btn btn-outline btn-lg">Create account</a>`;
@@ -665,26 +413,6 @@
     }
     renderUI();
 
-    // Slider
-    const slides = document.querySelectorAll('.slider-slide');
-    const dotsContainer = document.getElementById('sliderDots');
-    let currentSlide = 0, sliderInterval;
-    slides.forEach((_, i) => {
-        const dot = document.createElement('button');
-        dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
-        dot.addEventListener('click', () => goToSlide(i));
-        dotsContainer.appendChild(dot);
-    });
-    const dots = document.querySelectorAll('.slider-dot');
-    function goToSlide(i) { slides[currentSlide].classList.remove('active'); dots[currentSlide].classList.remove('active'); currentSlide = i; slides[currentSlide].classList.add('active'); dots[currentSlide].classList.add('active'); }
-    function nextSlide() { goToSlide((currentSlide + 1) % slides.length); }
-    function startSlider() { sliderInterval = setInterval(nextSlide, 4000); }
-    function stopSlider() { clearInterval(sliderInterval); }
-    startSlider();
-    document.getElementById('sliderWrap').addEventListener('mouseenter', stopSlider);
-    document.getElementById('sliderWrap').addEventListener('mouseleave', startSlider);
-
-    // Login Modal
     window.openLoginModal = function() { document.getElementById('loginModal').classList.add('open'); document.getElementById('loginEmail').focus(); };
     window.closeLoginModal = function() { document.getElementById('loginModal').classList.remove('open'); clearModalAlert(); document.getElementById('loginForm').reset(); };
     document.getElementById('loginModal').addEventListener('click', function(e) { if (e.target === this) closeLoginModal(); });
