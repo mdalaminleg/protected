@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SciVerse Academy — Learn Without Limits</title>
     <meta name="description" content="Expert-led courses in physics, chemistry, biology and more — structured video lessons, downloadable guides, and progress tracking from one unified portal.">
+    <meta property="og:title" content="SciVerse Academy — Learn Without Limits">
+    <meta property="og:description" content="Expert-led courses in physics, chemistry, biology and more.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%235219A1'/%3E%3Ctext x='50' y='68' text-anchor='middle' fill='%23FFAD01' font-family='Poppins' font-weight='700' font-size='50'%3ESV%3C/text%3E%3C/svg%3E">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,8 +22,10 @@
             --color-primary: #5219A1;
             --color-primary-hover: #3e137a;
             --color-primary-light: #7433DA;
+            --color-primary-ghost: #F7F1FF;
             --color-accent: #FFAD01;
             --color-accent-hover: #e69900;
+            --color-accent-ghost: #FFF8E1;
             --color-white: #FFFFFF;
             --color-off-white: #F7F1FF;
             --color-dark: #2D3135;
@@ -33,6 +40,8 @@
             --border-radius-card: 20px;
             --shadow-sm: 0px 1px 2px 0px rgba(0,0,0,0.3), 0px 1px 3px 1px rgba(0,0,0,0.15);
             --shadow-md: 0px 0px 12px 4px rgba(0,0,0,0.05);
+            --shadow-card: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-card-hover: 0 4px 16px rgba(0,0,0,0.12);
             --transition-fast: all 0.2s ease;
             --transition-smooth: all 0.3s ease;
             --max-width: 1440px;
@@ -65,7 +74,7 @@
         .main-content{max-width:var(--content-width);width:100%;margin:0 auto;padding:0 1rem;}
         @media(min-width:1320px){.main-content{padding:0;}}
 
-        /* Buttons - Exact Cogna style */
+        /* ========== BUTTONS ========== */
         .btn{
             border-radius:var(--border-radius-pill);display:inline-flex;align-items:center;
             justify-content:center;transition:var(--transition-smooth);gap:8px;
@@ -75,16 +84,17 @@
         .btn-primary{background:var(--color-primary);color:var(--color-white);height:3.75rem;padding:0 2rem;}
         .btn-primary:hover{background:var(--color-primary-hover);box-shadow:var(--shadow-sm);color:var(--color-white);text-decoration:none;}
         .btn-primary:active{background:#361865;}
+        .btn-primary:disabled{background:var(--color-light-gray);color:#423950;opacity:0.38;cursor:not-allowed;pointer-events:none;}
         .btn-outline{background:transparent;border:1px solid var(--color-primary-light);color:var(--color-primary-light);height:3.75rem;padding:0 2rem;}
-        .btn-outline:hover{border-color:var(--color-primary);color:var(--color-primary);background:var(--color-off-white);text-decoration:none;}
+        .btn-outline:hover{border-color:var(--color-primary);color:var(--color-primary);background:var(--color-primary-ghost);text-decoration:none;}
+        .btn-outline:active{background:#C5A3F8;border-color:#361865;color:#361865;}
         .btn-accent{background:var(--color-accent);color:var(--color-primary);height:3.75rem;padding:0 2rem;font-weight:700;}
         .btn-accent:hover{background:var(--color-accent-hover);box-shadow:var(--shadow-sm);text-decoration:none;}
         .btn-sm{height:3rem;padding:0 1.5rem;font-size:0.875rem;}
         .btn-lg{padding:0 2.5rem;height:4rem;font-size:1.1rem;}
         .btn-full{width:100%;}
-        .btn:disabled{background:var(--color-light-gray);color:#423950;opacity:0.38;cursor:not-allowed;box-shadow:none;pointer-events:none;}
 
-        /* Typography */
+        /* ========== TYPOGRAPHY ========== */
         .text-accent{color:var(--color-accent);}
         .text-purple{color:var(--color-primary);}
         .text-white{color:var(--color-white);}
@@ -98,21 +108,25 @@
         @media(min-width:768px){.heading-1{font-size:2.5rem;}.heading-2{font-size:2.5rem;}}
         @media(min-width:1024px){.heading-1{font-size:4rem;line-height:70px;}.heading-2{font-size:4rem;line-height:1.3;}}
 
-        /* Header */
+        /* ========== HEADER ========== */
         .header{
             background:var(--color-white);position:sticky;top:0;left:0;width:100%;
             z-index:999;border-bottom:1px solid transparent;
-            box-shadow:var(--shadow-md);height:var(--header-height);
-            display:flex;align-items:center;transition:transform 0.3s ease;
+            box-shadow:var(--shadow-md);transition:all 0.3s ease;
         }
-        .header.hidden{transform:translateY(-100%);}
         .header-inner{
-            height:100%;display:flex;justify-content:space-between;
+            height:var(--header-height);display:flex;justify-content:space-between;
             align-items:center;max-width:var(--max-width);margin:0 auto;
             padding:0 1rem;width:100%;
         }
         .header-logo{display:flex;align-items:center;gap:10px;}
-        .header-logo img{height:40px;width:40px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+        .header-logo .logo-icon{
+            width:44px;height:44px;border-radius:12px;background:var(--color-primary);
+            display:flex;align-items:center;justify-content:center;
+            font-family:var(--font-primary);font-weight:700;font-size:1.1rem;
+            color:var(--color-accent);flex-shrink:0;
+        }
+        .header-logo .logo-icon svg{width:24px;height:24px;}
         .header-logo .logo-text{
             font-family:var(--font-primary);font-size:1.25rem;font-weight:700;
             color:var(--color-text-dark);letter-spacing:-0.2px;
@@ -124,7 +138,7 @@
             display:flex;align-items:center;justify-content:center;
             cursor:pointer;color:var(--color-text-dark);transition:background var(--transition-fast);
         }
-        .icon-btn:hover{background:var(--color-off-white);}
+        .icon-btn:hover{background:var(--color-primary-ghost);}
         .icon-btn.sign-out:hover{background:#fce8e6;color:#d93025;}
         .icon-btn svg{width:20px;height:20px;}
         .avatar{
@@ -136,33 +150,34 @@
         }
         .avatar:hover{border-color:var(--color-light-gray);}
 
-        @media(min-width:1024px){.header-inner{padding:0 32px;}}
+        @media(min-width:1024px){.header-inner{height:95px;padding:0 32px;}}
 
-        /* Main */
+        /* ========== MAIN ========== */
         .main{flex:1;padding-top:0;}
 
-        /* Hero - Cogna style */
+        /* ========== HERO ========== */
         .hero{
-            padding:80px 30px 50px;text-align:center;max-width:920px;margin:0 auto;
+            padding:60px 24px 40px;text-align:center;max-width:920px;margin:0 auto;
         }
         .hero h1{
-            font-family:var(--font-primary);font-size:2.5rem;font-weight:700;
+            font-family:var(--font-primary);font-size:2.25rem;font-weight:700;
             color:var(--color-dark);margin-bottom:16px;letter-spacing:-0.5px;line-height:1.15;
         }
+        .hero h1 .highlight{color:var(--color-primary);}
         .hero p{
             font-family:var(--font-secondary);font-size:1.125rem;color:var(--color-dark);
-            max-width:745px;margin:0 auto 36px;line-height:1.5;
+            max-width:745px;margin:0 auto 32px;line-height:1.5;
         }
         .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-        @media(min-width:768px){.hero h1{font-size:2.5rem;}.hero{padding:80px 40px 50px;}}
-        @media(min-width:1024px){.hero h1{font-size:4rem;line-height:70px;}.hero{padding:100px 0 60px;}}
+        @media(min-width:768px){.hero{padding:80px 40px 50px;}.hero h1{font-size:2.5rem;}}
+        @media(min-width:1024px){.hero{padding:100px 0 60px;}.hero h1{font-size:4rem;line-height:70px;}}
 
-        /* Slider */
+        /* ========== SLIDER ========== */
         .slider-wrap{
             position:relative;width:100%;max-width:1100px;margin:0 auto 60px;
             border-radius:var(--border-radius-card);overflow:hidden;
             background:var(--color-white);border:1px solid var(--color-light-gray);
-            aspect-ratio:21/9;box-shadow:0 2px 8px rgba(0,0,0,0.06);
+            aspect-ratio:21/9;box-shadow:var(--shadow-card);
         }
         .slider-track{position:relative;width:100%;height:100%;}
         .slider-slide{
@@ -187,12 +202,7 @@
         .slider-dot.active{background:var(--color-white);transform:scale(1.3);}
         .slider-dot:hover{background:rgba(255,255,255,.8);}
 
-        /* ========== COGNA-STYLE SECTIONS ========== */
-
-        /* Numbers-style Section for Features */
-        .features-section{
-            padding:50px 30px;max-width:var(--content-width);margin:0 auto;
-        }
+        /* ========== SECTION HEADER ========== */
         .section-header{
             text-align:center;margin-bottom:36px;
         }
@@ -200,103 +210,86 @@
             font-family:var(--font-primary);font-size:2rem;font-weight:700;
             color:var(--color-dark);margin-bottom:16px;line-height:1.2;
         }
+        .section-header h2 .accent{color:var(--color-accent);}
         .section-header p{
             font-family:var(--font-secondary);font-size:1.125rem;color:var(--color-dark);
             max-width:745px;margin:0 auto;line-height:1.5;
         }
-        .section-header h2 .accent{color:var(--color-accent);}
+        @media(min-width:768px){.section-header h2{font-size:2.5rem;}}
+        @media(min-width:1024px){.section-header h2{font-size:4rem;line-height:1.3;max-width:920px;margin:0 auto 32px;}}
 
-        /* Feature Cards Grid - matching Cogna brand cards */
-        .feature-grid{
-            display:grid;grid-template-columns:1fr;gap:27px;max-width:1094px;margin:0 auto;
-        }
+        /* ========== FEATURES (Brand Cards Style) ========== */
+        .features-section{padding:50px 30px;max-width:var(--content-width);margin:0 auto;}
+        .feature-grid{display:grid;grid-template-columns:1fr;gap:27px;max-width:1094px;margin:0 auto;}
         .feature-card{
             display:flex;flex-direction:column;gap:16px;
             border-radius:var(--border-radius-card);overflow:hidden;
             background:var(--color-white);
-            box-shadow:0 2px 8px rgba(0,0,0,0.08);
+            box-shadow:var(--shadow-card);
             transition:var(--transition-smooth);
         }
         .feature-card:hover{
-            box-shadow:0 4px 16px rgba(0,0,0,0.12);transform:translateY(-2px);
+            box-shadow:var(--shadow-card-hover);transform:translateY(-2px);
         }
         .feature-card-img{
             width:100%;height:180px;object-fit:cover;
             border-radius:var(--border-radius-card) var(--border-radius-card) 0 0;
             display:flex;align-items:center;justify-content:center;
-            font-size:3rem;
+            position:relative;overflow:hidden;
         }
-        .feature-card-body{
-            padding:16px 20px 24px;display:flex;flex-direction:column;gap:8px;
+        .feature-card-img .img-icon{
+            width:56px;height:56px;background:rgba(255,255,255,0.2);
+            border-radius:50%;display:flex;align-items:center;justify-content:center;
         }
-        .feature-card-body h3{
-            font-family:var(--font-primary);font-weight:700;font-size:1.25rem;
-            color:var(--color-dark);line-height:1.3;
-        }
-        .feature-card-body p{
-            font-family:var(--font-secondary);font-size:0.875rem;color:#666;line-height:1.5;
-        }
+        .feature-card-img .img-icon svg{width:28px;height:28px;stroke:white;fill:none;}
+        .feature-card-body{padding:16px 20px 24px;display:flex;flex-direction:column;gap:8px;}
+        .feature-card-body h3{font-family:var(--font-primary);font-weight:700;font-size:1.25rem;color:var(--color-dark);line-height:1.3;}
+        .feature-card-body p{font-family:var(--font-secondary);font-size:0.875rem;color:#666;line-height:1.5;}
         .feature-card-icon{
             width:48px;height:48px;border-radius:50%;display:flex;
             align-items:center;justify-content:center;margin-bottom:4px;
         }
-        .feature-card-icon svg{width:24px;height:24px;}
-        .ficon-purple{background:rgba(82,25,161,0.1);color:var(--color-primary);}
-        .ficon-yellow{background:rgba(255,173,1,0.15);color:#e69900;}
-        .ficon-green{background:rgba(30,142,62,0.1);color:#1e8e3e;}
+        .feature-card-icon svg{width:22px;height:22px;}
+        .ficon-purple{background:rgba(82,25,161,0.1);}
+        .ficon-purple svg{stroke:var(--color-primary);fill:none;}
+        .ficon-yellow{background:rgba(255,173,1,0.15);}
+        .ficon-yellow svg{stroke:#e69900;fill:none;}
+        .ficon-green{background:rgba(30,142,62,0.1);}
+        .ficon-green svg{stroke:#1e8e3e;fill:none;}
 
-        @media(min-width:768px){
-            .features-section{padding:50px 40px;}
-            .feature-grid{grid-template-columns:repeat(2,1fr);}
-            .section-header h2{font-size:2.5rem;}
-        }
-        @media(min-width:1024px){
-            .features-section{padding:100px 0;}
-            .feature-grid{grid-template-columns:repeat(3,1fr);}
-            .section-header h2{font-size:4rem;line-height:1.3;max-width:920px;margin:0 auto 32px;}
-        }
+        @media(min-width:768px){.features-section{padding:50px 40px;}.feature-grid{grid-template-columns:repeat(2,1fr);}}
+        @media(min-width:1024px){.features-section{padding:100px 0;}.feature-grid{grid-template-columns:repeat(3,1fr);}}
 
-        /* Steps Section - matching Cogna numbers section style */
-        .steps-section{
-            padding:50px 30px;max-width:var(--content-width);margin:0 auto;
-        }
-        .steps-grid-cogna{
-            display:grid;grid-template-columns:1fr;gap:34px;max-width:1094px;margin:0 auto;
-        }
-        .step-card-cogna{
+        /* ========== STEPS (Numbers Section Style) ========== */
+        .steps-section{padding:50px 30px;max-width:var(--content-width);margin:0 auto;}
+        .steps-grid{display:grid;grid-template-columns:1fr;gap:34px;max-width:1094px;margin:0 auto;}
+        .step-card{
             text-align:center;padding:40px 24px;
             border-radius:var(--border-radius-card);
             background:var(--color-white);
-            box-shadow:0 2px 8px rgba(0,0,0,0.08);
+            box-shadow:var(--shadow-card);
             transition:var(--transition-smooth);
         }
-        .step-card-cogna:hover{
-            box-shadow:0 4px 16px rgba(0,0,0,0.12);transform:translateY(-2px);
-        }
-        .step-card-cogna .step-number{
+        .step-card:hover{box-shadow:var(--shadow-card-hover);transform:translateY(-2px);}
+        .step-card .step-number{
             font-family:var(--font-primary);font-size:3rem;font-weight:700;
             color:var(--color-primary);line-height:1;
         }
-        .step-card-cogna .step-title{
+        .step-card .step-title{
             font-family:var(--font-primary);font-size:1rem;font-weight:600;
             color:var(--color-dark);margin-top:8px;
         }
-        .step-card-cogna .step-desc{
+        .step-card .step-desc{
             font-family:var(--font-secondary);font-size:0.9rem;
-            color:#666;margin-top:8px;line-height:1.5;max-width:280px;margin-left:auto;margin-right:auto;
+            color:#666;margin-top:8px;line-height:1.5;
+            max-width:280px;margin-left:auto;margin-right:auto;
         }
         .steps-cta{display:flex;justify-content:center;margin-top:40px;}
+        .steps-cta .btn{width:100%;}
+        @media(min-width:768px){.steps-section{padding:50px 40px;}.steps-grid{grid-template-columns:repeat(2,1fr);}.steps-cta .btn{width:auto;}}
+        @media(min-width:1024px){.steps-section{padding:100px 0;}.steps-grid{grid-template-columns:repeat(3,1fr);}}
 
-        @media(min-width:768px){
-            .steps-section{padding:50px 40px;}
-            .steps-grid-cogna{grid-template-columns:repeat(2,1fr);}
-        }
-        @media(min-width:1024px){
-            .steps-section{padding:100px 0;}
-            .steps-grid-cogna{grid-template-columns:repeat(3,1fr);}
-        }
-
-        /* Modal */
+        /* ========== MODAL ========== */
         .modal-overlay{
             position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;
             display:none;align-items:center;justify-content:center;padding:20px;
@@ -307,33 +300,57 @@
             border-radius:var(--border-radius-card);padding:40px;width:100%;
             max-width:440px;box-shadow:0 24px 50px rgba(0,0,0,.25);
         }
-        .modal h2{font-family:var(--font-primary);font-size:1.5rem;font-weight:700;color:var(--color-dark);text-align:center;margin-bottom:4px;}
-        .modal .subtitle{font-family:var(--font-secondary);font-size:0.9rem;color:var(--color-dark);text-align:center;margin-bottom:28px;}
+        .modal h2{
+            font-family:var(--font-primary);font-size:1.5rem;font-weight:700;
+            color:var(--color-dark);text-align:center;margin-bottom:4px;
+        }
+        .modal .subtitle{
+            font-family:var(--font-secondary);font-size:0.9rem;color:var(--color-dark);
+            text-align:center;margin-bottom:28px;
+        }
         .modal .subtitle strong{font-weight:600;color:var(--color-text-dark);}
         .field{margin-bottom:18px;}
-        .field-label{display:block;font-family:var(--font-primary);font-size:0.78rem;font-weight:600;color:var(--color-dark);margin-bottom:4px;letter-spacing:.3px;}
+        .field-label{
+            display:block;font-family:var(--font-primary);font-size:0.78rem;
+            font-weight:600;color:var(--color-dark);margin-bottom:4px;letter-spacing:.3px;
+        }
         .field-input{
-            width:100%;padding:12px 16px;border:1px solid var(--color-light-gray);border-radius:var(--border-radius-sm);
-            font-family:var(--font-secondary);font-size:0.95rem;color:var(--color-dark);background:var(--color-white);
+            width:100%;padding:12px 16px;border:1px solid var(--color-light-gray);
+            border-radius:var(--border-radius-sm);font-family:var(--font-secondary);
+            font-size:0.95rem;color:var(--color-dark);background:var(--color-white);
             outline:none;transition:border var(--transition-fast);
         }
         .field-input:hover{border-color:var(--color-gray);}
         .field-input:focus{border:2px solid var(--color-primary);padding:11px 15px;}
-        .alert{padding:12px 14px;border-radius:var(--border-radius-sm);font-size:0.8rem;margin-bottom:16px;display:none;}
+        .alert{
+            padding:12px 14px;border-radius:var(--border-radius-sm);
+            font-family:var(--font-secondary);font-size:0.8rem;margin-bottom:16px;display:none;
+        }
         .alert-e{display:block;background:#fce8e6;color:#d93025;border:1px solid rgba(217,48,37,.2);}
-        .spinner-inline{width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+        .spinner-inline{
+            width:18px;height:18px;border:2px solid rgba(255,255,255,.35);
+            border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;
+        }
         @keyframes spin{to{transform:rotate(360deg)}}
         .btn-full{width:100%;height:44px;justify-content:center;}
         .btn-full:disabled{background:var(--color-light-gray);color:#423950;opacity:0.5;cursor:not-allowed;box-shadow:none;}
-        .modal-footer-link{text-align:center;margin-top:20px;font-family:var(--font-secondary);font-size:0.9rem;color:var(--color-dark);}
+        .modal-footer-link{
+            text-align:center;margin-top:20px;font-family:var(--font-secondary);
+            font-size:0.9rem;color:var(--color-dark);
+        }
         .modal-footer-link a{color:var(--color-primary);text-decoration:none;font-weight:600;}
         .modal-footer-link a:hover{text-decoration:underline;}
 
-        /* Footer */
+        /* ========== FOOTER ========== */
         .footer{background:var(--color-dark-bg);margin-top:auto;padding:60px 0;}
         .footer .main-container{display:flex;flex-direction:column;padding:0 36px!important;}
-        .footer-logo-container{display:flex;justify-content:flex-start;align-items:center;margin-bottom:24px;}
-        .footer-logo-text{font-family:var(--font-primary);font-size:2rem;font-weight:700;color:var(--color-white);letter-spacing:-1px;}
+        .footer-logo-container{display:flex;align-items:center;margin-bottom:24px;gap:10px;}
+        .footer-logo-icon{
+            width:40px;height:40px;border-radius:10px;background:var(--color-primary);
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+        }
+        .footer-logo-icon svg{width:22px;height:22px;fill:var(--color-accent);}
+        .footer-logo-text{font-family:var(--font-primary);font-size:1.5rem;font-weight:700;color:var(--color-white);letter-spacing:-0.5px;}
         .footer-body{display:flex;flex-direction:column;gap:24px;}
         .footer-columns{display:flex;flex-direction:column;gap:24px;}
         .footer-column{position:relative;display:flex;flex-direction:column;}
@@ -345,7 +362,7 @@
         .footer-social .social-btn{
             border-radius:66px;width:52px;height:52px;background:var(--color-primary);
             display:flex;align-items:center;justify-content:center;
-            color:var(--color-white);font-size:1.25rem;transition:var(--transition-fast);
+            color:var(--color-white);transition:var(--transition-fast);
         }
         .footer-social .social-btn:hover{background:var(--color-primary-light);}
         .footer-social .social-btn svg{width:22px;height:22px;fill:currentColor;}
@@ -360,16 +377,16 @@
         @media(max-width:1023px){.footer{padding:30px 0;}.footer .main-container{padding:0 1rem!important;}}
         @media(min-width:1024px){
             .footer .main-container{flex-direction:row;align-items:stretch;}
-            .footer-logo-container{margin-bottom:0;margin-right:48px;flex-shrink:0;}
+            .footer-logo-container{margin-bottom:0;margin-right:48px;flex-shrink:0;align-items:flex-start;}
             .footer-body{flex:1;}
             .footer-columns{flex-direction:row;justify-content:space-between;}
             .footer-column{padding-right:24px;}
-            .footer-column::after{content:'';display:block;background:var(--color-white);width:1px;height:100%;position:absolute;right:0;top:0;}
+            .footer-column::after{content:'';display:block;background:rgba(255,255,255,0.2);width:1px;height:100%;position:absolute;right:0;top:0;}
             .footer-column:last-child::after{display:none;}
             .footer-bottom{flex-direction:row;justify-content:space-between;}
         }
 
-        /* Toast */
+        /* ========== TOAST ========== */
         .toast{
             position:fixed;bottom:30px;left:30px;z-index:9999;
             padding:14px 28px;border-radius:var(--border-radius-pill);
@@ -381,13 +398,14 @@
         }
         .toast.show{transform:translateY(0);opacity:1;}
 
+        /* ========== RESPONSIVE ========== */
         @media(max-width:900px){
             .hero h1{font-size:2.2rem;}
-            .slider-wrap{aspect-ratio:16/9;border-radius:var(--border-radius-card);}
+            .slider-wrap{aspect-ratio:16/9;}
         }
         @media(max-width:600px){
             .hero h1{font-size:1.8rem;}
-            .hero{padding:60px 20px 30px;}
+            .hero{padding:50px 20px 30px;}
             .slider-wrap{aspect-ratio:4/3;border-radius:0;border-left:none;border-right:none;}
             .slider-caption{font-size:0.9rem;padding:30px 16px 16px;}
             .modal{padding:28px 22px;}
@@ -396,26 +414,34 @@
 </head>
 <body>
 
+<!-- ========== HEADER ========== -->
 <header class="header" id="header">
     <div class="header-inner">
         <a href="/" class="header-logo">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%235219A1'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-family='Poppins' font-weight='700' font-size='18'%3ESV%3C/text%3E%3C/svg%3E" alt="SciVerse Academy" width="40" height="40">
+            <div class="logo-icon">
+                <!-- SciVerse Logo SVG - Purple bg with yellow accent -->
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7v5c0 5.5 4.3 10.7 10 12 5.7-1.3 10-6.5 10-12V7L12 2z" fill="var(--color-accent)" stroke="none" opacity="0.9"/>
+                    <path d="M9 12l2 2 4-4" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+            </div>
             <span class="logo-text">SciVerse Academy</span>
         </a>
         <div class="header-right" id="headerRight"></div>
     </div>
 </header>
 
+<!-- ========== MAIN ========== -->
 <main class="main">
 
     <!-- Hero -->
     <section class="hero">
-        <h1>SciVerse Academy</h1>
+        <h1><span class="highlight">SciVerse</span> Academy</h1>
         <p id="heroSubtitle">Expert-led courses in physics, chemistry, biology and more — structured video lessons, downloadable guides, and progress tracking from one unified portal.</p>
         <div class="hero-actions" id="heroActions"></div>
     </section>
 
-    <!-- Slider -->
+    <!-- Image Slider -->
     <div class="slider-wrap" id="sliderWrap">
         <div class="slider-track" id="sliderTrack">
             <div class="slider-slide active">
@@ -434,7 +460,7 @@
         <div class="slider-dots" id="sliderDots"></div>
     </div>
 
-    <!-- ========== FEATURES - Cogna Brand Cards Style ========== -->
+    <!-- Features Section -->
     <section class="features-section" id="features">
         <div class="section-header">
             <h2>A <span class="accent">Unified Space</span> for Study</h2>
@@ -443,11 +469,13 @@
         <div class="feature-grid">
             <div class="feature-card">
                 <div class="feature-card-img" style="background:linear-gradient(135deg,#5219A1,#7433DA);">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <div class="img-icon">
+                        <svg viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
                 </div>
                 <div class="feature-card-body">
                     <div class="feature-card-icon ficon-purple">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        <svg viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     </div>
                     <h3>Video Tutorials</h3>
                     <p>Stream clear, comprehensive video content designed to explain challenging topics step by step.</p>
@@ -455,11 +483,13 @@
             </div>
             <div class="feature-card">
                 <div class="feature-card-img" style="background:linear-gradient(135deg,#FFAD01,#e69900);">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <div class="img-icon">
+                        <svg viewBox="0 0 24 24" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
                 </div>
                 <div class="feature-card-body">
                     <div class="feature-card-icon ficon-yellow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        <svg viewBox="0 0 24 24" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                     </div>
                     <h3>Shared Resources</h3>
                     <p>Access study notes, reference sheets, and assignments — all organised inside your dashboard.</p>
@@ -467,11 +497,13 @@
             </div>
             <div class="feature-card">
                 <div class="feature-card-img" style="background:linear-gradient(135deg,#1e8e3e,#2e7d32);">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <div class="img-icon">
+                        <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
                 </div>
                 <div class="feature-card-body">
                     <div class="feature-card-icon ficon-green">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     </div>
                     <h3>Progress Tracking</h3>
                     <p>Automatically log completed lessons and jump back to exactly where you left off.</p>
@@ -480,24 +512,24 @@
         </div>
     </section>
 
-    <!-- ========== HOW IT WORKS - Cogna Numbers Section Style ========== -->
+    <!-- Steps Section -->
     <section class="steps-section" id="how-it-works">
         <div class="section-header">
             <h2>Three <span class="accent">Simple Steps</span></h2>
             <p>Begin navigating resources in under a minute.</p>
         </div>
-        <div class="steps-grid-cogna">
-            <div class="step-card-cogna">
+        <div class="steps-grid">
+            <div class="step-card">
                 <div class="step-number">1</div>
                 <div class="step-title">Create your profile</div>
                 <div class="step-desc">Set up an account with your email — takes less than a minute.</div>
             </div>
-            <div class="step-card-cogna">
+            <div class="step-card">
                 <div class="step-number">2</div>
                 <div class="step-title">Verification review</div>
                 <div class="step-desc">A quick admin check confirms your access to the full course catalog.</div>
             </div>
-            <div class="step-card-cogna">
+            <div class="step-card">
                 <div class="step-number">3</div>
                 <div class="step-title">Access content</div>
                 <div class="step-desc">Log in and start exploring your learning space with zero barriers.</div>
@@ -513,7 +545,7 @@
 
 </main>
 
-<!-- Login Modal -->
+<!-- ========== LOGIN MODAL ========== -->
 <div class="modal-overlay" id="loginModal">
     <div class="modal">
         <h2>Sign in</h2>
@@ -528,11 +560,14 @@
     </div>
 </div>
 
-<!-- Footer -->
+<!-- ========== FOOTER ========== -->
 <footer class="footer">
     <div class="main-container">
         <div class="footer-logo-container">
-            <div class="footer-logo-text">SciVerse Academy</div>
+            <div class="footer-logo-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7v5c0 5.5 4.3 10.7 10 12 5.7-1.3 10-6.5 10-12V7L12 2z"/></svg>
+            </div>
+            <span class="footer-logo-text">SciVerse Academy</span>
         </div>
         <div class="footer-body">
             <div class="footer-columns">
@@ -562,8 +597,12 @@
                 <div class="footer-column">
                     <h4>Connect</h4>
                     <div class="footer-social">
-                        <a href="#" class="social-btn" aria-label="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-                        <a href="#" class="social-btn" aria-label="GitHub"><svg viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg></a>
+                        <a href="#" class="social-btn" aria-label="Twitter">
+                            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        </a>
+                        <a href="#" class="social-btn" aria-label="GitHub">
+                            <svg viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -579,23 +618,24 @@
     </div>
 </footer>
 
-<!-- Toast -->
+<!-- ========== TOAST ========== -->
 <div class="toast" id="toast"></div>
 
+<!-- ========== SCRIPTS ========== -->
 <script>
     const API = 'https://sciverseacademy.pages.dev/api';
     const token = localStorage.getItem('site_token');
     const user = JSON.parse(localStorage.getItem('site_user') || 'null');
     const loggedIn = !!(token && user);
 
-    // Header scroll hide
     const header = document.getElementById('header');
     let lastY = 0, ticking = false;
     window.addEventListener('scroll', () => {
         if (!ticking) {
             requestAnimationFrame(() => {
                 const y = window.scrollY;
-                header.classList.toggle('hidden', y > lastY && y > 80);
+                if (y > lastY && y > 80) header.style.transform = 'translateY(-100%)';
+                else header.style.transform = 'translateY(0)';
                 lastY = y; ticking = false;
             });
             ticking = true;
@@ -634,7 +674,7 @@
         dotsContainer.appendChild(dot);
     });
     const dots = document.querySelectorAll('.slider-dot');
-    function goToSlide(index) { slides[currentSlide].classList.remove('active'); dots[currentSlide].classList.remove('active'); currentSlide = index; slides[currentSlide].classList.add('active'); dots[currentSlide].classList.add('active'); }
+    function goToSlide(i) { slides[currentSlide].classList.remove('active'); dots[currentSlide].classList.remove('active'); currentSlide = i; slides[currentSlide].classList.add('active'); dots[currentSlide].classList.add('active'); }
     function nextSlide() { goToSlide((currentSlide + 1) % slides.length); }
     function startSlider() { sliderInterval = setInterval(nextSlide, 4000); }
     function stopSlider() { clearInterval(sliderInterval); }
