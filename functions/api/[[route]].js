@@ -7,7 +7,7 @@ const JWT_SECRET = 'sciverse-academy-jwt-secret-key-2026';
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Master-Key'
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Master-Key, X-Device-Id'
 };
 
 // ─── HELPERS ────────────────────────────────────────────────
@@ -80,14 +80,22 @@ async function getUser(request) {
   return payload;
 }
 
-function getFingerprint(request) {
-  const ua = request.headers.get('User-Agent') || '';
-  const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
-  return `${ua}|${ip}`;
+// ─── DEVICE IDENTIFICATION ──────────────────────────────────
+// The client generates a random, persistent ID (crypto.randomUUID())
+// on first load and stores it in localStorage, then sends it on every
+// request as X-Device-Id. This is far more stable than UA/IP — it
+// survives IP changes (mobile data, wifi swaps) and isn't shared
+// across every phone of the same model the way a User-Agent string is.
+// It is still just a browser-storage value (not hardware-backed), so
+// it can be reset by clearing site data — but that is a deliberate,
+// visible action, not something that happens by accident.
+
+function getDeviceId(request) {
+  return (request.headers.get('X-Device-Id') || '').trim();
 }
 
-async function hashFingerprint(fp) {
-  return await sha256(fp);
+async function hashDeviceId(deviceId) {
+  return await sha256('device:' + deviceId);
 }
 
 // ─── DATABASE SETUP ─────────────────────────────────────────
@@ -187,6 +195,7 @@ async function ensureTables(db) {
   // Indexes
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_users_fingerprint ON users(device_fingerprint)`).run();
+  await db.prepare(`CREATE INDEX IF NOT EXISTS idx_users_created ON users(created_at)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_subjects_course ON subjects(course_id)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_lectures_subject ON lectures(subject_id)`).run();
   await db.prepare(`CREATE INDEX IF NOT EXISTS idx_resources_course ON resources(course_id)`).run();
@@ -256,22 +265,28 @@ async function handleAuth(method, path, body, db, request) {
     const existing = await db.prepare('SELECT id FROM users WHERE email = ?').bind(email.toLowerCase().trim()).first();
     if (existing) return err('An account with this email already exists.', 409);
 
+    const deviceId = getDeviceId(request);
+    if (!deviceId) return err('Device identification missing. Please refresh the page and try again.', 400);
+    const fpHash = await hashDeviceId(deviceId);
+
     // One account per device — check fingerprint
-    const fp = getFingerprint(request);
-    const fpHash = await hashFingerprint(fp);
     const existingDevice = await db.prepare('SELECT id FROM users WHERE device_fingerprint = ?').bind(fpHash).first();
     if (existingDevice) return err('An account already exists on this device.', 409);
 
     const hashedPw = await sha256(password);
+    // Auto-approved on signup — new accounts land on a 7-day watchlist
+    // (computed from created_at, see /admin/users and /admin/stats) instead
+    // of sitting in a manual approval queue. Admin can still block/delete
+    // during that window if something looks like spam.
     const result = await db.prepare(
       'INSERT INTO users (name, email, password, role, is_approved, is_blocked, device_fingerprint, device_ip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-    ).bind(name.trim(), email.toLowerCase().trim(), hashedPw, 'student', 0, 0, fpHash, request.headers.get('CF-Connecting-IP') || '').run();
+    ).bind(name.trim(), email.toLowerCase().trim(), hashedPw, 'student', 1, 0, fpHash, request.headers.get('CF-Connecting-IP') || '').run();
 
     await db.prepare(
       'INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)'
     ).bind(result.meta.last_row_id, 'account_created', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
 
-    return json({ message: 'Account created successfully. Awaiting admin approval.' }, 201);
+    return json({ message: 'Account created successfully.' }, 201);
   }
 
   // POST /api/auth/login
@@ -293,12 +308,13 @@ async function handleAuth(method, path, body, db, request) {
     if (user.is_blocked) return err('Your account has been blocked. Contact admin.', 403);
     if (!user.is_approved) return err('Your account is pending approval. Contact admin.', 403);
 
-    // Device fingerprint check — skip for admin
+    // Device lock — skip for admin
     if (user.role !== 'admin') {
-      const fp = getFingerprint(request);
-      const fpHash = await hashFingerprint(fp);
+      const deviceId = getDeviceId(request);
+      if (!deviceId) return err('Device identification missing. Please refresh the page and try again.', 400);
+      const fpHash = await hashDeviceId(deviceId);
 
-      // If fingerprint is NULL (just reset by admin), save the new one
+      // If fingerprint is NULL (just reset by admin), bind this device
       if (!user.device_fingerprint) {
         await db.prepare('UPDATE users SET device_fingerprint = ?, device_ip = ?, updated_at = datetime(\'now\') WHERE id = ?')
           .bind(fpHash, request.headers.get('CF-Connecting-IP') || '', user.id).run();
@@ -309,6 +325,10 @@ async function handleAuth(method, path, body, db, request) {
           'INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)'
         ).bind(user.id, 'device_mismatch_blocked', request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
         return err('Device mismatch detected. Your account has been locked for security. Contact admin.', 403);
+      } else {
+        // Same device — keep IP on file fresh for admin visibility only (not a security check)
+        await db.prepare('UPDATE users SET device_ip = ? WHERE id = ?')
+          .bind(request.headers.get('CF-Connecting-IP') || '', user.id).run();
       }
     }
 
@@ -470,7 +490,7 @@ async function handleAdmin(method, path, body, db, user, request) {
     const userId = parseInt(path.split('/')[3]);
     await db.prepare('UPDATE users SET device_fingerprint = NULL, device_ip = NULL, updated_at = datetime(\'now\') WHERE id = ?').bind(userId).run();
     await db.prepare('INSERT INTO audit_logs (user_id, action, ip_address, user_agent) VALUES (?, ?, ?, ?)').bind(user.id, `reset_device_${userId}`, request.headers.get('CF-Connecting-IP') || '', request.headers.get('User-Agent') || '').run();
-    return json({ message: 'Device fingerprint reset. User can log in from a new device.' });
+    return json({ message: 'Device reset. User can log in from a new device.' });
   }
 
   // ── ENROLLMENTS ──
@@ -634,14 +654,18 @@ async function handleAdmin(method, path, body, db, user, request) {
     const totalUsers = await db.prepare('SELECT COUNT(*) as count FROM users').first();
     const totalCourses = await db.prepare('SELECT COUNT(*) as count FROM courses').first();
     const totalEnrollments = await db.prepare('SELECT COUNT(*) as count FROM enrollments').first();
-    const pendingUsers = await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_approved = 0 AND is_blocked = 0').first();
+    // Watchlist = accounts created in the last 7 days, not blocked. Computed on
+    // the fly from created_at rather than a stored status — nothing to keep in sync.
+    const watchlistUsers = await db.prepare(
+      "SELECT COUNT(*) as count FROM users WHERE is_blocked = 0 AND role != 'admin' AND datetime(created_at) > datetime('now', '-7 days')"
+    ).first();
     const blockedUsers = await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_blocked = 1').first();
     return json({
       stats: {
         total_users: totalUsers.count,
         total_courses: totalCourses.count,
         total_enrollments: totalEnrollments.count,
-        pending_users: pendingUsers.count,
+        watchlist_users: watchlistUsers.count,
         blocked_users: blockedUsers.count
       }
     });
@@ -730,4 +754,4 @@ export async function onRequest(context) {
   }
 
   return err('API endpoint not found', 404);
-}
+            }
