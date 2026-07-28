@@ -107,6 +107,12 @@
         .form-textarea{min-height:70px;resize:vertical}
         .form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%235f6368'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
 
+        .search-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+        .search-input-wrap{position:relative;flex:1;min-width:220px;max-width:360px}
+        .search-input-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--t4);pointer-events:none}
+        .search-input{width:100%;padding:9px 14px 9px 36px;background:var(--surf);border:1px solid var(--border);border-radius:20px;color:var(--t1);font-size:.85rem;font-family:var(--rb);outline:none;transition:all var(--tr)}
+        .search-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,115,232,.12)}
+
         .btn{
             display:inline-flex;align-items:center;justify-content:center;gap:6px;
             padding:8px 18px;font-family:var(--gs);font-size:.8rem;font-weight:500;
@@ -115,6 +121,7 @@
         }
         .btn-primary{background:var(--blue);color:#fff}
         .btn-primary:hover{background:var(--blue-h);box-shadow:0 1px 2px rgba(60,64,67,.3),0 2px 6px rgba(60,64,67,.15)}
+        .btn-primary:disabled{background:var(--hov);color:var(--t4);cursor:not-allowed;box-shadow:none}
         .btn-outline{background:transparent;color:var(--blue);border:1px solid var(--border)}
         .btn-outline:hover{background:#e8f0fe;border-color:var(--blue)}
         .btn-danger{background:transparent;color:var(--red);border:1px solid rgba(217,48,37,.2)}
@@ -132,13 +139,14 @@
             border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;
         }
         td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--t2)}
-        tr:hover td{background:var(--hov)}
+        tr.user-row{cursor:pointer;transition:background var(--tr)}
+        tr.user-row:hover td{background:var(--hov)}
 
         .badge{
             display:inline-block;padding:2px 10px;border-radius:12px;font-size:.68rem;font-weight:500;
         }
         .badge-approved{background:var(--grn-bg);color:var(--green)}
-        .badge-pending{background:var(--ylw-bg);color:var(--yellow)}
+        .badge-watchlist{background:var(--ylw-bg);color:var(--yellow)}
         .badge-blocked{background:var(--red-bg);color:var(--red)}
         .badge-admin{background:#e8f0fe;color:var(--blue)}
 
@@ -201,7 +209,32 @@
         }
         .confirm-modal h2{font-family:var(--gs);font-size:1.2rem;font-weight:500;color:var(--t1);margin-bottom:8px}
         .confirm-modal p{font-size:.9rem;color:var(--t3);line-height:1.6;margin-bottom:20px}
-        .confirm-modal .cf-footer{display:flex;gap:10px;justify-content:flex-end}
+        .confirm-modal .cf-footer{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+
+        /* ── USER ACTION MODAL ── */
+        .user-modal-overlay{
+            position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2600;
+            display:none;align-items:center;justify-content:center;padding:20px;
+        }
+        .user-modal-overlay.open{display:flex}
+        .user-modal{
+            background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);
+            padding:0;width:100%;max-width:440px;box-shadow:0 24px 50px rgba(0,0,0,.3);overflow:hidden;
+        }
+        .um-header{padding:24px 28px 18px;border-bottom:1px solid var(--border)}
+        .um-name{font-family:var(--gs);font-size:1.1rem;font-weight:500;color:var(--t1);margin-bottom:2px}
+        .um-email{font-size:.82rem;color:var(--t3)}
+        .um-badges{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+        .um-watch-note{font-size:.75rem;color:var(--t4);margin-top:8px}
+        .um-body{padding:20px 28px}
+        .um-section-label{font-size:.7rem;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+        .um-enroll-row{display:flex;gap:8px;margin-bottom:22px}
+        .um-enroll-row select{flex:1}
+        .um-actions{display:flex;gap:8px;flex-wrap:wrap}
+        .um-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border:none;background:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t3)}
+        .um-close:hover{background:var(--hov)}
+        .um-close svg{width:18px;height:18px}
+        .um-header{position:relative}
 
         .footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
         .footer-inner{
@@ -247,6 +280,7 @@
             .stats-grid{grid-template-columns:1fr 1fr}
             .tab-btn{padding:10px 14px;font-size:.75rem}
             .modal{padding:28px 22px}
+            .search-input-wrap{max-width:100%}
         }
     </style>
 </head>
@@ -272,7 +306,7 @@
     <div class="stats-grid" id="statsGrid">
         <div class="stat-card"><div class="number" id="statUsers">-</div><div class="label">Total Users</div></div>
         <div class="stat-card"><div class="number" id="statCourses">-</div><div class="label">Courses</div></div>
-        <div class="stat-card"><div class="number" id="statPending">-</div><div class="label">Pending</div></div>
+        <div class="stat-card"><div class="number" id="statWatchlist">-</div><div class="label">Watchlist (7d)</div></div>
         <div class="stat-card"><div class="number" id="statBlocked">-</div><div class="label">Blocked</div></div>
         <div class="stat-card"><div class="number" id="statEnrollments">-</div><div class="label">Enrollments</div></div>
     </div>
@@ -289,11 +323,16 @@
 
     <!-- USERS -->
     <div class="tab-panel active" id="panel-users">
-        <div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <div class="search-row">
+            <div class="search-input-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input class="search-input" id="userSearchInput" placeholder="Search users by name or email..." oninput="filterUsers()" />
+            </div>
             <button class="btn btn-primary btn-sm" onclick="loadUsers()">Refresh</button>
             <span style="font-size:.78rem;color:var(--t4)" id="usersCount"></span>
         </div>
-        <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Device</th><th style="min-width:220px">Actions</th></tr></thead><tbody id="usersBody"></tbody></table></div>
+        <p style="font-size:.75rem;color:var(--t4);margin-bottom:4px">Tap a user to approve, block, reset device, or enroll them in a course.</p>
+        <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Device</th></tr></thead><tbody id="usersBody"></tbody></table></div>
         <div class="spinner-el" id="usersSpinner"></div>
     </div>
 
@@ -407,6 +446,30 @@
     </div>
 </div>
 
+<!-- USER ACTION MODAL -->
+<div class="user-modal-overlay" id="userModal">
+    <div class="user-modal">
+        <div class="um-header">
+            <button class="um-close" onclick="closeUserModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="um-name" id="umName">—</div>
+            <div class="um-email" id="umEmail">—</div>
+            <div class="um-badges" id="umBadges"></div>
+            <div class="um-watch-note" id="umWatchNote" style="display:none"></div>
+        </div>
+        <div class="um-body">
+            <div class="um-section-label">Enroll in a course</div>
+            <div class="um-enroll-row">
+                <select class="form-select" id="umCourseSelect"><option value="">Select course...</option></select>
+                <button class="btn btn-primary btn-sm" id="umEnrollBtn" onclick="enrollFromModal()">Enroll</button>
+            </div>
+            <div class="um-section-label">Account actions</div>
+            <div class="um-actions" id="umActions"></div>
+        </div>
+    </div>
+</div>
+
 <footer class="footer">
     <div class="footer-inner">
         <div class="fc">
@@ -445,6 +508,10 @@
     let masterKeyVerified = false;
     let masterKeyIsSet = null;
     const masterKeyToken = sessionStorage.getItem('sciverse_master_key');
+
+    // ── USERS CACHE (for search + modal) ──
+    let allUsersCache = [];
+    let allCoursesCache = [];
 
     // ── HEADER SCROLL ──
     const header = document.getElementById('header');
@@ -505,7 +572,6 @@
             masterKeyIsSet = data.isSet;
 
             if (!masterKeyIsSet) {
-                // Need to set master key
                 document.getElementById('masterKeyTitle').textContent = 'Set Master Key';
                 document.getElementById('masterKeySubtitle').textContent = 'Create a master key to secure your admin panel. You will need this every time you sign in to access admin features.';
                 document.getElementById('masterKeyConfirmField').style.display = 'block';
@@ -513,7 +579,6 @@
                 document.getElementById('masterKeyModal').classList.add('open');
                 document.getElementById('masterKeyInput').focus();
             } else if (!masterKeyToken) {
-                // Need to verify master key
                 document.getElementById('masterKeyTitle').textContent = 'Enter Master Key';
                 document.getElementById('masterKeySubtitle').textContent = 'Your admin panel is locked. Enter your master key to continue.';
                 document.getElementById('masterKeyConfirmField').style.display = 'none';
@@ -521,7 +586,6 @@
                 document.getElementById('masterKeyModal').classList.add('open');
                 document.getElementById('masterKeyInput').focus();
             } else {
-                // Already verified in this session
                 masterKeyVerified = true;
                 document.getElementById('masterKeyModal').classList.remove('open');
             }
@@ -541,7 +605,6 @@
         }
 
         if (!masterKeyIsSet) {
-            // Setting master key for first time
             const confirmKey = document.getElementById('masterKeyConfirm').value;
             if (masterKey !== confirmKey) {
                 showMasterKeyAlert('Master keys do not match.');
@@ -648,10 +711,25 @@
             const s = result.data.stats;
             document.getElementById('statUsers').textContent = s.total_users || 0;
             document.getElementById('statCourses').textContent = s.total_courses || 0;
-            document.getElementById('statPending').textContent = s.pending_users || 0;
+            document.getElementById('statWatchlist').textContent = s.watchlist_users || 0;
             document.getElementById('statBlocked').textContent = s.blocked_users || 0;
             document.getElementById('statEnrollments').textContent = s.total_enrollments || 0;
         }
+    }
+
+    // ── WATCHLIST HELPERS ──
+    // A user is "on the watchlist" if their account is younger than 7 days.
+    // Purely computed from created_at — nothing stored, nothing to keep in sync.
+    function daysSince(dateStr) {
+        if (!dateStr) return 999;
+        const created = new Date(dateStr.replace(' ', 'T') + 'Z');
+        return (Date.now() - created.getTime()) / (1000 * 60 * 60 * 24);
+    }
+    function isWatchlisted(u) {
+        return u.role !== 'admin' && !u.is_blocked && daysSince(u.created_at) < 7;
+    }
+    function daysLeftOnWatchlist(u) {
+        return Math.max(0, Math.ceil(7 - daysSince(u.created_at)));
     }
 
     // ── USERS ──
@@ -659,29 +737,116 @@
         document.getElementById('usersSpinner').style.display = 'block';
         const result = await api('GET', '/admin/users');
         document.getElementById('usersSpinner').style.display = 'none';
+        if (!result.ok || !result.data.users) {
+            allUsersCache = [];
+            renderUsers([]);
+            return;
+        }
+        allUsersCache = result.data.users;
+        filterUsers();
+    }
+
+    function filterUsers() {
+        const q = (document.getElementById('userSearchInput').value || '').trim().toLowerCase();
+        const filtered = !q ? allUsersCache : allUsersCache.filter(u =>
+            (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q)
+        );
+        renderUsers(filtered);
+    }
+
+    function renderUsers(list) {
         const tbody = document.getElementById('usersBody'); tbody.innerHTML = '';
-        if (!result.ok || !result.data.users || !result.data.users.length) {
-            tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><h3>No users found</h3></div></td></tr>';
+        if (!list.length) {
+            tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><h3>No users found</h3></div></td></tr>';
             document.getElementById('usersCount').textContent = '';
             return;
         }
-        document.getElementById('usersCount').textContent = result.data.users.length + ' users';
-        result.data.users.forEach(u => {
-            let statusBadge = u.is_blocked ? '<span class="badge badge-blocked">Blocked</span>' : u.is_approved ? '<span class="badge badge-approved">Approved</span>' : '<span class="badge badge-pending">Pending</span>';
+        document.getElementById('usersCount').textContent = list.length + ' of ' + allUsersCache.length + ' users';
+        list.forEach(u => {
+            let statusBadge = u.is_blocked
+                ? '<span class="badge badge-blocked">Blocked</span>'
+                : isWatchlisted(u)
+                    ? '<span class="badge badge-watchlist">Watchlist</span>'
+                    : '<span class="badge badge-approved">Active</span>';
             let roleBadge = u.role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : '';
             let deviceInfo = u.device_fingerprint ? '<span style="font-family:var(--mono);font-size:.65rem">' + (u.device_fingerprint || '').substring(0, 8) + '...</span>' : '<span style="color:var(--t4)">—</span>';
             if (u.device_ip) deviceInfo += '<br><span style="font-size:.65rem;color:var(--t4)">' + escapeHtml(u.device_ip || '') + '</span>';
-            let actions = '';
-            if (!u.is_approved && !u.is_blocked) actions += '<button class="btn btn-success btn-xs" onclick="approveUser(' + u.id + ')">Approve</button> ';
-            if (u.is_blocked) actions += '<button class="btn btn-outline btn-xs" onclick="unblockUser(' + u.id + ')">Unblock</button> ';
-            else if (u.is_approved && u.role !== 'admin') actions += '<button class="btn btn-danger btn-xs" onclick="blockUser(' + u.id + ')">Block</button> ';
-            if (u.role !== 'admin') actions += '<button class="btn btn-danger btn-xs" onclick="deleteUser(' + u.id + ')">Delete</button> ';
-            if (u.device_fingerprint) actions += '<button class="btn btn-outline btn-xs" onclick="resetDevice(' + u.id + ')">Reset Device</button>';
             const row = document.createElement('tr');
-            row.innerHTML = `<td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${roleBadge}</td><td>${statusBadge}</td><td>${deviceInfo}</td><td>${actions}</td>`;
+            row.className = 'user-row';
+            row.innerHTML = `<td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${roleBadge}</td><td>${statusBadge}</td><td>${deviceInfo}</td>`;
+            row.addEventListener('click', () => openUserModal(u.id));
             tbody.appendChild(row);
         });
     }
+
+    // ── USER ACTION MODAL ──
+    function closeUserModal() { document.getElementById('userModal').classList.remove('open'); }
+    document.getElementById('userModal').addEventListener('click', function(e) { if (e.target === this) closeUserModal(); });
+
+    async function openUserModal(id) {
+        const u = allUsersCache.find(x => x.id === id);
+        if (!u) return;
+
+        document.getElementById('umName').textContent = u.name;
+        document.getElementById('umEmail').textContent = u.email;
+
+        let badges = '';
+        if (u.role === 'admin') badges += '<span class="badge badge-admin">Admin</span>';
+        if (u.is_blocked) badges += '<span class="badge badge-blocked">Blocked</span>';
+        else if (isWatchlisted(u)) badges += '<span class="badge badge-watchlist">Watchlist</span>';
+        else badges += '<span class="badge badge-approved">Active</span>';
+        document.getElementById('umBadges').innerHTML = badges;
+
+        const watchNote = document.getElementById('umWatchNote');
+        if (!u.is_blocked && isWatchlisted(u)) {
+            watchNote.style.display = 'block';
+            const d = daysLeftOnWatchlist(u);
+            watchNote.textContent = d > 0
+                ? `New account — becomes a trusted user automatically in ${d} day${d === 1 ? '' : 's'}. You can enroll them in a course now if you like.`
+                : 'Leaving the watchlist shortly.';
+        } else {
+            watchNote.style.display = 'none';
+        }
+
+        // Course dropdown
+        if (!allCoursesCache.length) {
+            const cr = await api('GET', '/admin/courses');
+            if (cr.ok && cr.data.courses) allCoursesCache = cr.data.courses;
+        }
+        const sel = document.getElementById('umCourseSelect');
+        sel.innerHTML = '<option value="">Select course...</option>';
+        allCoursesCache.forEach(c => { const opt = document.createElement('option'); opt.value = c.id; opt.textContent = c.title; sel.appendChild(opt); });
+        document.getElementById('umEnrollBtn').dataset.userId = u.id;
+
+        // Account action buttons
+        const actions = document.getElementById('umActions');
+        let btns = '';
+        if (u.role !== 'admin') {
+            if (u.is_blocked) {
+                btns += `<button class="btn btn-outline btn-sm" onclick="unblockUser(${u.id});closeUserModal()">Unblock</button>`;
+            } else {
+                btns += `<button class="btn btn-danger btn-sm" onclick="blockUser(${u.id});closeUserModal()">Block</button>`;
+            }
+            if (u.device_fingerprint) {
+                btns += `<button class="btn btn-outline btn-sm" onclick="resetDevice(${u.id});closeUserModal()">Reset Device</button>`;
+            }
+            btns += `<button class="btn btn-danger btn-sm" onclick="closeUserModal();deleteUser(${u.id})">Delete</button>`;
+        }
+        actions.innerHTML = btns || '<span style="font-size:.8rem;color:var(--t4)">No actions available for admin accounts.</span>';
+
+        document.getElementById('userModal').classList.add('open');
+    }
+
+    window.enrollFromModal = async function() {
+        const btn = document.getElementById('umEnrollBtn');
+        const userId = parseInt(btn.dataset.userId);
+        const courseId = document.getElementById('umCourseSelect').value;
+        if (!courseId) { toast('Select a course first.'); return; }
+        btn.disabled = true;
+        const r = await api('POST', '/admin/enrollments', { user_id: userId, course_id: parseInt(courseId) });
+        btn.disabled = false;
+        if (r.ok) { toast('User enrolled.'); loadStats(); closeUserModal(); } else toast(r.data.error || 'Failed.');
+    };
 
     window.approveUser = async (id) => { const r = await api('PUT', '/admin/users/' + id + '/approve'); if (r.ok) { toast('User approved.'); loadUsers(); loadStats(); } else toast('Failed.'); };
     window.blockUser = async (id) => { const r = await api('PUT', '/admin/users/' + id + '/block'); if (r.ok) { toast('User blocked.'); loadUsers(); loadStats(); } else toast('Failed.'); };
@@ -702,6 +867,7 @@
         if (!result.ok || !result.data.courses || !result.data.courses.length) {
             tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state"><h3>No courses</h3></div></td></tr>'; return;
         }
+        allCoursesCache = result.data.courses;
         result.data.courses.forEach(c => {
             const desc = (c.description || '').substring(0, 80);
             const row = document.createElement('tr');
@@ -1015,6 +1181,7 @@
     async function loadCourseDropdowns() {
         const result = await api('GET', '/admin/courses');
         if (!result.ok || !result.data.courses) return;
+        allCoursesCache = result.data.courses;
         ['subjectCourse', 'lectureCourse', 'resourceCourse'].forEach(id => {
             const sel = document.getElementById(id); if (!sel) return;
             const val = sel.value; sel.innerHTML = '<option value="">Select course...</option>';
