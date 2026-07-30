@@ -154,6 +154,15 @@
         .btn-pdf:hover{background:var(--blue-h);box-shadow:0 1px 3px rgba(60,64,67,.3)}
         .btn-pdf svg{width:14px;height:14px}
 
+        /* ── TABS ── */
+        .content-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:16px}
+        .tab-btn{appearance:none;background:transparent;border:none;border-bottom:2px solid transparent;padding:10px 4px;margin-right:22px;font-family:var(--gs);font-size:.85rem;font-weight:500;color:var(--t3);cursor:pointer;transition:color var(--tr),border-color var(--tr);display:flex;align-items:center;gap:7px}
+        .tab-btn svg{width:16px;height:16px}
+        .tab-btn:hover{color:var(--t1)}
+        .tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+        .tab-panel{display:none}
+        .tab-panel.active{display:block}
+
         /* ── PDF / DRIVE VIEWER ── */
         .resource-viewer-wrap{margin-bottom:28px;background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden}
         .resource-viewer-header{padding:14px 18px;background:var(--surf);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -164,6 +173,32 @@
         .resource-viewer-actions .btn-xs:hover{background:var(--hov);color:var(--t1)}
         .resource-viewer-frame{width:100%;height:520px;border:none;background:#fff}
         .resource-viewer-empty{display:flex;align-items:center;justify-content:center;height:200px;color:var(--t4);font-size:.85rem;text-align:center;padding:20px}
+
+        /* ── NOTES EDITOR ── */
+        .notes-wrap{margin-bottom:28px;background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden}
+        .notes-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:8px 10px;border-bottom:1px solid var(--border);background:#fafbfc}
+        .notes-tb-btn{width:30px;height:30px;border:none;background:transparent;border-radius:var(--r);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t3);transition:all .12s;flex-shrink:0}
+        .notes-tb-btn:hover{background:var(--hov);color:var(--t1)}
+        .notes-tb-btn.active{background:#e8f0fe;color:var(--blue)}
+        .notes-tb-btn svg{width:16px;height:16px}
+        .notes-tb-btn.wide{width:auto;padding:0 9px;font-family:var(--gs);font-size:.72rem;font-weight:700}
+        .notes-tb-sep{width:1px;height:20px;background:var(--border);margin:0 6px;flex-shrink:0}
+        .notes-editor{min-height:280px;max-height:600px;overflow-y:auto;padding:18px 20px;font-size:.9rem;line-height:1.7;color:var(--t2);outline:none}
+        .notes-editor:empty:before{content:attr(data-placeholder);color:var(--t4);pointer-events:none}
+        .notes-editor h1{font-family:var(--gs);font-size:1.3rem;font-weight:600;color:var(--t1);margin:.6em 0 .3em}
+        .notes-editor h2{font-family:var(--gs);font-size:1.08rem;font-weight:600;color:var(--t1);margin:.6em 0 .3em}
+        .notes-editor p{margin:.35em 0}
+        .notes-editor ul,.notes-editor ol{padding-left:1.4em;margin:.35em 0}
+        .notes-editor blockquote{border-left:3px solid var(--blue);padding:2px 0 2px 14px;color:var(--t3);margin:.5em 0}
+        .notes-editor a{color:var(--blue)}
+        .notes-editor code{font-family:var(--mono);background:var(--hov);padding:1px 5px;border-radius:3px;font-size:.85em}
+        .notes-footer{display:flex;align-items:center;justify-content:space-between;padding:9px 18px;border-top:1px solid var(--border);background:#fafbfc}
+        .notes-status{font-size:.72rem;color:var(--t4);display:flex;align-items:center;gap:6px}
+        .notes-status svg{width:13px;height:13px}
+        .notes-status.saving{color:var(--t4)}
+        .notes-status.saved{color:var(--green)}
+        .notes-status.error{color:var(--red)}
+        .notes-wordcount{font-size:.72rem;color:var(--t4)}
 
         .suggestions{margin-bottom:32px}
         .suggestions h3{font-family:var(--gs);font-size:.95rem;font-weight:500;color:var(--t2);margin-bottom:10px}
@@ -210,7 +245,7 @@
         .toast.show{transform:translateY(0);opacity:1}
 
         @media(max-width:900px){.skip-side.left{left:7%}.skip-side.right{right:7%}.footer-inner{grid-template-columns:1fr 1fr;gap:28px}.resource-viewer-frame{height:350px}}
-        @media(max-width:600px){.main{padding-left:16px;padding-right:16px}.player-wrap{border-radius:0;margin-left:-16px;margin-right:-16px;width:calc(100% + 32px)}.footer-inner{grid-template-columns:1fr;gap:20px}.footer-bottom{flex-direction:column;text-align:center}.ctrl-bar{padding:0 10px 8px}.ctrl-left,.ctrl-right{gap:6px}.time-display{font-size:.65rem;min-width:65px}.suggestion-grid{grid-template-columns:1fr}.resource-viewer-frame{height:280px}.intro-modal{padding:24px 20px}}
+        @media(max-width:600px){.main{padding-left:16px;padding-right:16px}.player-wrap{border-radius:0;margin-left:-16px;margin-right:-16px;width:calc(100% + 32px)}.footer-inner{grid-template-columns:1fr;gap:20px}.footer-bottom{flex-direction:column;text-align:center}.ctrl-bar{padding:0 10px 8px}.ctrl-left,.ctrl-right{gap:6px}.time-display{font-size:.65rem;min-width:65px}.suggestion-grid{grid-template-columns:1fr}.resource-viewer-frame{height:280px}.intro-modal{padding:24px 20px}.tab-btn{margin-right:14px;font-size:.78rem}.notes-editor{min-height:220px;padding:14px}}
     </style>
 </head>
 <body>
@@ -281,19 +316,66 @@
     <div class="lecture-info"><h2 id="currentTitle">Loading...</h2><div class="meta"><span id="currentMeta"></span></div></div>
     <a href="#" class="btn-pdf" id="pdfLink" target="_blank" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Download PDF</a>
 
-    <!-- ── RESOURCE VIEWER ── -->
-    <div class="resource-viewer-wrap" id="resourceViewerWrap">
-        <div class="resource-viewer-header">
-            <div class="resource-viewer-title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                Lecture Resource
+    <!-- ── TABS ── -->
+    <div class="content-tabs">
+        <button class="tab-btn active" id="tabBtnPdf" data-tab="pdf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Preview Lecture PDF
+        </button>
+        <button class="tab-btn" id="tabBtnNotes" data-tab="notes">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Take Notes
+        </button>
+    </div>
+
+    <!-- ── PDF / DRIVE VIEWER ── -->
+    <div class="tab-panel active" id="tabPanelPdf">
+        <div class="resource-viewer-wrap" id="resourceViewerWrap">
+            <div class="resource-viewer-header">
+                <div class="resource-viewer-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Lecture Resource
+                </div>
+                <div class="resource-viewer-actions">
+                    <a href="#" target="_blank" class="btn-xs" id="resourceOpenLink">Open in new tab</a>
+                </div>
             </div>
-            <div class="resource-viewer-actions">
-                <a href="#" target="_blank" class="btn-xs" id="resourceOpenLink">Open in new tab</a>
+            <iframe class="resource-viewer-frame" id="resourceViewerFrame" allow="autoplay" allowfullscreen></iframe>
+            <div class="resource-viewer-empty" id="resourceViewerEmpty" style="display:none">No resource available for this lecture.</div>
+        </div>
+    </div>
+
+    <!-- ── NOTES EDITOR ── -->
+    <div class="tab-panel" id="tabPanelNotes">
+        <div class="notes-wrap">
+            <div class="notes-toolbar" id="notesToolbar">
+                <button class="notes-tb-btn" data-cmd="bold" title="Bold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 4h6a3.5 3.5 0 0 1 0 7H6zM6 11h7a3.5 3.5 0 0 1 0 7H6z"/></svg></button>
+                <button class="notes-tb-btn" data-cmd="italic" title="Italic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></button>
+                <button class="notes-tb-btn" data-cmd="underline" title="Underline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" y1="20" x2="20" y2="20"/></svg></button>
+                <button class="notes-tb-btn" data-cmd="strikeThrough" title="Strikethrough"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 4.5c-1-1-2.4-1.5-4-1.5-3 0-5 1.5-5 4 0 2 1.5 3 3.5 3.5"/><path d="M8 19.5c1 1 2.6 1.5 4.2 1.5 3 0 5-1.5 5-4 0-1.8-1.2-2.8-3-3.4"/><line x1="3" y1="12" x2="21" y2="12"/></svg></button>
+                <div class="notes-tb-sep"></div>
+                <button class="notes-tb-btn wide" data-cmd="formatBlock" data-value="H1" title="Heading 1">H1</button>
+                <button class="notes-tb-btn wide" data-cmd="formatBlock" data-value="H2" title="Heading 2">H2</button>
+                <button class="notes-tb-btn" data-cmd="formatBlock" data-value="BLOCKQUOTE" title="Quote"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 6H4a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h3v3l3-3h1V7a1 1 0 0 0-1-1H9zm11 0h-5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h3v3l3-3h1V7a1 1 0 0 0-1-1h-1z"/></svg></button>
+                <div class="notes-tb-sep"></div>
+                <button class="notes-tb-btn" data-cmd="insertUnorderedList" title="Bullet list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.4" fill="currentColor" stroke="none"/></svg></button>
+                <button class="notes-tb-btn" data-cmd="insertOrderedList" title="Numbered list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><text x="2" y="8" font-size="7" fill="currentColor" stroke="none">1</text><text x="2" y="14" font-size="7" fill="currentColor" stroke="none">2</text><text x="2" y="20" font-size="7" fill="currentColor" stroke="none">3</text></svg></button>
+                <div class="notes-tb-sep"></div>
+                <button class="notes-tb-btn" id="notesLinkBtn" title="Insert link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+                <button class="notes-tb-btn" data-cmd="removeFormat" title="Clear formatting"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="9" y2="20"/><line x1="4" y1="4" x2="20" y2="20"/></svg></button>
+                <div class="notes-tb-sep"></div>
+                <button class="notes-tb-btn" data-cmd="undo" title="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button>
+                <button class="notes-tb-btn" data-cmd="redo" title="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg></button>
+            </div>
+            <div class="notes-editor" id="notesEditor" contenteditable="true" data-placeholder="Start typing your notes for this lecture..."></div>
+            <div class="notes-footer">
+                <div class="notes-status" id="notesStatus">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span id="notesStatusText">All changes saved</span>
+                </div>
+                <div class="notes-wordcount" id="notesWordCount">0 words</div>
             </div>
         </div>
-        <iframe class="resource-viewer-frame" id="resourceViewerFrame" allow="autoplay" allowfullscreen></iframe>
-        <div class="resource-viewer-empty" id="resourceViewerEmpty" style="display:none">No resource available for this lecture.</div>
     </div>
 
     <div class="suggestions" id="suggestions"><h3>More in this course</h3><div class="suggestion-grid" id="suggestionGrid"></div></div>
@@ -412,7 +494,6 @@
 
     // ── RESOURCE VIEWER ──
     function updateResourceViewer(url){
-        var wrap=document.getElementById('resourceViewerWrap');
         var frame=document.getElementById('resourceViewerFrame');
         var empty=document.getElementById('resourceViewerEmpty');
         var openLink=document.getElementById('resourceOpenLink');
@@ -432,6 +513,74 @@
         frame.src=embedUrl;
         openLink.href=url;
     }
+
+    // ── TABS ──
+    var tabBtnPdf=document.getElementById('tabBtnPdf'),tabBtnNotes=document.getElementById('tabBtnNotes');
+    var tabPanelPdf=document.getElementById('tabPanelPdf'),tabPanelNotes=document.getElementById('tabPanelNotes');
+    function switchTab(tab){
+        var toNotes=tab==='notes';
+        tabBtnPdf.classList.toggle('active',!toNotes);
+        tabBtnNotes.classList.toggle('active',toNotes);
+        tabPanelPdf.classList.toggle('active',!toNotes);
+        tabPanelNotes.classList.toggle('active',toNotes);
+        if(toNotes){setTimeout(()=>notesEditor.focus(),50)}
+    }
+    tabBtnPdf.addEventListener('click',()=>switchTab('pdf'));
+    tabBtnNotes.addEventListener('click',()=>switchTab('notes'));
+
+    // ── NOTES EDITOR ──
+    var notesEditor=document.getElementById('notesEditor');
+    var notesStatus=document.getElementById('notesStatus'),notesStatusText=document.getElementById('notesStatusText');
+    var notesWordCount=document.getElementById('notesWordCount');
+    var currentNotesLectureId=null;
+
+    function setNotesStatus(state,text){
+        notesStatus.classList.remove('saving','saved','error');
+        notesStatus.classList.add(state);
+        notesStatusText.textContent=text;
+    }
+    function updateWordCount(){
+        var text=(notesEditor.innerText||'').trim();
+        var words=text?text.split(/\s+/).length:0;
+        notesWordCount.textContent=words+(words===1?' word':' words');
+    }
+    function notesLocalKey(lecId){return 'sv_notes_'+lecId}
+
+    function loadNotesForLecture(lecId){
+        currentNotesLectureId=lecId;
+        var cached=localStorage.getItem(notesLocalKey(lecId));
+        notesEditor.innerHTML=cached||'';
+        updateWordCount();
+        setNotesStatus('saved',cached?'All changes saved':'No notes yet');
+    }
+
+    function saveNotes(){
+        if(currentNotesLectureId==null)return;
+        localStorage.setItem(notesLocalKey(currentNotesLectureId),notesEditor.innerHTML);
+        setNotesStatus('saved','Saved');
+    }
+
+    // Saves instantly on every keystroke — notes live in this browser's
+    // localStorage only, per lecture. No backend/network call at all.
+    notesEditor.addEventListener('input',function(){updateWordCount();saveNotes()});
+
+    document.getElementById('notesToolbar').addEventListener('click',function(e){
+        var btn=e.target.closest('.notes-tb-btn');
+        if(!btn)return;
+        e.preventDefault();
+        notesEditor.focus();
+        var cmd=btn.getAttribute('data-cmd');
+        if(!cmd)return;
+        var val=btn.getAttribute('data-value')||null;
+        try{document.execCommand(cmd,false,val)}catch(err){}
+        updateWordCount();
+        saveNotes();
+    });
+    document.getElementById('notesLinkBtn').addEventListener('click',function(){
+        notesEditor.focus();
+        var url=prompt('Enter link URL:','https://');
+        if(url){try{document.execCommand('createLink',false,url)}catch(err){}saveNotes()}
+    });
 
     function enforceBarsVisibility(){
         const isPausedOrStopped=(currentPlayerState===2||currentPlayerState===0||currentPlayerState===-1);
@@ -459,6 +608,7 @@
         if(lec.pdf_url){currentPdfUrl=lec.pdf_url;pdfLink.href=lec.pdf_url;pdfLink.style.display='inline-flex'}else{pdfLink.style.display='none';currentPdfUrl=''}
         if(player&&player.loadVideoById)player.loadVideoById(lec.youtube_id);
         updateResourceViewer(lec.pdf_url||null);
+        loadNotesForLecture(lec.id);
         renderSuggestions();markUnsafe();enforceBarsVisibility();playRetries=0;
     }
 
@@ -517,7 +667,10 @@
     document.getElementById('muteToggle').addEventListener('click',function(e){e.stopPropagation();if(!player)return;if(player.isMuted()){player.unMute();volSlider.value=player.getVolume();volHigh.style.display='block';volMute.style.display='none'}else{player.mute();volSlider.value=0;volHigh.style.display='none';volMute.style.display='block'}});
     document.getElementById('fullscreenBtn').addEventListener('click',function(e){e.stopPropagation();if(!document.fullscreenElement){playerBox.requestFullscreen().catch(function(){})}else{document.exitFullscreen()}});
     document.addEventListener('fullscreenchange',function(){isFullscreen=!!document.fullscreenElement});
-    document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;switch(e.code){case'Space':e.preventDefault();togglePlay();break;case'ArrowLeft':e.preventDefault();skipKeyboard(-5);break;case'ArrowRight':e.preventDefault();skipKeyboard(5);break;case'ArrowUp':e.preventDefault();if(player){const v=Math.min(player.getVolume()+5,100);player.setVolume(v);volSlider.value=v}break;case'ArrowDown':e.preventDefault();if(player){const v=Math.max(player.getVolume()-5,0);player.setVolume(v);volSlider.value=v}break;case'KeyF':document.getElementById('fullscreenBtn').click();break;case'KeyM':document.getElementById('muteToggle').click();break}});
+    document.addEventListener('keydown',function(e){
+        if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.isContentEditable)return;
+        switch(e.code){case'Space':e.preventDefault();togglePlay();break;case'ArrowLeft':e.preventDefault();skipKeyboard(-5);break;case'ArrowRight':e.preventDefault();skipKeyboard(5);break;case'ArrowUp':e.preventDefault();if(player){const v=Math.min(player.getVolume()+5,100);player.setVolume(v);volSlider.value=v}break;case'ArrowDown':e.preventDefault();if(player){const v=Math.max(player.getVolume()-5,0);player.setVolume(v);volSlider.value=v}break;case'KeyF':document.getElementById('fullscreenBtn').click();break;case'KeyM':document.getElementById('muteToggle').click();break}
+    });
 
     var lastTapTime=0;
     gestureZone.addEventListener('touchend',function(e){showControls();const now=Date.now(),tapGap=now-lastTapTime;const x=e.changedTouches[0].clientX,w=window.innerWidth;if(tapGap<300&&tapGap>0){if(x<w*.33)skip(-10);else if(x>w*.66)skip(10)}lastTapTime=now});
