@@ -147,17 +147,23 @@
         .speed-popup-item:hover,.quality-popup-item:hover{background:var(--hov);color:var(--t1)}
         .speed-popup-item.active,.quality-popup-item.active{color:var(--blue);font-weight:700}
 
-        .lecture-info{margin-bottom:6px}
+        .lecture-info{margin-bottom:14px}
         .lecture-info h2{font-family:var(--gs);font-size:1.25rem;font-weight:500;color:var(--t1)}
         .lecture-info .meta{font-size:.82rem;color:var(--t4)}
         .btn-pdf{display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;border:none;padding:8px 16px;border-radius:var(--r);font-family:var(--gs);font-weight:500;font-size:.8rem;cursor:pointer;text-decoration:none;transition:all .15s;margin-bottom:14px}
         .btn-pdf:hover{background:var(--blue-h);box-shadow:0 1px 3px rgba(60,64,67,.3)}
         .btn-pdf svg{width:14px;height:14px}
 
-        .instructions{background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);padding:16px 18px;margin-bottom:24px;font-size:.8rem;color:var(--t4);line-height:1.8}
-        .instructions strong{color:var(--t2);display:block;margin-bottom:6px;font-size:.85rem}
-        .instructions kbd{background:var(--hov);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-family:var(--mono);font-size:.7rem;color:var(--t2)}
-        .instructions .row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px}
+        /* ── PDF / DRIVE VIEWER ── */
+        .resource-viewer-wrap{margin-bottom:28px;background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden}
+        .resource-viewer-header{padding:14px 18px;background:var(--surf);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+        .resource-viewer-title{font-family:var(--gs);font-size:.85rem;font-weight:500;color:var(--t1);display:flex;align-items:center;gap:8px}
+        .resource-viewer-title svg{width:16px;height:16px;color:var(--blue);flex-shrink:0}
+        .resource-viewer-actions{display:flex;gap:8px}
+        .resource-viewer-actions .btn-xs{padding:5px 12px;font-size:.7rem;border-radius:var(--r);font-family:var(--gs);font-weight:500;border:1px solid var(--border);background:var(--surf);color:var(--t3);cursor:pointer;transition:all var(--tr);text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+        .resource-viewer-actions .btn-xs:hover{background:var(--hov);color:var(--t1)}
+        .resource-viewer-frame{width:100%;height:520px;border:none;background:#fff}
+        .resource-viewer-empty{display:flex;align-items:center;justify-content:center;height:200px;color:var(--t4);font-size:.85rem;text-align:center;padding:20px}
 
         .suggestions{margin-bottom:32px}
         .suggestions h3{font-family:var(--gs);font-size:.95rem;font-weight:500;color:var(--t2);margin-bottom:10px}
@@ -167,6 +173,22 @@
         .suggestion-card svg{width:14px;height:14px;color:var(--blue);flex-shrink:0}
         .suggestion-card .sug-text{font-size:.8rem;color:var(--t2);font-weight:500}
         .suggestion-card .sug-sub{font-size:.68rem;color:var(--t4)}
+
+        /* ── PLAYER INTRO POPUP ── */
+        .intro-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:5000;display:none;align-items:center;justify-content:center;padding:20px}
+        .intro-overlay.open{display:flex}
+        .intro-modal{background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);padding:32px;width:100%;max-width:480px;box-shadow:0 24px 50px rgba(0,0,0,.3)}
+        .intro-modal-icon{width:48px;height:48px;border-radius:50%;background:#e8f0fe;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--blue)}
+        .intro-modal-icon svg{width:22px;height:22px}
+        .intro-modal h2{font-family:var(--gs);font-size:1.2rem;font-weight:500;color:var(--t1);text-align:center;margin-bottom:4px}
+        .intro-modal .subtitle{font-size:.82rem;color:var(--t3);text-align:center;margin-bottom:20px;line-height:1.5}
+        .intro-modal ul{list-style:none;margin-bottom:24px;padding:0}
+        .intro-modal ul li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:.82rem;color:var(--t2);line-height:1.5;border-bottom:1px solid var(--border)}
+        .intro-modal ul li:last-child{border-bottom:none}
+        .intro-modal ul li .li-icon{width:20px;height:20px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center}
+        .intro-modal ul li .li-icon svg{width:14px;height:14px;color:var(--blue)}
+        .btn-dismiss{width:100%;height:38px;background:var(--blue);color:#fff;border:none;border-radius:var(--r);font-family:var(--gs);font-size:.875rem;font-weight:500;cursor:pointer;transition:all var(--tr)}
+        .btn-dismiss:hover{background:var(--blue-h);box-shadow:0 1px 3px rgba(60,64,67,.3)}
 
         .footer{background:var(--surf);border-top:1px solid var(--border);margin-top:auto}
         .footer-inner{max-width:1080px;margin:0 auto;padding:40px 24px 24px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
@@ -187,8 +209,8 @@
         .toast{position:fixed;bottom:24px;left:24px;z-index:9999;padding:14px 24px;border-radius:var(--r);background:#323232;color:#f5f5f5;font-size:.875rem;box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px rgba(0,0,0,.14),0 1px 18px rgba(0,0,0,.12);transform:translateY(80px);opacity:0;transition:all .25s cubic-bezier(0,0,.2,1);pointer-events:none}
         .toast.show{transform:translateY(0);opacity:1}
 
-        @media(max-width:900px){.skip-side.left{left:7%}.skip-side.right{right:7%}.footer-inner{grid-template-columns:1fr 1fr;gap:28px}}
-        @media(max-width:600px){.main{padding-left:16px;padding-right:16px}.player-wrap{border-radius:0;margin-left:-16px;margin-right:-16px;width:calc(100% + 32px)}.footer-inner{grid-template-columns:1fr;gap:20px}.footer-bottom{flex-direction:column;text-align:center}.ctrl-bar{padding:0 10px 8px}.ctrl-left,.ctrl-right{gap:6px}.time-display{font-size:.65rem;min-width:65px}.suggestion-grid{grid-template-columns:1fr}}
+        @media(max-width:900px){.skip-side.left{left:7%}.skip-side.right{right:7%}.footer-inner{grid-template-columns:1fr 1fr;gap:28px}.resource-viewer-frame{height:350px}}
+        @media(max-width:600px){.main{padding-left:16px;padding-right:16px}.player-wrap{border-radius:0;margin-left:-16px;margin-right:-16px;width:calc(100% + 32px)}.footer-inner{grid-template-columns:1fr;gap:20px}.footer-bottom{flex-direction:column;text-align:center}.ctrl-bar{padding:0 10px 8px}.ctrl-left,.ctrl-right{gap:6px}.time-display{font-size:.65rem;min-width:65px}.suggestion-grid{grid-template-columns:1fr}.resource-viewer-frame{height:280px}.intro-modal{padding:24px 20px}}
     </style>
 </head>
 <body>
@@ -259,20 +281,41 @@
     <div class="lecture-info"><h2 id="currentTitle">Loading...</h2><div class="meta"><span id="currentMeta"></span></div></div>
     <a href="#" class="btn-pdf" id="pdfLink" target="_blank" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Download PDF</a>
 
-    <div class="instructions">
-        <strong>Player Controls</strong>
-        <div class="row"><kbd>Space</kbd> Play / Pause</div>
-        <div class="row"><kbd>←</kbd> <kbd>→</kbd> Seek backward / forward 5 seconds</div>
-        <div class="row"><kbd>↑</kbd> <kbd>↓</kbd> Increase / decrease volume</div>
-        <div class="row"><kbd>F</kbd> Toggle fullscreen &nbsp; <kbd>M</kbd> Mute / unmute</div>
-        <div class="row"><strong>Mobile:</strong> Double-tap left side to rewind 10s, right side to forward 10s</div>
-        <div class="row"><strong>Drag</strong> the progress bar to scrub through the video</div>
-        <div class="row"><strong>Click</strong> the center of the video to play / pause</div>
-        <div class="row"><strong>Speed:</strong> Click the speed button (1x) on the control bar to change playback speed</div>
+    <!-- ── RESOURCE VIEWER ── -->
+    <div class="resource-viewer-wrap" id="resourceViewerWrap">
+        <div class="resource-viewer-header">
+            <div class="resource-viewer-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Lecture Resource
+            </div>
+            <div class="resource-viewer-actions">
+                <a href="#" target="_blank" class="btn-xs" id="resourceOpenLink">Open in new tab</a>
+            </div>
+        </div>
+        <iframe class="resource-viewer-frame" id="resourceViewerFrame" allow="autoplay" allowfullscreen></iframe>
+        <div class="resource-viewer-empty" id="resourceViewerEmpty" style="display:none">No resource available for this lecture.</div>
     </div>
 
     <div class="suggestions" id="suggestions"><h3>More in this course</h3><div class="suggestion-grid" id="suggestionGrid"></div></div>
 </main>
+
+<!-- ── PLAYER INTRO POPUP ── -->
+<div class="intro-overlay" id="introOverlay">
+    <div class="intro-modal">
+        <div class="intro-modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <h2>About the Player</h2>
+        <p class="subtitle">Here's how the video player works — it's all by design for a clean viewing experience.</p>
+        <ul>
+            <li><span class="li-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> Controls auto-hide after 7 seconds while playing — move your mouse or tap to bring them back.</li>
+            <li><span class="li-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></span> When you pause, a "Click to Resume" overlay appears — that's normal, just click to continue.</li>
+            <li><span class="li-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg></span> Double-tap left/right on mobile to skip 10 seconds.</li>
+            <li><span class="li-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span> Dark overlays protect the content and disappear as you interact.</li>
+        </ul>
+        <button class="btn-dismiss" id="introDismissBtn">OK, Got it</button>
+    </div>
+</div>
 
 <footer class="footer">
     <div class="footer-inner">
@@ -305,6 +348,30 @@
     function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
     function formatTime(sec){if(!sec||sec<0)return'00:00';const m=Math.floor(sec/60),s=Math.floor(sec%60);return(m<10?'0'+m:m)+':'+(s<10?'0'+s:s)}
     function escapeHtml(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+
+    // ── PLAYER INTRO POPUP ──
+    (function checkIntroPopup(){
+        const now=new Date();
+        const year=now.getFullYear();
+        const month=now.getMonth()+1;
+        const day=now.getDate();
+        const period=day<=14?'01':'15';
+        const currentPeriod=year+'-'+String(month).padStart(2,'0')+'-'+period;
+        const storedPeriod=localStorage.getItem('sciverse_player_intro');
+        if(storedPeriod!==currentPeriod){
+            document.getElementById('introOverlay').classList.add('open');
+        }
+        document.getElementById('introDismissBtn').addEventListener('click',function(){
+            localStorage.setItem('sciverse_player_intro',currentPeriod);
+            document.getElementById('introOverlay').classList.remove('open');
+        });
+        document.getElementById('introOverlay').addEventListener('click',function(e){
+            if(e.target===this){
+                localStorage.setItem('sciverse_player_intro',currentPeriod);
+                this.classList.remove('open');
+            }
+        });
+    })();
 
     var allLectures=[],currentIndex=0,player=null,isDragging=false;
     var hideTimer=null,topBarTimer=null,safeTimer=null;
@@ -343,6 +410,29 @@
     var spinner=document.getElementById('spinner'),pdfLink=document.getElementById('pdfLink');
     var skipLTimer=null,skipRTimer=null;
 
+    // ── RESOURCE VIEWER ──
+    function updateResourceViewer(url){
+        var wrap=document.getElementById('resourceViewerWrap');
+        var frame=document.getElementById('resourceViewerFrame');
+        var empty=document.getElementById('resourceViewerEmpty');
+        var openLink=document.getElementById('resourceOpenLink');
+        if(!url){
+            frame.style.display='none';
+            empty.style.display='flex';
+            openLink.href='#';
+            return;
+        }
+        empty.style.display='none';
+        frame.style.display='block';
+        var embedUrl=url;
+        var driveMatch=url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+        if(driveMatch){
+            embedUrl='https://drive.google.com/file/d/'+driveMatch[1]+'/preview';
+        }
+        frame.src=embedUrl;
+        openLink.href=url;
+    }
+
     function enforceBarsVisibility(){
         const isPausedOrStopped=(currentPlayerState===2||currentPlayerState===0||currentPlayerState===-1);
         if(isPausedOrStopped){topBar.classList.remove('hidden');ctrlBar.classList.remove('fade');playerBox.classList.add('show-ui');clearTimeout(hideTimer);clearTimeout(topBarTimer);videoIsSafe=false}
@@ -368,6 +458,7 @@
         updateNavButtons();
         if(lec.pdf_url){currentPdfUrl=lec.pdf_url;pdfLink.href=lec.pdf_url;pdfLink.style.display='inline-flex'}else{pdfLink.style.display='none';currentPdfUrl=''}
         if(player&&player.loadVideoById)player.loadVideoById(lec.youtube_id);
+        updateResourceViewer(lec.pdf_url||null);
         renderSuggestions();markUnsafe();enforceBarsVisibility();playRetries=0;
     }
 
